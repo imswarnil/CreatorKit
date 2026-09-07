@@ -1,8 +1,15 @@
 {
 	"name": "@creatorkit/ui",
 	"version": "0.1.0",
-	"description": "CreatorKit component library — accessible React components styled with Tailwind and CVA.",
-	"keywords": ["ui-kit", "react", "components", "tailwind", "accessible", "design-system"],
+	"description": "CreatorKit component library \u2014 accessible React components styled with Tailwind and CVA.",
+	"keywords": [
+		"ui-kit",
+		"react",
+		"components",
+		"tailwind",
+		"accessible",
+		"design-system"
+	],
 	"homepage": "https://creator.imswarnil.com",
 	"bugs": "https://github.com/imswarnil/CreatorKit/issues",
 	"repository": {
@@ -16,7 +23,9 @@
 		"url": "https://imswarnil.com"
 	},
 	"type": "module",
-	"sideEffects": ["*.css"],
+	"sideEffects": [
+		"*.css"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
@@ -24,17 +33,23 @@
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js"
 		},
+		"./css": "./dist/ck-classes.css",
 		"./package.json": "./package.json"
 	},
-	"files": ["dist", "src", "README.md"],
+	"files": [
+		"dist",
+		"src",
+		"README.md",
+		"INVENTORY.md"
+	],
 	"publishConfig": {
 		"access": "public"
 	},
 	"scripts": {
-		"build": "tsc -p tsconfig.json",
+		"build": "tsc -p tsconfig.json && RECIPE_INVENTORY=INVENTORY.md node ../../tools/recipe-to-css/index.mjs dist/index.js dist/.ck-apply.css && tailwindcss -i dist/.ck-apply.css -o dist/ck-classes.css",
 		"typecheck": "tsc -p tsconfig.json --noEmit",
 		"lint": "eslint src",
-		"test": "node --test --experimental-test-module-mocks \"src/**/*.test.ts\" 2>/dev/null || echo 'no tests yet'",
+		"test": "node --test \"dist/**/*.test.js\"",
 		"clean": "rm -rf dist .turbo *.tsbuildinfo"
 	},
 	"dependencies": {
@@ -45,5 +60,8 @@
 	"peerDependencies": {
 		"react": ">=18",
 		"react-dom": ">=18"
+	},
+	"devDependencies": {
+		"tailwindcss": "^3.4.17"
 	}
 }

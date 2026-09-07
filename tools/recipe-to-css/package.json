@@ -1,0 +1,11 @@
+{
+	"name": "@creatorkit/recipe-to-css",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Compiles CreatorKit component recipes into plain CSS classes for non-React consumers.",
+	"type": "module",
+	"bin": { "recipe-to-css": "./index.mjs" },
+	"scripts": {
+		"lint": "eslint index.mjs"
+	}
+}

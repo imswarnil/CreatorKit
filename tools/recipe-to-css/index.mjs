@@ -1,0 +1,147 @@
+#!/usr/bin/env node
+/**
+ * recipe-to-css — the second renderer.
+ *
+ * A CreatorKit component declares its appearance once, as a CVA recipe of
+ * Tailwind utilities. React reads that recipe directly. Handlebars cannot, so
+ * this compiles the same object into plain CSS classes:
+ *
+ *     button.recipe.ts          →   .ck-btn          { @apply <base> }
+ *       variants.variant.primary →   .ck-btn--primary { @apply <utilities> }
+ *       variants.block.true      →   .ck-btn--block   { @apply w-full }
+ *
+ * It imports the *built* package rather than parsing source, so there is exactly
+ * one definition of a component's appearance and this file cannot become a
+ * second one. Output is `@apply` CSS; the caller runs Tailwind over it to get
+ * real declarations, so a consumer installs nothing.
+ *
+ *     node tools/recipe-to-css/index.mjs <entry.js> <out.css>
+ */
+import { writeFileSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
+import { resolve } from 'node:path';
+
+const [entryArg, outArg] = process.argv.slice(2);
+if (!entryArg || !outArg) {
+	console.error('usage: recipe-to-css <entry.js> <out.css>');
+	process.exit(1);
+}
+
+const mod = await import(pathToFileURL(resolve(entryArg)).href);
+
+/** Everything the package exports that came from `recipe()`. */
+const recipes = Object.values(mod)
+	.filter((v) => typeof v === 'function' && v.recipe && typeof v.recipe.name === 'string')
+	.map((v) => v.recipe);
+
+if (recipes.length === 0) {
+	console.error('recipe-to-css: no recipes found in ' + entryArg);
+	process.exit(1);
+}
+
+const rules = [];
+const problems = [];
+
+for (const { name, base, variants } of recipes) {
+	const stem = `ck-${name}`;
+	if (base.trim()) rules.push([`.${stem}`, base]);
+
+	/**
+	 * Modifier names are flat (`.ck-btn--primary`, not `.ck-btn--variant-primary`)
+	 * because these are written by hand in Handlebars and length costs. Flat only
+	 * works while value names are unique within a recipe, so a collision is a
+	 * build failure rather than a silently-wrong stylesheet.
+	 */
+	const seen = new Map();
+
+	for (const [group, values] of Object.entries(variants)) {
+		for (const [value, utilities] of Object.entries(values)) {
+			if (!utilities || !utilities.trim()) continue;
+
+			// A boolean variant is named for its group: `block: { true: 'w-full' }`
+			// is `.ck-btn--block`, never `.ck-btn--true`.
+			const isBoolean = value === 'true' || value === 'false';
+			if (isBoolean && value === 'false') continue;
+			const modifier = isBoolean ? group : value;
+
+			if (seen.has(modifier) && seen.get(modifier) !== group) {
+				problems.push(
+					`${name}: "${modifier}" is defined by both the "${seen.get(modifier)}" and ` +
+						`"${group}" variants. Rename one — modifier names must be unique per recipe.`,
+				);
+			}
+			seen.set(modifier, group);
+			rules.push([`.${stem}--${modifier}`, utilities]);
+		}
+	}
+}
+
+if (problems.length) {
+	console.error('recipe-to-css: modifier name collisions\n  ' + problems.join('\n  '));
+	process.exit(1);
+}
+
+const css = `/*!
+ * @creatorkit/ui — generated from component recipes. Do not edit.
+ * Source: the .recipe.ts file beside each component in packages/ui/src
+ * Regenerate: pnpm --filter @creatorkit/ui build
+ *
+ * These are the classes for consumers that cannot run React — the Ghost theme,
+ * static templates, anything server-rendered. They are the same utilities the
+ * React components apply, from the same objects.
+ *
+ * Deliberately not wrapped in a cascade layer: a .ck-* class and a Tailwind
+ * utility are both one class, so a utility written later in the consumer's
+ * stylesheet wins on source order. That is what a caller expects when they
+ * write class="ck-btn rounded-pill" in a template.
+ */
+${rules.map(([selector, utilities]) => `${selector} {\n\t@apply ${utilities.trim().replace(/\s+/g, ' ')};\n}`).join('\n\n')}
+`;
+
+writeFileSync(resolve(outArg), css);
+
+/**
+ * INVENTORY.md — so an agent (or a person) can answer "what variants does Badge
+ * have" by reading one table instead of opening every recipe in the package.
+ * Generated, therefore never stale, therefore trustworthy enough to read
+ * instead of the source.
+ */
+const inventoryPath = process.env.RECIPE_INVENTORY;
+if (inventoryPath) {
+	const rows = recipes
+		.map(({ name, variants, defaultVariants = {} }) => {
+			const groups = Object.entries(variants)
+				.map(([group, values]) => {
+					const options = Object.keys(values)
+						.filter((v) => values[v]?.trim() || v === 'false')
+						.join(' \\| ');
+					const fallback = defaultVariants[group];
+					const shown = fallback === undefined ? '' : ` (default \`${fallback}\`)`;
+					return options ? `\`${group}\`: ${options}${shown}` : null;
+				})
+				.filter(Boolean)
+				.join('<br>');
+			return `| \`${name}\` | \`.ck-${name}\` | ${groups || '—'} |`;
+		})
+		.join('\n');
+
+	writeFileSync(
+		resolve(inventoryPath),
+		`<!-- generated by tools/recipe-to-css — do not edit -->
+# Inventory — @creatorkit/ui
+
+${recipes.length} recipes, ${rules.length} compiled classes. Read this before grepping the
+package; it is regenerated by \`pnpm build\` and cannot go stale.
+
+Every component below is React (\`import { Button } from '@creatorkit/ui'\`) *and* a plain
+CSS class (\`class="ck-btn ck-btn--primary"\`), from the same recipe.
+
+| Component | Class | Variants |
+| --- | --- | --- |
+${rows}
+`,
+	);
+	console.log(`recipe-to-css: INVENTORY.md`);
+}
+
+console.log(`recipe-to-css: ${recipes.length} recipes → ${rules.length} classes → ${outArg}`);
