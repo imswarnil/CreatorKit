@@ -1,8 +1,13 @@
 {
 	"name": "@creatorkit/tokens",
 	"version": "0.1.0",
-	"description": "Design tokens for CreatorKit — one source, emitted as a Tailwind preset, CSS custom properties and typed JS.",
-	"keywords": ["design-tokens", "tailwind", "css-variables", "oklch"],
+	"description": "Design tokens for CreatorKit \u2014 one source, emitted as a Tailwind preset, CSS custom properties and typed JS.",
+	"keywords": [
+		"design-tokens",
+		"tailwind",
+		"css-variables",
+		"oklch"
+	],
 	"homepage": "https://creator.imswarnil.com",
 	"bugs": "https://github.com/imswarnil/CreatorKit/issues",
 	"repository": {
@@ -16,7 +21,9 @@
 		"url": "https://imswarnil.com"
 	},
 	"type": "module",
-	"sideEffects": ["*.css"],
+	"sideEffects": [
+		"*.css"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
@@ -24,14 +31,22 @@
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js"
 		},
+		"./css": "./dist/tokens.css",
+		"./scss": "./dist/tokens.scss",
+		"./tailwind": "./dist/tailwind.js",
 		"./package.json": "./package.json"
 	},
-	"files": ["dist", "src", "README.md"],
+	"files": [
+		"dist",
+		"src",
+		"README.md",
+		"TOKENS.md"
+	],
 	"publishConfig": {
 		"access": "public"
 	},
 	"scripts": {
-		"build": "tsc -p tsconfig.json",
+		"build": "tsc -p tsconfig.json && node scripts/build-outputs.mjs",
 		"typecheck": "tsc -p tsconfig.json --noEmit",
 		"lint": "eslint src",
 		"test": "node --test --experimental-test-module-mocks \"src/**/*.test.ts\" 2>/dev/null || echo 'no tests yet'",

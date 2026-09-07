@@ -1,0 +1,137 @@
+/**
+ * CreatorKit reset.
+ *
+ * Not a normalise — an opinion. It sets the defaults the kit assumes, all of
+ * them from tokens, so an unstyled element already looks like it belongs. Only
+ * rules that earn their place: every line here is either a browser bug, a bad
+ * default, or a token being applied.
+ */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+* {
+	margin: 0;
+}
+
+html {
+	/* Never a fixed size — the user's browser setting is the base. */
+	-webkit-text-size-adjust: 100%;
+	tab-size: 2;
+	scrollbar-gutter: stable;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	html:focus-within {
+		scroll-behavior: smooth;
+	}
+}
+
+body {
+	min-height: 100svh;
+	background: var(--ck-color-surface-canvas);
+	color: var(--ck-color-text-default);
+	font-family: var(--ck-font-body);
+	font-size: var(--ck-text-base);
+	line-height: var(--ck-leading-normal);
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizelegibility;
+}
+
+/* Headings are display type, tight, and never bolder than the token says. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: var(--ck-font-display);
+	font-weight: var(--ck-weight-semibold);
+	line-height: var(--ck-leading-tight);
+	letter-spacing: var(--ck-tracking-tight);
+	text-wrap: balance;
+}
+
+h1 { font-size: var(--ck-text-4xl); }
+h2 { font-size: var(--ck-text-3xl); }
+h3 { font-size: var(--ck-text-2xl); }
+h4 { font-size: var(--ck-text-xl); }
+h5 { font-size: var(--ck-text-lg); }
+h6 { font-size: var(--ck-text-md); }
+
+p,
+li,
+dd {
+	text-wrap: pretty;
+}
+
+a {
+	color: var(--ck-color-text-link);
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.18em;
+}
+
+a:hover {
+	color: var(--ck-color-text-link-hover);
+}
+
+/* Replaced elements are block by default; inline-image baseline gaps are a bug. */
+img,
+picture,
+video,
+canvas,
+svg {
+	display: block;
+	max-width: 100%;
+}
+
+img,
+video {
+	height: auto;
+}
+
+/* Form controls do not inherit type. They should. */
+input,
+button,
+textarea,
+select {
+	font: inherit;
+	color: inherit;
+	letter-spacing: inherit;
+}
+
+textarea {
+	resize: vertical;
+}
+
+button {
+	background: none;
+	border: 0;
+	cursor: pointer;
+}
+
+code,
+kbd,
+samp,
+pre {
+	font-family: var(--ck-font-mono);
+	font-size: 0.9em;
+}
+
+hr {
+	border: 0;
+	border-block-start: var(--ck-border-hair) solid var(--ck-color-border-default);
+}
+
+table {
+	border-collapse: collapse;
+	inline-size: 100%;
+}
+
+:where(ul, ol)[class] {
+	list-style: none;
+	padding: 0;
+}
