@@ -38,16 +38,17 @@
 		"./package.json": "./package.json"
 	},
 	"files": [
+		"INVENTORY.md",
+		"README.md",
 		"dist",
 		"src",
-		"styles",
-		"README.md"
+		"styles"
 	],
 	"publishConfig": {
 		"access": "public"
 	},
 	"scripts": {
-		"build": "tsc -p tsconfig.json && postcss styles/index.css -o dist/broadcast.css && NODE_ENV=production postcss styles/index.css -o dist/broadcast.min.css",
+		"build": "tsc -p tsconfig.json && postcss styles/index.css -o dist/broadcast.css && NODE_ENV=production postcss styles/index.css -o dist/broadcast.min.css && node ../../tools/css-inventory/index.mjs styles INVENTORY.md \"@creatorkit/broadcast\"",
 		"typecheck": "tsc -p tsconfig.json --noEmit",
 		"lint": "eslint src",
 		"test": "node --test --experimental-test-module-mocks \"src/**/*.test.ts\" 2>/dev/null || echo 'no tests yet'",

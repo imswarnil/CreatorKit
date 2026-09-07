@@ -1,0 +1,9 @@
+{
+	"name": "@creatorkit/icon-build",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Builds the icon sets into an SVG sprite, a typed name list and a React component.",
+	"type": "module",
+	"bin": { "icon-build": "./index.mjs" },
+	"scripts": { "lint": "eslint index.mjs" }
+}

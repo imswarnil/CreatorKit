@@ -43,18 +43,19 @@
 		"./package.json": "./package.json"
 	},
 	"files": [
-		"dist",
-		"src",
-		"styles",
-		"js",
+		"INVENTORY-CSS.md",
+		"INVENTORY.md",
 		"README.md",
-		"INVENTORY.md"
+		"dist",
+		"js",
+		"src",
+		"styles"
 	],
 	"publishConfig": {
 		"access": "public"
 	},
 	"scripts": {
-		"build": "tsc -p tsconfig.json && RECIPE_INVENTORY=INVENTORY.md node ../../tools/recipe-to-css/index.mjs dist/index.js dist/.ck-apply.css && tailwindcss -i dist/.ck-apply.css -o dist/ck-classes.css && postcss styles/index.css -o dist/ui.css && NODE_ENV=production postcss styles/index.css -o dist/ui.min.css",
+		"build": "tsc -p tsconfig.json && RECIPE_INVENTORY=INVENTORY.md node ../../tools/recipe-to-css/index.mjs dist/index.js dist/.ck-apply.css && tailwindcss -i dist/.ck-apply.css -o dist/ck-classes.css && postcss styles/index.css -o dist/ui.css && NODE_ENV=production postcss styles/index.css -o dist/ui.min.css && node ../../tools/css-inventory/index.mjs styles INVENTORY-CSS.md \"@creatorkit/ui \u2014 the CSS component kit\"",
 		"typecheck": "tsc -p tsconfig.json --noEmit",
 		"lint": "eslint src",
 		"test": "node --test \"dist/**/*.test.js\"",

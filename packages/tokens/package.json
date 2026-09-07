@@ -32,22 +32,28 @@
 			"import": "./dist/index.js"
 		},
 		"./css": "./dist/tokens.css",
-		"./scss": "./dist/tokens.scss",
+		"./min": "./dist/tokens.min.css",
 		"./tailwind": "./dist/tailwind.js",
+		"./json": "./dist/tokens.json",
+		"./dist/tokens.css": "./dist/tokens.css",
+		"./dist/tailwind.js": "./dist/tailwind.js",
+		"./styles/*": "./styles/*",
 		"./package.json": "./package.json",
-		"./dist/tokens.css": "./dist/tokens.css"
+		"./dist/tokens.json": "./dist/tokens.json"
 	},
 	"files": [
+		"INVENTORY-CSS.md",
+		"README.md",
+		"TOKENS.md",
 		"dist",
 		"src",
-		"README.md",
-		"TOKENS.md"
+		"styles"
 	],
 	"publishConfig": {
 		"access": "public"
 	},
 	"scripts": {
-		"build": "tsc -p tsconfig.json && node scripts/build-outputs.mjs",
+		"build": "tsc -p tsconfig.json && postcss styles/index.css -o dist/tokens.css && NODE_ENV=production postcss styles/index.css -o dist/tokens.min.css && node scripts/build-outputs.mjs && node ../../tools/css-inventory/index.mjs styles INVENTORY-CSS.md \"@creatorkit/tokens \u2014 foundation rules\"",
 		"typecheck": "tsc -p tsconfig.json --noEmit",
 		"lint": "eslint src",
 		"test": "node --test --experimental-test-module-mocks \"src/**/*.test.ts\" 2>/dev/null || echo 'no tests yet'",

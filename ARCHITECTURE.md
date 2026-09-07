@@ -40,13 +40,42 @@ arbitrary values. It may not contain React, props logic, or runtime state. Behav
 lives in the `.tsx`; appearance lives in the recipe. When you are tempted to put a
 conditional class inside a component, ask whether it is really a variant.
 
+## Two layers, one foundation
+
+The kit ships in two forms, and it is worth being precise about why.
+
+**The CSS layer** is the whole system — 1,143 classes covering every component, every
+creator content type and every broadcast surface. It is written against the custom
+properties in `@creatorkit/tokens/styles`, works from any template engine, and is what the
+Ghost theme uses today.
+
+**The React layer** is `@creatorkit/ui`'s components, growing one category at a time out
+of the CSS layer per `docs/MIGRATION.md`. Each declares its appearance as a recipe, and
+`tools/recipe-to-css` compiles that recipe into `.ck-*` classes — so a migrated component
+is available to Handlebars on the same day it is available to React.
+
+Both resolve against the same custom properties. `.btn-primary` and `.ck-btn--primary`
+both read `--accent`. There is one foundation, and a change to it moves both layers.
+
+## Where tokens come from
+
+`packages/tokens/styles/*.css` **is** the source of truth: 332 properties, which is what
+every one of those 1,143 classes is written against. The build parses that CSS and emits
+the Tailwind preset, the JSON and `TOKENS.md` from it.
+
+The only authored file in the package is `src/map.ts`, which says that the Tailwind name
+`bg-surface-raised` should mean `--bg-raised`. Values are never written there. If the map
+names a property no stylesheet declares, the build fails — that seam is the one place the
+two layers could silently drift.
+
 ## Dependency direction
 
 ```
 tokens ──► core ──► ui ──► collections ──► apps / templates / ghost theme
   │                  │
   │                  └──► broadcast
-  └──► (Tailwind preset consumed directly by every consumer, incl. the Ghost theme)
+  └──► (the Tailwind preset, generated from the same CSS, consumed by every
+        React consumer including the docs site)
 
 icons ──► (depends on nothing)
 ```

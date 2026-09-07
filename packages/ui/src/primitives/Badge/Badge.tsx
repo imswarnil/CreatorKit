@@ -37,7 +37,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
 				<span
 					aria-hidden="true"
 					className={cn(
-						'size-[--ck-dot-sm] rounded-full bg-current',
+						'size-[--dot-sm] rounded-full bg-current',
 						isLive && 'motion-safe:animate-pulse',
 					)}
 				/>

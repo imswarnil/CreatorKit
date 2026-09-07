@@ -39,16 +39,17 @@
 		"./package.json": "./package.json"
 	},
 	"files": [
+		"INVENTORY.md",
+		"README.md",
 		"dist",
 		"src",
-		"styles",
-		"README.md"
+		"styles"
 	],
 	"publishConfig": {
 		"access": "public"
 	},
 	"scripts": {
-		"build": "tsc -p tsconfig.json && postcss styles/index.css -o dist/core.css && NODE_ENV=production postcss styles/index.css -o dist/core.min.css",
+		"build": "tsc -p tsconfig.json && postcss styles/index.css -o dist/core.css && NODE_ENV=production postcss styles/index.css -o dist/core.min.css && node ../../tools/css-inventory/index.mjs styles INVENTORY.md \"@creatorkit/core \u2014 utilities\"",
 		"typecheck": "tsc -p tsconfig.json --noEmit",
 		"lint": "eslint src",
 		"test": "node --test dist/cn.test.js",

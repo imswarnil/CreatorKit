@@ -68,20 +68,24 @@ deliberately to check, and it caught the drift.
 ```
 creator.imswarnil.com/
 ├─ packages/
-│  ├─ tokens/       every design decision, authored once in TypeScript
-│  ├─ core/         reset, focus ring, cn(), polymorphic types
-│  ├─ ui/           the components — recipes + React + the compiled stylesheet
-│  ├─ collections/  creator content types (video, course, episode…)  — empty, next
-│  ├─ broadcast/    thumbnails, scenes, overlays                     — empty, next
-│  └─ icons/        the icon sets                                    — empty, next
+│  ├─ tokens/       THE FOUNDATION — 332 properties in styles/*.css, plus reset,
+│  │                a11y, layout, pattern, frame, cutout, logo, icon
+│  ├─ core/         the u-* utilities, the focus ring, cn(), polymorphic types
+│  ├─ ui/           285 CSS classes + 8 React components + the recipe compiler
+│  ├─ collections/  22 creator content types (video, course, episode, trip…)
+│  ├─ broadcast/    139 classes for YouTube and Instagram
+│  └─ icons/        55 icons, six sets, built into a sprite
 ├─ apps/docs/       creator.imswarnil.com — Next.js, port 3400
 ├─ templates/       starters (YouTuber portfolio first)              — empty, next
 ├─ tools/
 │  ├─ recipe-to-css/  recipes → .ck-* classes
-│  └─ props-gen/      TypeScript source → the docs' props tables
+│  ├─ props-gen/      TypeScript source → the docs' props tables
+│  ├─ css-inventory/  stylesheets → each package's INVENTORY.md
+│  ├─ icon-build/     SVGs → sprite, JSON, typed names
+│  └─ kit-docs/       the old built docs → 224 live examples
 ├─ ghost/           GITIGNORED. Ghost 6.51.0, port 2370, instance `creator-local`
 │  └─ content/themes/creator/    the theme — its own git repo, 160 commits
-├─ _legacy/         the old creator-design-system, the migration source
+├─ _legacy/         only the old built docs remain — see _legacy/README.md
 └─ docs/
    ├─ MIGRATION.md            what happens to every legacy component
    └─ AUDIT-2026-09-07.md     the pre-split survey
@@ -163,28 +167,31 @@ pnpm build && pnpm lint && pnpm typecheck && pnpm test
 
 ## 5. Adding or changing a token
 
+**Tokens are CSS.** `packages/tokens/styles/*.css` is the source of truth — 332 properties,
+and every one of the 1,143 classes in the kit is written against them.
+
 ```bash
-$EDITOR packages/tokens/src/semantic.ts     # or palette.ts, or scale.ts
+$EDITOR packages/tokens/styles/01-color.css    # or 02-typography, 03-space, …
 pnpm --filter @creatorkit/tokens build
 ```
 
-That regenerates all four outputs and `TOKENS.md`. Never edit `dist/` or `TOKENS.md` by
-hand.
+That reparses the CSS and regenerates the Tailwind preset, `dist/tokens.json` and
+`TOKENS.md`. Nothing is duplicated in TypeScript.
 
-- `palette.ts` — raw ramps. Components never name these.
-- `semantic.ts` — the roles (`surface-raised`, `text-muted`, `accent-hover`). **This is
-  where a design change usually belongs.** Only roles that genuinely differ appear in
-  `dark`; anything absent inherits from light.
-- `scale.ts` — type, space, radius, motion, z-index, everything non-colour.
+- `01-color.css` — the ramps, then the roles (`--bg-raised`, `--fg-muted`, `--accent`).
+  **A design change usually belongs in the roles**, not the ramps. The dark block is at the
+  bottom of the file; only roles that genuinely differ are restated.
+- `02-typography`, `03-space`, `04-elevation`, `05-motion`, `11-shape` — the other ladders.
+- The rest (`06-layout`, `07-pattern`, `08-a11y`, `09-logo`, `10-icon`, `12-frame`,
+  `13-cutout`) are mostly rules that apply the tokens.
 
-Roles are authored as `ref('palette.ink.0')`, not as literal values, so the indirection
-survives into the CSS. That is what lets someone retheme by redefining one property.
+The one authored TypeScript file is `src/map.ts`: it says the Tailwind name
+`bg-surface-raised` means `--bg-raised`. **Add a token to the CSS; add a line there only if
+React needs a utility for it.** If the map names a property nothing declares, the build
+fails rather than emitting a rule that silently does nothing.
 
 If you add a Tailwind scale that produces a new class group, teach `cn()` about it in
 `packages/core/src/cn.ts` — otherwise caller overrides silently stop working.
-
-Guidance on *which* role to use lives in `packages/tokens/README.md`. Update it when a
-role's meaning changes; that file is the part that isn't generated.
 
 ---
 
@@ -215,10 +222,10 @@ pnpm ghost:restart   # so Ghost serves rebuilt assets
 Both are `file:` dependencies pointing back into `packages/`. So: **change a recipe, run
 `pnpm build`, run `pnpm theme:build`, and the theme has the new component.** No copying.
 
-Right now the theme still styles most of itself from `_legacy` (imported as
-`creator-design-system`). That is deliberate — the two ladders do not collide, so the
-theme can migrate one component at a time. The migration path for each legacy class is in
-`docs/MIGRATION.md`.
+The theme uses both layers: the CSS kit for most of itself, and `.ck-*` for the components
+that have been migrated to React. They share one foundation, so there is no conflict and no
+duplication — a component can move to React whenever it is worth doing, not all at once.
+The path for each class is in `docs/MIGRATION.md`.
 
 ### Migrating one component
 
@@ -272,27 +279,33 @@ record before anything resolves.
 
 | | |
 | --- | --- |
-| `@creatorkit/tokens` | 234 properties + 50 dark overrides, four output formats, light/dark/system |
-| `@creatorkit/core` | reset, base, one focus ring, `cn()`, polymorphic types, 3 tests |
-| `@creatorkit/ui` | 8 primitives, 9 recipes, 86 compiled classes, 13 tests |
-| `tools/recipe-to-css` | the second renderer, plus `INVENTORY.md` |
-| `tools/props-gen` | props tables from the TypeScript source |
-| `apps/docs` | 16 pages, live previews, generated tables, theme toggle |
-| Ghost theme | consuming `@creatorkit/tokens` + `@creatorkit/ui`, gscan clean |
+| `@creatorkit/tokens` | The foundation: 332 properties (58 dark), 440 rules, preset + JSON + TOKENS.md generated from the CSS |
+| `@creatorkit/core` | 202 utility classes, the focus ring, `cn()`, polymorphic types, 3 tests |
+| `@creatorkit/ui` | 285 CSS classes, 8 React primitives, 9 recipes, 13 tests |
+| `@creatorkit/collections` | 22 creator content types, 77 classes, page templates |
+| `@creatorkit/broadcast` | 139 classes, 7 export canvases |
+| `@creatorkit/icons` | 55 icons, sprite, typed names |
+| `tools/` | recipe-to-css, props-gen, css-inventory, icon-build, kit-docs |
+| `apps/docs` | 100 pages — 8 React components, 83 kit pages, 224 live examples |
+| Ghost theme | consuming tokens, ui and collections, gscan clean |
 
 **Next, in the order I would do it**
+
+The CSS kit is complete — everything below is about the React layer and the templates.
+Nothing here blocks using the kit today.
 
 1. **`layout/`** — `Container`, `Section`, `Stack`, `Grid`, `Divider`. Everything else
    needs them, and `Grid` collapses the four duplicate `deck` classes.
 2. **`data/`** — `Card` above all. It is the backbone of every creator page.
-3. **`@creatorkit/collections`** — the 24 `.c-*` content types. This is the kit's real
-   differentiator; nothing else has a component that knows what an episode is.
+3. **Templates** — the YouTuber portfolio, once `layout` and `data` exist. This is
+   probably worth more than continuing the migration, because it is the thing someone can
+   actually clone.
 4. **`feedback/`** and **`overlay/`** — `Dialog`, `Drawer`, `Menu` are rewrites, not
-   migrations: the legacy ones had no focus trap and no keyboard support. This is where
-   real interaction tests earn their place (vitest + testing-library).
-5. **`navigation/`** — leave the navbar for last. It is 55 legacy classes collapsing into
-   three components and it deserves a clear head.
-6. **Templates** — the YouTuber portfolio, once `layout` and `data` exist.
+   migrations: the CSS ones have no focus trap and no keyboard support. This is where real
+   interaction tests earn their place (vitest + testing-library).
+5. **React `collections/`** — the content types, once `Card` exists.
+6. **`navigation/`** — leave the navbar for last. It is 55 classes collapsing into three
+   components and it deserves a clear head.
 
 **Deliberately deferred, so you know they are choices and not oversights**
 
@@ -329,7 +342,9 @@ in messages, tags, changelogs or author fields.
 | Symptom | Cause |
 | --- | --- |
 | Components render unstyled on the docs site | `packages/ui/src` missing from `content` in `apps/docs/tailwind.config.js` |
-| A `.ck-*` class does nothing in the theme | `@creatorkit/tokens/dist/tokens.css` not imported, so `--ck-*` resolve to nothing |
+| A class does nothing | The foundation was not imported, so its custom properties resolve to nothing |
+| A stylesheet import is silently ignored | `postcss-import` does not read package `exports` maps. Import a real path (`@creatorkit/ui/dist/ui.css`), not an export key |
+| An inventory looks stale after editing a tool | Turbo cached the package. `pnpm build --force` |
 | `classes missing from ck-classes.css` | A recipe changed without a rebuild. `pnpm build` |
 | CSS build fails with a confusing error several lines below | A `*/` inside a CSS comment ended it early |
 | A caller's `className` is ignored | Component concatenated strings instead of using `cn()` |

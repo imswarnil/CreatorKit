@@ -1,0 +1,9 @@
+{
+	"name": "@creatorkit/css-inventory",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Generates a package's class inventory from its stylesheets.",
+	"type": "module",
+	"bin": { "css-inventory": "./index.mjs" },
+	"scripts": { "lint": "eslint index.mjs" }
+}

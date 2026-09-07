@@ -20,7 +20,7 @@ export const input = recipe(
 				lg: 'h-lg px-4 text-md',
 			},
 			/** For `<textarea>`, which has no fixed height. */
-			multiline: { true: 'h-auto min-h-[calc(var(--ck-control-md)*2)] py-2', false: '' },
+			multiline: { true: 'h-auto min-h-[calc(var(--control-md)*2)] py-2', false: '' },
 		},
 		defaultVariants: { size: 'md', multiline: false },
 	},

@@ -1,181 +1,203 @@
 /**
- * Emit the non-JS views of the token set. Run after `tsc`, so it can import the
- * compiled tokens rather than reparsing the source — there is one definition of
- * a token and this script is not allowed to become a second one.
+ * Read the foundation CSS; emit every other view of it.
+ *
+ * The previous version of this file *declared* token values in TypeScript, which
+ * meant the same colour existed twice — once here and once in the stylesheet the
+ * 450-class kit actually uses. Two sources is one too many, so this parses the
+ * CSS instead. Adding a token now means adding it in exactly one place.
  */
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const stylesDir = join(root, 'styles');
 const dist = join(root, 'dist');
-const { palette, light, dark, scale, breakpoints, flatten } = await import(
-	join(dist, 'index.js')
+const { map, breakpoints } = await import(join(dist, 'index.js'));
+
+/**
+ * Pull `--name: value;` declarations out of a stylesheet, tagging each with the
+ * theme it was declared under. A declaration inside a `[data-theme='dark']` or a
+ * `prefers-color-scheme: dark` block is a dark override; everything else is base.
+ */
+function parse(css, file) {
+	const tokens = [];
+	const darkRanges = [];
+
+	// Find the extent of every dark block so a declaration can be attributed.
+	const blockRe = /(\[data-theme=['"]?dark['"]?\]|prefers-color-scheme:\s*dark)/g;
+	let m;
+	while ((m = blockRe.exec(css))) {
+		const open = css.indexOf('{', m.index);
+		if (open === -1) continue;
+		let depth = 0;
+		let i = open;
+		for (; i < css.length; i++) {
+			if (css[i] === '{') depth++;
+			else if (css[i] === '}') {
+				depth--;
+				if (depth === 0) break;
+			}
+		}
+		darkRanges.push([open, i]);
+	}
+	const isDark = (i) => darkRanges.some(([a, b]) => i > a && i < b);
+
+	const declRe = /--([a-z0-9-]+)\s*:\s*([^;}]+)[;}]/gi;
+	while ((m = declRe.exec(css))) {
+		tokens.push({
+			name: m[1],
+			value: m[2].trim().replace(/\s+/g, ' '),
+			theme: isDark(m.index) ? 'dark' : 'light',
+			file,
+		});
+	}
+	return tokens;
+}
+
+const files = readdirSync(stylesDir)
+	.filter((f) => f.endsWith('.css') && f !== 'index.css')
+	.sort();
+
+const tokens = files.flatMap((f) => parse(readFileSync(join(stylesDir, f), 'utf8'), f));
+
+const light = new Map();
+const dark = new Map();
+for (const t of tokens) (t.theme === 'dark' ? dark : light).set(t.name, t);
+
+mkdirSync(dist, { recursive: true });
+
+/* ------------------------------------------------------------- tokens.json */
+writeFileSync(
+	join(dist, 'tokens.json'),
+	JSON.stringify(
+		[...light.values()].map((t) => ({
+			name: t.name,
+			value: t.value,
+			dark: dark.get(t.name)?.value ?? null,
+			file: t.file,
+		})),
+		null,
+		'\t',
+	) + '\n',
 );
 
-const decls = (pairs, indent) =>
-	pairs.map(([name, value]) => `${indent}${name}: ${value};`).join('\n');
-
-const rootPairs = [
-	...flatten({ palette }),
-	...flatten(scale),
-	...flatten({ breakpoint: breakpoints }),
-	...flatten(light),
-];
-const darkPairs = flatten(dark);
-
-const banner = `/*!
- * @creatorkit/tokens — generated. Do not edit.
- * Source: packages/tokens/src/*.ts  ·  Regenerate: pnpm --filter @creatorkit/tokens build
- */`;
-
-/* ---------------------------------------------------------------- tokens.css
- * Three blocks, in this order, so all three theme states resolve:
- *   :root                                    the light palette, always defined
- *   @media (prefers-color-scheme: dark)      system dark, unless overridden to light
- *   [data-theme="dark"]                      an explicit choice, wins either way
- * A colour is never defined only inside a media query.
+/* ------------------------------------------------------------- tailwind.js
+ * Every scale points at the custom property, never at a literal, so a page that
+ * flips `data-theme` restyles without Tailwind regenerating anything.
  */
-const css = `${banner}
+const v = (name) => `var(--${name})`;
+const mapValues = (obj) => Object.fromEntries(Object.entries(obj).map(([k, name]) => [k, v(name)]));
 
-:root {
-	color-scheme: light;
-${decls(rootPairs, '\t')}
-}
-
-@media (prefers-color-scheme: dark) {
-	:root:not([data-theme='light']) {
-		color-scheme: dark;
-${decls(darkPairs, '\t\t')}
+const missing = [];
+const check = (obj, label) => {
+	for (const [key, name] of Object.entries(obj)) {
+		if (!light.has(name)) missing.push(`${label}.${key} → --${name}`);
 	}
-}
-
-[data-theme='dark'] {
-	color-scheme: dark;
-${decls(darkPairs, '\t')}
-}
-
-@media (prefers-reduced-motion: reduce) {
-	:root {
-		--ck-duration-1: 1ms;
-		--ck-duration-2: 1ms;
-		--ck-duration-3: 1ms;
-		--ck-duration-4: 1ms;
-		--ck-stagger: 0ms;
-	}
-}
-`;
-
-/* --------------------------------------------------------------- tokens.scss */
-const scss = `${banner.replace('/*!', '//').replace(/\n \*\/?/g, '\n//').replace(/^\/\/\s*$/gm, '//')}
-${[...rootPairs, ...darkPairs.map(([n, v]) => [`${n}-dark`, v])]
-	.map(([name, value]) => `$${name.replace(/^--/, '')}: ${JSON.stringify(value)};`)
-	.join('\n')}
-`;
-
-/* -------------------------------------------------------------- tailwind.js
- * Every scale points at the custom property rather than the literal, so a page
- * that flips `data-theme` restyles without Tailwind regenerating anything.
- */
-const v = (name) => `var(--ck-${name})`;
-const map = (group, prefix) =>
-	Object.fromEntries(Object.keys(group).map((k) => [k, v(`${prefix}-${k}`)]));
+	return obj;
+};
 
 const preset = {
 	theme: {
+		screens: { ...breakpoints },
 		extend: {
 			colors: {
-				surface: map(light.color.surface, 'color-surface'),
-				text: map(light.color.text, 'color-text'),
-				line: map(light.color.border, 'color-border'),
-				accent: map(light.color.accent, 'color-accent'),
-				craft: map(light.color.craft, 'color-craft'),
-				success: map(light.color.success, 'color-success'),
-				warning: map(light.color.warning, 'color-warning'),
-				danger: map(light.color.danger, 'color-danger'),
-				info: map(light.color.info, 'color-info'),
-				state: map(light.color.state, 'color-state'),
+				surface: mapValues(check(map.surface, 'surface')),
+				text: mapValues(check(map.text, 'text')),
+				line: mapValues(check(map.line, 'line')),
+				accent: mapValues(check(map.accent, 'accent')),
+				craft: mapValues(check(map.craft, 'craft')),
+				success: mapValues(check(map.success, 'success')),
+				warning: mapValues(check(map.warning, 'warning')),
+				danger: mapValues(check(map.danger, 'danger')),
+				info: mapValues(check(map.info, 'info')),
+				state: mapValues(check(map.state, 'state')),
 			},
-			fontFamily: {
-				display: [v('font-display')],
-				body: [v('font-body')],
-				mono: [v('font-mono')],
-			},
-			fontSize: map(scale.text, 'text'),
-			lineHeight: map(scale.leading, 'leading'),
-			letterSpacing: map(scale.tracking, 'tracking'),
-			fontWeight: map(scale.weight, 'weight'),
-			maxWidth: { ...map(scale.width, 'width'), ...map(scale.measure, 'measure') },
-			spacing: { ...map(scale.space, 'space'), gutter: v('gutter') },
-			borderRadius: map(scale.radius, 'radius'),
-			borderWidth: map(scale.border, 'border'),
-			// `shadow-color` is an hsl triple the shadows interpolate, not a shadow itself
-			boxShadow: Object.fromEntries(
-				Object.keys(light.shadow)
-					.filter((k) => k !== 'color')
-					.map((k) => [k, v(`shadow-${k}`)]),
+			...Object.fromEntries(
+				Object.entries(map.scales).map(([scale, entries]) => [
+					scale,
+					scale === 'fontFamily'
+						? Object.fromEntries(Object.entries(entries).map(([k, n]) => [k, [v(n)]]))
+						: mapValues(check(entries, scale)),
+				]),
 			),
-			zIndex: map(scale.z, 'z'),
-			aspectRatio: map(scale.ratio, 'ratio'),
-			transitionDuration: map(scale.duration, 'duration'),
-			transitionTimingFunction: map(scale.ease, 'ease'),
-			height: map(scale.control, 'control'),
-			minHeight: map(scale.control, 'control'),
-			size: map(scale.icon, 'icon'),
+			minHeight: mapValues(map.scales.height),
 		},
-		screens: Object.fromEntries(Object.entries(breakpoints).map(([k, val]) => [k, val])),
 	},
 };
 
-const tailwind = `${banner}
+/**
+ * A utility that points at a property nothing declares produces a rule that does
+ * nothing, silently. Fail the build instead — this is the seam between the two
+ * halves of the system and it is the one place drift can hide.
+ */
+if (missing.length) {
+	console.error(
+		'tokens: the naming map references custom properties that no stylesheet declares:\n  ' +
+			missing.join('\n  '),
+	);
+	process.exit(1);
+}
+
+writeFileSync(
+	join(dist, 'tailwind.js'),
+	`/*! @creatorkit/tokens — generated from styles/*.css. Do not edit. */
 /** @type {import('tailwindcss').Config} */
 export default ${JSON.stringify(preset, null, '\t')};
-`;
-
-mkdirSync(dist, { recursive: true });
-writeFileSync(join(dist, 'tokens.css'), css);
-writeFileSync(join(dist, 'tokens.scss'), scss);
-writeFileSync(join(dist, 'tailwind.js'), tailwind);
-
-console.log(
-	`tokens: ${rootPairs.length} properties + ${darkPairs.length} dark overrides → tokens.css, tokens.scss, tailwind.js`,
+`,
 );
 
-/* ----------------------------------------------------------------- TOKENS.md
- * The reference table is generated so it cannot drift from the tokens. The
- * guidance — when to reach for which role — is hand-written in README.md.
- */
-const darkByName = new Map(darkPairs);
-const table = (pairs) =>
-	[
-		'| Token | Value | Dark |',
-		'| --- | --- | --- |',
-		...pairs.map(([name, value]) => {
-			const d = darkByName.get(name);
-			return `| \`${name}\` | \`${value}\` | ${d ? `\`${d}\`` : '—'} |`;
-		}),
-	].join('\n');
+/* ---------------------------------------------------------------- TOKENS.md */
+const LAYER = {
+	'01-color.css': 'Colour',
+	'02-typography.css': 'Typography',
+	'03-space.css': 'Space, shape and layout',
+	'04-elevation.css': 'Elevation',
+	'05-motion.css': 'Motion',
+	'06-layout.css': 'Layout',
+	'07-pattern.css': 'Pattern',
+	'08-a11y.css': 'Accessibility',
+	'09-logo.css': 'Logo',
+	'10-icon.css': 'Icon',
+	'11-shape.css': 'Shape',
+	'12-frame.css': 'Frame',
+	'13-cutout.css': 'Cutout',
+};
 
-const section = (title, note, pairs) => `\n## ${title}\n\n${note}\n\n${table(pairs)}\n`;
-const startsWith = (pairs, p) => pairs.filter(([n]) => n.startsWith(`--ck-${p}`));
+const groups = new Map();
+for (const t of light.values()) {
+	const layer = LAYER[t.file] ?? t.file;
+	if (!groups.has(layer)) groups.set(layer, []);
+	groups.get(layer).push(t);
+}
 
 const md = `<!-- generated by scripts/build-outputs.mjs — do not edit -->
 # Token reference
 
-Every custom property this package emits, with its light value and its dark
-override where one exists. ${rootPairs.length} properties, ${darkPairs.length} dark overrides.
+${light.size} custom properties, ${dark.size} of them overridden in dark, read from
+\`styles/*.css\`. That CSS is the source of truth: the whole component kit is written
+against these names.
 
-For *when to use which*, read this package's README. For the rule that keeps these
-honest, read \`ARCHITECTURE.md\` at the repo root.
-${section('Palette', 'Raw ramps. Components must not reference these — use a role below.', startsWith(rootPairs, 'palette'))}
-${section('Colour roles', 'What a component is allowed to name.', startsWith(rootPairs, 'color'))}
-${section('Elevation', 'Five steps. In dark they gain an inset highlight instead of a deeper shadow.', startsWith(rootPairs, 'shadow'))}
-${section('Typography', 'Sizes below `lg` are fixed; `lg` and up are fluid.', [...startsWith(rootPairs, 'font'), ...startsWith(rootPairs, 'text'), ...startsWith(rootPairs, 'leading'), ...startsWith(rootPairs, 'tracking'), ...startsWith(rootPairs, 'weight'), ...startsWith(rootPairs, 'measure')])}
-${section('Space', 'A 4px unit, plus fluid section rhythm and the page gutter.', [...startsWith(rootPairs, 'space'), ...startsWith(rootPairs, 'section'), ...startsWith(rootPairs, 'gutter')])}
-${section('Shape', 'Named roles (`control`, `card`, `media`, `sheet`) point at the raw steps.', [...startsWith(rootPairs, 'radius'), ...startsWith(rootPairs, 'border')])}
-${section('Layout', 'Widths, control heights, icon sizes and the z-index ladder.', [...startsWith(rootPairs, 'width'), ...startsWith(rootPairs, 'measure'), ...startsWith(rootPairs, 'control'), ...startsWith(rootPairs, 'icon'), ...startsWith(rootPairs, 'dot'), ...startsWith(rootPairs, 'z-'), ...startsWith(rootPairs, 'ratio'), ...startsWith(rootPairs, 'breakpoint')])}
-${section('Motion', 'Four durations and five curves. Everything collapses to 1ms under `prefers-reduced-motion`.', [...startsWith(rootPairs, 'duration'), ...startsWith(rootPairs, 'ease'), ...startsWith(rootPairs, 'stagger')])}
+For *which* token to reach for, read this package's README.
+
+${[...groups]
+	.map(
+		([layer, rows]) => `## ${layer}
+
+| Token | Value | Dark |
+| --- | --- | --- |
+${rows
+	.map((t) => {
+		const d = dark.get(t.name)?.value;
+		return `| \`--${t.name}\` | \`${t.value}\` | ${d ? `\`${d}\`` : '—'} |`;
+	})
+	.join('\n')}`,
+	)
+	.join('\n\n')}
 `;
 
 writeFileSync(join(root, 'TOKENS.md'), md);
-console.log('tokens: TOKENS.md');
+
+console.log(
+	`tokens: ${light.size} properties (${dark.size} dark) from ${files.length} stylesheets → tokens.json, tailwind.js, TOKENS.md`,
+);

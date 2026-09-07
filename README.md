@@ -10,7 +10,8 @@ Most component libraries are built for dashboards. CreatorKit is built for the t
 creator actually ships: a video index, a course curriculum, an episode player, a travel
 log, a newsletter archive, a thumbnail, a stream overlay. It knows what an episode is.
 
-It is one design system with two renderers. Components are declared once as recipes;
+**1,143 classes, 224 documented examples, one foundation.** The CSS kit is complete and
+usable today from any template engine. On top of it, a growing React layer. Components are declared once as recipes;
 React reads them, and the Ghost theme's CSS is generated from the same file. A change to
 a button reaches every surface on the next build — the docs site, the starter templates,
 and the Ghost theme in `ghost/content/themes/creator`.
@@ -58,12 +59,12 @@ export default {
 
 | Package | Description |
 | --- | --- |
-| `@creatorkit/tokens` | Colour, type, space, radius, shadow, motion. One source, emitted as a Tailwind preset, CSS custom properties and typed JS |
-| `@creatorkit/core` | Reset, base elements, focus ring, layout primitives, `cn()` |
-| `@creatorkit/ui` | The component library — primitives, layout, navigation, feedback, overlay, data |
-| `@creatorkit/collections` | Creator content types: video, course, episode, project, travel, product, prompt, snippet |
-| `@creatorkit/broadcast` | Thumbnails, scenes, lower thirds, stream overlays. Ships to YouTube and Instagram, never to a site bundle |
-| `@creatorkit/icons` | The creator, media, resume and social icon sets |
+| `@creatorkit/tokens` | The foundation: 332 custom properties, plus the reset, a11y, layout, pattern, frame and cutout layers. Emits a Tailwind preset and JSON generated from that CSS |
+| `@creatorkit/core` | The `u-*` utilities, the focus ring, `cn()` and the polymorphic types |
+| `@creatorkit/ui` | 285 CSS classes across 27 stylesheets — buttons, cards, forms, navs, alerts, media, overlays, timelines, sections — plus 8 React components |
+| `@creatorkit/collections` | 22 creator content types: video, course, lesson, episode, series, project, travel, trip, product, doc, guide, newsletter, prompt, snippet, changelog |
+| `@creatorkit/broadcast` | 139 classes for YouTube and Instagram: thumbnails, series art, scenes, lower thirds, engagement overlays. Never in a site bundle |
+| `@creatorkit/icons` | 55 icons in six sets, built into a sprite and a typed name union |
 
 ## Scripts
 

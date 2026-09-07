@@ -1,8 +1,12 @@
 {
 	"name": "@creatorkit/icons",
 	"version": "0.1.0",
-	"description": "The CreatorKit icon sets — creator, media, resume and social.",
-	"keywords": ["icons", "svg", "react"],
+	"description": "The CreatorKit icon sets \u2014 creator, media, resume and social.",
+	"keywords": [
+		"icons",
+		"svg",
+		"react"
+	],
 	"homepage": "https://creator.imswarnil.com",
 	"bugs": "https://github.com/imswarnil/CreatorKit/issues",
 	"repository": {
@@ -16,7 +20,9 @@
 		"url": "https://imswarnil.com"
 	},
 	"type": "module",
-	"sideEffects": ["*.css"],
+	"sideEffects": [
+		"*.css"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
@@ -24,14 +30,29 @@
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js"
 		},
+		"./sprite": "./dist/sprite.svg",
+		"./json": "./dist/icons.json",
+		"./dist/sprite.svg": "./dist/sprite.svg",
+		"./dist/icons.json": "./dist/icons.json",
+		"./svg/*": "./*",
 		"./package.json": "./package.json"
 	},
-	"files": ["dist", "src", "README.md"],
+	"files": [
+		"README.md",
+		"creator",
+		"dist",
+		"media",
+		"resume",
+		"social",
+		"src",
+		"travel",
+		"ui"
+	],
 	"publishConfig": {
 		"access": "public"
 	},
 	"scripts": {
-		"build": "tsc -p tsconfig.json",
+		"build": "node ../../tools/icon-build/index.mjs . && tsc -p tsconfig.json",
 		"typecheck": "tsc -p tsconfig.json --noEmit",
 		"lint": "eslint src",
 		"test": "node --test --experimental-test-module-mocks \"src/**/*.test.ts\" 2>/dev/null || echo 'no tests yet'",

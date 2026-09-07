@@ -13,8 +13,8 @@
  * border on any surface.
  */
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-	outline: var(--ck-border-2) solid var(--ck-color-state-focus-ring);
-	outline-offset: var(--ck-border-2);
+	outline: var(--border-2) solid var(--focus-ring);
+	outline-offset: var(--border-2);
 	border-radius: inherit;
 }
 
@@ -24,12 +24,12 @@
 }
 
 ::selection {
-	background: var(--ck-color-state-selection-surface);
-	color: var(--ck-color-state-selection-text);
+	background: var(--selection-bg);
+	color: var(--selection-fg);
 }
 
 :target {
-	scroll-margin-block-start: var(--ck-space-16);
+	scroll-margin-block-start: var(--space-16);
 }
 
 /**
@@ -38,16 +38,16 @@
  */
 .ck-skip {
 	position: fixed;
-	inset-block-start: var(--ck-space-2);
-	inset-inline-start: var(--ck-space-2);
-	z-index: var(--ck-z-max);
-	padding: var(--ck-space-2) var(--ck-space-4);
-	border-radius: var(--ck-radius-control);
-	background: var(--ck-color-surface-raised);
-	color: var(--ck-color-text-default);
-	box-shadow: var(--ck-shadow-3);
-	transform: translateY(calc(-100% - var(--ck-space-4)));
-	transition: transform var(--ck-duration-2) var(--ck-ease-out);
+	inset-block-start: var(--space-2);
+	inset-inline-start: var(--space-2);
+	z-index: var(--z-max);
+	padding: var(--space-2) var(--space-4);
+	border-radius: var(--radius-control);
+	background: var(--bg-raised);
+	color: var(--fg-default);
+	box-shadow: var(--shadow-3);
+	transform: translateY(calc(-100% - var(--space-4)));
+	transition: transform var(--dur-2) var(--ease-out);
 }
 
 .ck-skip:focus-visible {
