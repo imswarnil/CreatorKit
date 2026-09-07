@@ -1,0 +1,9 @@
+{
+	"name": "@creatorkit/kit-docs",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Lifts the demo markup out of the previously built CSS-kit docs so the new site can render it live.",
+	"type": "module",
+	"bin": { "kit-docs": "./index.mjs" },
+	"scripts": { "lint": "eslint index.mjs" }
+}

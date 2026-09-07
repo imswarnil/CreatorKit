@@ -1,8 +1,12 @@
 {
 	"name": "@creatorkit/collections",
 	"version": "0.1.0",
-	"description": "Creator content types — video, course, episode, project, travel, prompt, snippet and the rest, as components and Ghost-ready classes.",
-	"keywords": ["creator-tools", "ghost-theme", "content-types"],
+	"description": "Creator content types \u2014 video, course, episode, project, travel, prompt, snippet and the rest, as components and Ghost-ready classes.",
+	"keywords": [
+		"creator-tools",
+		"ghost-theme",
+		"content-types"
+	],
 	"homepage": "https://creator.imswarnil.com",
 	"bugs": "https://github.com/imswarnil/CreatorKit/issues",
 	"repository": {
@@ -16,7 +20,9 @@
 		"url": "https://imswarnil.com"
 	},
 	"type": "module",
-	"sideEffects": ["*.css"],
+	"sideEffects": [
+		"*.css"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
@@ -24,14 +30,22 @@
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js"
 		},
+		"./css": "./dist/collections.css",
+		"./min": "./dist/collections.min.css",
+		"./dist/collections.css": "./dist/collections.css",
 		"./package.json": "./package.json"
 	},
-	"files": ["dist", "src", "README.md"],
+	"files": [
+		"dist",
+		"src",
+		"styles",
+		"README.md"
+	],
 	"publishConfig": {
 		"access": "public"
 	},
 	"scripts": {
-		"build": "tsc -p tsconfig.json",
+		"build": "tsc -p tsconfig.json && postcss styles/index.css -o dist/collections.css && NODE_ENV=production postcss styles/index.css -o dist/collections.min.css",
 		"typecheck": "tsc -p tsconfig.json --noEmit",
 		"lint": "eslint src",
 		"test": "node --test --experimental-test-module-mocks \"src/**/*.test.ts\" 2>/dev/null || echo 'no tests yet'",

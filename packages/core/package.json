@@ -30,9 +30,12 @@
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js"
 		},
-		"./css": "./styles/index.css",
-		"./reset": "./styles/reset.css",
+		"./css": "./dist/core.css",
+		"./min": "./dist/core.min.css",
 		"./base": "./styles/base.css",
+		"./foundation": "./styles/foundation/index.css",
+		"./utilities": "./styles/utilities/index.css",
+		"./dist/core.css": "./dist/core.css",
 		"./package.json": "./package.json"
 	},
 	"files": [
@@ -45,7 +48,7 @@
 		"access": "public"
 	},
 	"scripts": {
-		"build": "tsc -p tsconfig.json",
+		"build": "tsc -p tsconfig.json && postcss styles/index.css -o dist/core.css && NODE_ENV=production postcss styles/index.css -o dist/core.min.css",
 		"typecheck": "tsc -p tsconfig.json --noEmit",
 		"lint": "eslint src",
 		"test": "node --test dist/cn.test.js",

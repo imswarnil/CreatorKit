@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { Text } from '@creatorkit/ui';
 import { byCategory } from '../lib/registry';
+import { kitByCategory } from '../lib/kit';
 import { ThemeToggle } from '../components/Chrome';
 import './globals.css';
 
@@ -18,6 +19,7 @@ const sections = [
 		links: [
 			{ href: '/docs/getting-started', label: 'Getting started' },
 			{ href: '/docs/tokens', label: 'Tokens' },
+			{ href: '/docs/kit', label: 'The kit' },
 		],
 	},
 	{
@@ -93,6 +95,26 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 													className="text-sm no-underline text-text-muted hover:text-text-default"
 												>
 													{doc.name}
+												</Link>
+											</li>
+										))}
+									</ul>
+								</div>
+							))}
+
+							{kitByCategory.map(({ category, pages }) => (
+								<div key={category}>
+									<Text variant="eyebrow" as="h2" className="mb-2">
+										{category}
+									</Text>
+									<ul className="flex flex-col gap-1">
+										{pages.map((page) => (
+											<li key={page.slug}>
+												<Link
+													href={`/docs/kit/${page.slug}`}
+													className="text-sm no-underline text-text-muted hover:text-text-default"
+												>
+													{page.title}
 												</Link>
 											</li>
 										))}

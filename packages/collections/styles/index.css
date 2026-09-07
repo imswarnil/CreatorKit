@@ -1,0 +1,24 @@
+/* =============================================================================
+   @creatorkit/collections — the creator content types.
+
+   What a kit for creators has that a dashboard kit does not: `.c` plus 24
+   modifiers — video, course, lesson, episode, web series, project, build log,
+   travel, trip, product, shop, doc, guide, newsletter, prompt, snippet,
+   changelog, timeline, experience, author, tag.
+
+   `collection.css` carries the shared card, the decks and every `.c-*` type.
+   The files below it are the few collections that need more than that.
+
+   Needs @creatorkit/core first, and @creatorkit/ui for the card and deck it
+   builds on. The HTML page templates that ship beside these live in each
+   collection's folder.
+   ========================================================================== */
+
+@import url('./collection.css');
+@import url('./course/course.css');
+@import url('./guides/guides.css');
+@import url('./projects/projects.css');
+@import url('./prompts/prompts.css');
+@import url('./snippets/snippets.css');
+@import url('./travel/travel.css');
+@import url('./_pages/pages.css');

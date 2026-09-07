@@ -1,7 +1,22 @@
-/**
- * Everything: tokens, reset, base. The one import a consumer needs.
- *   @import '@creatorkit/core/css';
- */
-@import '@creatorkit/tokens/css';
-@import './reset.css';
-@import './base.css';
+/* =============================================================================
+   @creatorkit/core — the whole foundation.
+
+   Import this and you have the system's tokens, its reset, its a11y layer, its
+   layout primitives, patterns, frames, cutouts, logo and icon rules, plus the
+   u-* utilities.
+
+   Two token ladders are emitted side by side, on purpose:
+
+     --ck-*    authored in @creatorkit/tokens, consumed by the React components
+               through the Tailwind preset
+     legacy    --ink-*, --bg-*, --fg-*, --space-*, --radius-* … the ladder the
+               450-class CSS kit is written against
+
+   They do not collide, and having both is what lets the kit be complete today
+   while components migrate to the token package one at a time.
+   ========================================================================== */
+
+@import url('@creatorkit/tokens/dist/tokens.css');
+@import url('./foundation/index.css');
+@import url('./base.css');
+@import url('./utilities/index.css');

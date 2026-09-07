@@ -1,0 +1,16 @@
+/* =============================================================================
+   @creatorkit/ui — the components.
+
+   Elements, components and sections: badges, buttons, cards, forms, navs,
+   alerts, media, overlays, timelines, comments, heroes, stats, CTAs, footers.
+
+   Needs @creatorkit/core first — every value here resolves against the
+   foundation's tokens.
+
+   `ck-classes.css` beside this file is a different thing: it is generated from
+   the React component recipes. Both ship; see ARCHITECTURE.md.
+   ========================================================================== */
+
+@import url('./elements/index.css');
+@import url('./components/index.css');
+@import url('./sections/index.css');
