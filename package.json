@@ -29,7 +29,14 @@
 		"clean": "turbo run clean && rm -rf node_modules .turbo",
 		"changeset": "changeset",
 		"version-packages": "changeset version",
-		"release": "turbo run build && changeset publish"
+		"release": "turbo run build && changeset publish",
+		"theme:build": "npm --prefix ghost/content/themes/creator run build",
+		"theme:dev": "npm --prefix ghost/content/themes/creator run dev",
+		"theme:test": "npm --prefix ghost/content/themes/creator run test",
+		"ghost:start": "cd ghost && ghost start",
+		"ghost:stop": "cd ghost && ghost stop",
+		"ghost:restart": "cd ghost && ghost restart",
+		"ghost:log": "cd ghost && ghost log"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.27.0",

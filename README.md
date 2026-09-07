@@ -86,3 +86,19 @@ Read [`ARCHITECTURE.md`](./ARCHITECTURE.md), then [`CONTRIBUTING.md`](./CONTRIBU
 ## License
 
 MIT © Swarnil
+
+## The Ghost preview
+
+The theme lives inside a real Ghost install so it can be previewed against real Ghost
+rendering. That install is gitignored; the theme inside it is its own repository.
+
+```bash
+nvm use 22.21.1        # Ghost 6 needs Node 22
+pnpm ghost:start       # http://localhost:2370  ·  admin at /ghost/
+pnpm theme:dev         # Tailwind watch + browser-sync against the Ghost above
+pnpm theme:build       # design-system sync → CSS → JS bundle
+pnpm theme:test        # gscan
+```
+
+Ghost-CLI instance name: `creator-local`, port `2370`. It is a separate publication from
+`imswarnil.com` on 2368 — separate database, separate content, no shared state.
