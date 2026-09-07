@@ -1,0 +1,21 @@
+{
+	"name": "@creatorkit/template-youtuber-portfolio",
+	"version": "0.1.0",
+	"private": true,
+	"description": "A one-page portfolio for someone with a channel. Static HTML, built on CreatorKit.",
+	"type": "module",
+	"scripts": {
+		"build": "node build.mjs",
+		"dev": "node build.mjs && python3 -m http.server 4200 --directory dist",
+		"lint": "echo 'template: no JS to lint'",
+		"typecheck": "echo 'template: no types'",
+		"test": "node build.mjs && node -e \"const h=require('node:fs').readFileSync('dist/index.html','utf8'); for (const t of ['c c-video','hero__title','deck-c','cta-newsletter']) { if (!h.includes(t)) { console.error('missing: '+t); process.exit(1); } } if (/{{[a-z.]+}}/i.test(h)) { console.error('unreplaced placeholder: '+h.match(/{{[a-z.]+}}/i)[0]); process.exit(1); } console.log('template: renders, no placeholders left');\"",
+		"clean": "rm -rf dist"
+	},
+	"dependencies": {
+		"@creatorkit/collections": "workspace:*",
+		"@creatorkit/core": "workspace:*",
+		"@creatorkit/icons": "workspace:*",
+		"@creatorkit/ui": "workspace:*"
+	}
+}

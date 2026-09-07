@@ -3,10 +3,14 @@
 	"version": "0.1.0",
 	"description": "Design tokens for CreatorKit \u2014 one source, emitted as a Tailwind preset, CSS custom properties and typed JS.",
 	"keywords": [
+		"creator-tools",
+		"creators",
+		"css-variables",
+		"dark-mode",
+		"design-system",
 		"design-tokens",
 		"tailwind",
-		"css-variables",
-		"oklch"
+		"theming"
 	],
 	"homepage": "https://creator.imswarnil.com",
 	"bugs": "https://github.com/imswarnil/CreatorKit/issues",

@@ -3,9 +3,13 @@
 	"version": "0.1.0",
 	"description": "The CreatorKit icon sets \u2014 creator, media, resume and social.",
 	"keywords": [
+		"creator-tools",
+		"creators",
+		"design-system",
 		"icons",
-		"svg",
-		"react"
+		"react",
+		"sprite",
+		"svg"
 	],
 	"homepage": "https://creator.imswarnil.com",
 	"bugs": "https://github.com/imswarnil/CreatorKit/issues",

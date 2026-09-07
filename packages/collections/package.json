@@ -3,9 +3,13 @@
 	"version": "0.1.0",
 	"description": "Creator content types \u2014 video, course, episode, project, travel, prompt, snippet and the rest, as components and Ghost-ready classes.",
 	"keywords": [
+		"content-types",
+		"course",
 		"creator-tools",
+		"creators",
+		"design-system",
 		"ghost-theme",
-		"content-types"
+		"video"
 	],
 	"homepage": "https://creator.imswarnil.com",
 	"bugs": "https://github.com/imswarnil/CreatorKit/issues",

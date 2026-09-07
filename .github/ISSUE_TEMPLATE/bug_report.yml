@@ -1,0 +1,52 @@
+name: Bug report
+description: Something in the kit does not behave the way it should.
+labels: [bug]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where
+      options:
+        - "@creatorkit/tokens — the foundation"
+        - "@creatorkit/core — utilities, focus ring, cn()"
+        - "@creatorkit/ui — components"
+        - "@creatorkit/collections — content types"
+        - "@creatorkit/broadcast — thumbnails and scenes"
+        - "@creatorkit/icons"
+        - The Ghost theme
+        - A template
+        - The docs site
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you saw, and what you expected instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: >
+        The smallest markup or component usage that shows it. A CodePen or a few lines of
+        HTML with the classes involved is ideal.
+      render: html
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: "0.1.0"
+
+  - type: input
+    id: env
+    attributes:
+      label: Browser and OS
+      placeholder: "Safari 18, macOS 15"

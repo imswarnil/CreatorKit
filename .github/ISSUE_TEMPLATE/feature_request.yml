@@ -1,0 +1,34 @@
+name: Feature request
+description: A component, variant or token the kit is missing.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to build
+      description: >
+        Describe the thing on the page, not the API you have in mind. Half of these turn
+        out to be a variant of something that already exists.
+    validations:
+      required: true
+
+  - type: textarea
+    id: today
+    attributes:
+      label: What you do today
+      description: The workaround, if you have one.
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is missing
+      options:
+        - A new component
+        - A variant of an existing component
+        - A token
+        - A creator content type
+        - A broadcast surface
+        - An icon
+        - Documentation
+    validations:
+      required: true

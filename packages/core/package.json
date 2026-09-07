@@ -3,9 +3,13 @@
 	"version": "0.1.0",
 	"description": "CreatorKit base layer \u2014 reset, focus ring, layout primitives and the cn() helper.",
 	"keywords": [
+		"accessibility",
+		"creator-tools",
+		"creators",
+		"css",
 		"design-system",
-		"tailwind",
-		"react"
+		"focus-ring",
+		"utilities"
 	],
 	"homepage": "https://creator.imswarnil.com",
 	"bugs": "https://github.com/imswarnil/CreatorKit/issues",

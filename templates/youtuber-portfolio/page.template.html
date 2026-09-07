@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="{{lang}}">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{title}}</title>
+	<meta name="description" content="{{description}}">
+	<link rel="canonical" href="{{url}}">
+	<meta property="og:title" content="{{title}}">
+	<meta property="og:description" content="{{description}}">
+	<meta property="og:type" content="website">
+
+	<!-- The kit. Three stylesheets, no build step, no framework. -->
+	<link rel="stylesheet" href="./core.css">
+	<link rel="stylesheet" href="./ui.css">
+	<link rel="stylesheet" href="./collections.css">
+
+	<!-- The one thing this template overrides: the accent, from content.config.js. -->
+	<style>:root { --accent: {{accent}}; }</style>
+</head>
+<body>
+	<a class="u-sr-only" href="#main">Skip to content</a>
+
+	<header class="nav-shell nav-shell-auto">
+		<nav class="nav-bar" aria-label="Primary">
+			<a class="logo" href="#main">{{name}}</a>
+			<ul class="nav-links">
+				<li><a class="nav-link" href="#videos">Videos</a></li>
+				<li><a class="nav-link" href="#writing">Writing</a></li>
+				<li><a class="nav-link" href="#about">About</a></li>
+			</ul>
+			<div class="nav-actions">
+				<a class="btn btn-primary btn-sm" href="#subscribe">Subscribe</a>
+			</div>
+		</nav>
+	</header>
+
+	<main id="main">
+		<section class="container-wide section">
+			<div class="hero hero-statement">
+				<span class="hero__eyebrow"><span class="dot dot-sm dot-live"></span> {{hero.eyebrow}}</span>
+				<h1 class="hero__title">{{hero.title}}</h1>
+				<p class="hero__lead">{{hero.lead}}</p>
+				<div class="hero__actions">
+					<a class="btn btn-primary" href="{{hero.primary.href}}">{{hero.primary.label}}</a>
+					<a class="btn btn-secondary" href="{{hero.secondary.href}}">{{hero.secondary.label}}</a>
+				</div>
+			</div>
+		</section>
+
+		<section class="container-wide section" aria-labelledby="featured-h">
+			<header class="page-head page-head-sm">
+				<h2 class="page-head__title" id="featured-h">Latest</h2>
+			</header>
+			<article class="c c-video c-project-wide">
+				{{featured.media}}
+				<div class="c__body">
+					<p class="c__meta"><span class="dot dot-sm"></span> Featured · {{featured.runtime}}</p>
+					<h3 class="c__title"><a class="c__link" href="{{featured.href}}">{{featured.title}}</a></h3>
+					<p class="c__excerpt">{{featured.excerpt}}</p>
+				</div>
+			</article>
+		</section>
+
+		<section class="container-wide section" id="videos" aria-labelledby="videos-h">
+			<header class="page-head page-head-sm">
+				<h2 class="page-head__title" id="videos-h">Videos</h2>
+			</header>
+			<div class="deck-c">{{videos}}
+			</div>
+		</section>
+
+		<section class="container-wide section" id="writing" aria-labelledby="writing-h">
+			<header class="page-head page-head-sm">
+				<h2 class="page-head__title" id="writing-h">Writing</h2>
+			</header>
+			<div class="deck-c deck-c-list">{{writing}}
+			</div>
+		</section>
+
+		<section class="container section" id="about" aria-labelledby="about-h">
+			<header class="page-head page-head-sm">
+				<h2 class="page-head__title" id="about-h">{{about.heading}}</h2>
+			</header>
+			<div class="content">{{about.body}}</div>
+		</section>
+
+		<section class="container-wide section" id="subscribe">
+			<div class="cta cta-newsletter">
+				<h2 class="cta__title">{{newsletter.heading}}</h2>
+				<p class="cta__lead">{{newsletter.body}}</p>
+				<form class="form-row" action="{{newsletter.action}}" method="post">
+					<label class="u-sr-only" for="email">Email address</label>
+					<input class="input" id="email" name="email" type="email" required placeholder="you@example.com">
+					<button class="btn btn-primary" type="submit">{{newsletter.buttonLabel}}</button>
+				</form>
+			</div>
+		</section>
+	</main>
+
+	<footer class="footer">
+		<div class="container-wide">
+			<p class="footer__note">{{footer.note}}</p>
+			<nav class="footer__links" aria-label="Elsewhere">{{links}}</nav>
+			<p class="footer__legal">© {{year}} {{name}}</p>
+		</div>
+	</footer>
+</body>
+</html>

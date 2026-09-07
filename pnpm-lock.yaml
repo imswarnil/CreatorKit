@@ -269,6 +269,25 @@ importers:
         specifier: ^3.4.17
         version: 3.4.19
 
+  templates/youtuber-portfolio:
+    dependencies:
+      '@creatorkit/collections':
+        specifier: workspace:*
+        version: link:../../packages/collections
+      '@creatorkit/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@creatorkit/icons':
+        specifier: workspace:*
+        version: link:../../packages/icons
+      '@creatorkit/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+
+  tools/css-inventory: {}
+
+  tools/icon-build: {}
+
   tools/kit-docs: {}
 
   tools/props-gen: {}

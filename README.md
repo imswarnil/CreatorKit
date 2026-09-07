@@ -50,7 +50,7 @@ export default {
 | --- | --- |
 | `packages/` | The published `@creatorkit/*` packages |
 | `apps/docs/` | `creator.imswarnil.com` — documentation and component showcase |
-| `templates/` | Ready-to-clone starters, beginning with a YouTuber portfolio |
+| `templates/` | Ready-to-clone starters — `youtuber-portfolio` is ready |
 | `tools/` | The recipe→CSS compiler, the inventory generator, the component generator |
 | `ghost/` | A local Ghost 6 install for previewing the theme. Gitignored |
 | `ghost/content/themes/creator/` | The CreatorKit Ghost theme — its own repository |
@@ -88,6 +88,8 @@ Requires Node 22 and pnpm 10 or newer.
 | [`ARCHITECTURE.md`](./ARCHITECTURE.md) | Why one recipe serves two renderers |
 | [`docs/MIGRATION.md`](./docs/MIGRATION.md) | What happens to every legacy component |
 | [`CONTRIBUTING.md`](./CONTRIBUTING.md) | Setup and pull requests |
+| [`SECURITY.md`](./SECURITY.md) | Reporting a vulnerability |
+| Each package's `INVENTORY.md` | Every class it ships. Generated, so never stale |
 
 ## Contributing
 

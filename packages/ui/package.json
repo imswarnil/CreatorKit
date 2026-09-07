@@ -3,12 +3,15 @@
 	"version": "0.1.0",
 	"description": "CreatorKit component library \u2014 accessible React components styled with Tailwind and CVA.",
 	"keywords": [
-		"ui-kit",
-		"react",
-		"components",
-		"tailwind",
 		"accessible",
-		"design-system"
+		"component-library",
+		"creator-tools",
+		"creators",
+		"css",
+		"design-system",
+		"react",
+		"tailwind",
+		"ui-kit"
 	],
 	"homepage": "https://creator.imswarnil.com",
 	"bugs": "https://github.com/imswarnil/CreatorKit/issues",

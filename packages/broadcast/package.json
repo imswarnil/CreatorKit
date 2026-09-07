@@ -3,11 +3,14 @@
 	"version": "0.1.0",
 	"description": "Thumbnails, scenes, lower thirds and stream overlays \u2014 the layer that ships to YouTube and Instagram, never to a website.",
 	"keywords": [
+		"creator-tools",
+		"creators",
+		"design-system",
+		"instagram",
 		"obs",
 		"stream-overlay",
 		"thumbnail",
-		"youtube",
-		"creator-tools"
+		"youtube"
 	],
 	"homepage": "https://creator.imswarnil.com",
 	"bugs": "https://github.com/imswarnil/CreatorKit/issues",
