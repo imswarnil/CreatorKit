@@ -1,0 +1,9 @@
+{
+	"name": "@creatorkit/props-gen",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Extracts component prop tables from the TypeScript source so the docs cannot describe an API that no longer exists.",
+	"type": "module",
+	"bin": { "props-gen": "./index.mjs" },
+	"scripts": { "lint": "eslint index.mjs" }
+}

@@ -79,6 +79,15 @@ export default {
 
 Requires Node 22 and pnpm 10 or newer.
 
+## Documentation
+
+| File | What it answers |
+| --- | --- |
+| [`docs.md`](./docs.md) | How to keep building this — components, tokens, docs, theme |
+| [`ARCHITECTURE.md`](./ARCHITECTURE.md) | Why one recipe serves two renderers |
+| [`docs/MIGRATION.md`](./docs/MIGRATION.md) | What happens to every legacy component |
+| [`CONTRIBUTING.md`](./CONTRIBUTING.md) | Setup and pull requests |
+
 ## Contributing
 
 Read [`ARCHITECTURE.md`](./ARCHITECTURE.md), then [`CONTRIBUTING.md`](./CONTRIBUTING.md).

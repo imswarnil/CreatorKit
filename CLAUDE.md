@@ -1,6 +1,6 @@
 # CreatorKit — instructions for AI assistants
 
-Read `ARCHITECTURE.md` first. It is one page and it contains the only rule that matters:
+Read `ARCHITECTURE.md` first, and `docs.md` for how the pieces are worked on. It is one page and it contains the only rule that matters:
 **one recipe, two renderers.** This file covers the rest.
 
 ## What this is
@@ -67,6 +67,13 @@ pnpm lint         # eslint, one config for the workspace
 pnpm typecheck
 pnpm test
 pnpm format
+```
+
+Docs site on 3400, Ghost preview on 2370:
+
+```bash
+pnpm --filter @creatorkit/docs dev
+pnpm ghost:start
 ```
 
 The Ghost preview is separate and needs Node 22:

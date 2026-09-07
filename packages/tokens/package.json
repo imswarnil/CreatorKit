@@ -34,7 +34,8 @@
 		"./css": "./dist/tokens.css",
 		"./scss": "./dist/tokens.scss",
 		"./tailwind": "./dist/tailwind.js",
-		"./package.json": "./package.json"
+		"./package.json": "./package.json",
+		"./dist/tokens.css": "./dist/tokens.css"
 	},
 	"files": [
 		"dist",

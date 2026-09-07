@@ -2,14 +2,30 @@
 	"name": "@creatorkit/docs",
 	"version": "0.1.0",
 	"private": true,
-	"description": "creator.imswarnil.com — the CreatorKit documentation site. Built in Phase 4.",
+	"description": "creator.imswarnil.com \u2014 the CreatorKit documentation site.",
 	"type": "module",
 	"scripts": {
-		"build": "echo 'apps/docs: scaffold only — built in Phase 4'",
-		"dev": "echo 'apps/docs: scaffold only — built in Phase 4'",
-		"lint": "echo 'apps/docs: nothing to lint yet'",
-		"typecheck": "echo 'apps/docs: nothing to typecheck yet'",
-		"test": "echo 'apps/docs: no tests yet'",
-		"clean": "rm -rf .next dist .turbo"
+		"dev": "npm run props && next dev --port 3400",
+		"build": "npm run props && next build",
+		"start": "next start --port 3400",
+		"lint": "eslint app components lib",
+		"typecheck": "tsc --noEmit",
+		"clean": "rm -rf .next dist .turbo",
+		"props": "node ../../tools/props-gen/index.mjs ../../packages/ui/src lib/props.generated.json"
+	},
+	"dependencies": {
+		"@creatorkit/core": "workspace:*",
+		"@creatorkit/tokens": "workspace:*",
+		"@creatorkit/ui": "workspace:*",
+		"next": "^14.2.15",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1"
+	},
+	"devDependencies": {
+		"@types/react": "^18.3.0",
+		"@types/react-dom": "^18.3.0",
+		"autoprefixer": "^10.4.20",
+		"postcss": "^8.4.47",
+		"tailwindcss": "^3.4.17"
 	}
 }

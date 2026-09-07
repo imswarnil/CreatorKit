@@ -1,0 +1,15 @@
+@import '@creatorkit/core/css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * The docs site's own chrome. Everything a *component* needs comes from the kit;
+ * this file only holds layout that belongs to the site and to nothing else.
+ */
+@layer base {
+	html {
+		scroll-padding-block-start: var(--ck-space-20);
+	}
+}

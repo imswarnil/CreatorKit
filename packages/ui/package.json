@@ -34,7 +34,8 @@
 			"import": "./dist/index.js"
 		},
 		"./css": "./dist/ck-classes.css",
-		"./package.json": "./package.json"
+		"./package.json": "./package.json",
+		"./dist/ck-classes.css": "./dist/ck-classes.css"
 	},
 	"files": [
 		"dist",
