@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+	<!-- The record light, and nothing else. At 16px an S with a tittle on its
+	     shoulder is two shapes fighting over four pixels; a single dot survives
+	     any size, and it is the one mark the whole system is built around.
+	     The ring gives the icon a shape to sit in at large sizes and fades to
+	     almost nothing at small ones. It flips with the OS theme; the light
+	     never changes, because that is the whole point of it. -->
+	<style>
+		.ring { stroke: #101017; }
+		@media (prefers-color-scheme: dark) { .ring { stroke: #f8f8fa; } }
+	</style>
+	<circle class="ring" cx="24" cy="24" r="17" fill="none" stroke-width="3" opacity="0.16"/>
+	<circle cx="24" cy="24" r="9.5" fill="#f04e2e"/>
+</svg>

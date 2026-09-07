@@ -1,0 +1,200 @@
+/* =============================================================================
+   31 · HERO
+   Three shapes, one rule: a hero states, it does not list. One headline with
+   one accent word, one supporting line, at most two actions.
+
+   .hero-statement  — centred manifesto (about, 404, landing bands)
+   .hero-split      — copy left, stage right (the homepage shape)
+   .hero-band       — full-bleed inverse billboard (webseries, travel)
+   ========================================================================== */
+
+/* ── Shared bones ────────────────────────────────────────────────────────── */
+
+.hero { position: relative; padding-block: var(--space-16) var(--space-12); }
+
+.hero__eyebrow {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	font-family: var(--font-slate);
+	font-size: var(--text-2xs);
+	letter-spacing: var(--tracking-slate);
+	text-transform: uppercase;
+	color: var(--fg-subtle);
+}
+
+.hero__title {
+	font-family: var(--font-display);
+	font-size: var(--text-6xl);
+	font-weight: var(--weight-bold);
+	letter-spacing: var(--tracking-tighter);
+	line-height: var(--leading-flat);
+	text-wrap: balance;
+	margin-top: var(--space-5);
+}
+
+/* The one rationed accent word. */
+.hero__title em { font-style: normal; color: var(--accent); }
+
+.hero__lead {
+	margin-top: var(--space-5);
+	font-size: var(--text-lg);
+	line-height: var(--leading-relaxed);
+	color: var(--fg-subtle);
+	max-width: var(--measure-lead);
+}
+
+.hero__actions {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--space-3);
+	margin-top: var(--space-8);
+}
+
+/* ── Statement — centred ─────────────────────────────────────────────────── */
+
+.hero-statement { text-align: center; }
+.hero-statement .hero__lead { margin-inline: auto; }
+.hero-statement .hero__actions { justify-content: center; }
+.hero-statement .hero__title { max-width: 18ch; margin-inline: auto; }
+
+/* ── Split — copy beside a stage ─────────────────────────────────────────── */
+
+.hero-split {
+	display: grid;
+	gap: var(--space-10);
+	align-items: center;
+}
+
+@media (min-width: 64rem) {
+	.hero-split { grid-template-columns: 1.05fr 1fr; gap: var(--space-12); }
+}
+
+/* A headline in a HALF-WIDTH column cannot take the full-width statement size:
+   at --text-6xl the homepage headline ran to six lines and the eye had to
+   re-find the left edge on every one of them. One step down the scale, and a
+   measure in ch so it breaks at three lines instead of wherever the column
+   happens to end. */
+.hero-split .hero__title { font-size: var(--text-4xl); max-width: 16ch; }
+.hero-split .hero__lead { max-width: 42ch; }
+
+/* The stage holds one framed thing — a player, a poster, a device. The frame
+   device (layer 1) does the chrome; the stage only reserves the ratio. */
+.hero-split__stage { position: relative; }
+
+.hero-split__stage > * { width: 100%; }
+
+/* Caption under the stage — camera-log voice. */
+.hero-split__caption {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--space-3);
+	margin-top: var(--space-3);
+	font-family: var(--font-slate);
+	font-size: var(--text-2xs);
+	letter-spacing: 0.06em;
+	color: var(--fg-faint);
+}
+
+/* ── Band — full-bleed inverse billboard ─────────────────────────────────── */
+
+.hero-band {
+	background: var(--bg-inverse);
+	color: var(--fg-on-inverse);
+	border-radius: var(--radius-sheet);
+	overflow: hidden;
+	padding: var(--space-16) var(--space-8);
+}
+
+.hero-band[data-surface] { border-radius: var(--radius-sheet); }
+
+.hero-band .hero__eyebrow { color: var(--fg-on-inverse); opacity: 0.7; }
+.hero-band .hero__lead { color: var(--fg-on-inverse); opacity: 0.75; }
+
+/* Media behind the copy: an absolutely-filled poster + scrim, copy on top. */
+.hero-band__media {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+}
+
+.hero-band__media img,
+.hero-band__media video { width: 100%; height: 100%; object-fit: cover; }
+
+.hero-band__media::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background:
+		linear-gradient(to top, var(--bg-scrim) 0%, transparent 55%),
+		linear-gradient(to right, var(--bg-scrim) 0%, transparent 65%);
+}
+
+.hero-band-media { position: relative; }
+.hero-band-media > :not(.hero-band__media) { position: relative; z-index: 1; }
+
+/* Bottom-anchored copy for the media variant — billboard grammar. */
+.hero-band-media { display: flex; flex-direction: column; justify-content: flex-end; min-height: 24rem; }
+
+/* ── Cinematic — the band at full viewport, with film over the footage ──────
+   travel/index.html carried this as forty lines of inline style before it was
+   a component, which meant no other page could have it. Three parts, each
+   independent: the full-bleed height, the scanline film, and a pointer-tracked
+   ripple that reveals the film only where the cursor is.
+
+   Composes with .hero-band-media — that still owns the media and the scrim. */
+
+.hero-band-full {
+	width: 100vw;
+	margin-left: calc(50% - 50vw);
+	min-height: 100dvh;
+	border-radius: 0;
+	/* Sit UNDER the floating island rather than below it, so the nav reads as
+	   furniture on the footage. Same pull-up the collection hero uses. */
+	margin-top: calc(-1 * var(--nav-bleed));
+	justify-content: center;
+	isolation: isolate;
+}
+
+/* The film. Put a .pattern-scanline (or -fine / -coarse) inside it. */
+.hero-band__scan {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+	mix-blend-mode: overlay;
+}
+
+.hero-band__scan > * { position: absolute; inset: 0; }
+
+/* Ripple: --mx/--my are set by a pointermove handler (src/nav.js does it for
+   any [data-ripple]); with no script the mask rests centred and still, which
+   is a vignette rather than a broken effect. */
+.hero-band__scan[data-ripple] {
+	--mx: 50%;
+	--my: 40%;
+	mask-image: radial-gradient(circle 260px at var(--mx) var(--my), #000 0%, transparent 72%);
+	-webkit-mask-image: radial-gradient(circle 260px at var(--mx) var(--my), #000 0%, transparent 72%);
+}
+
+/* Reduced motion: no chase, no displacement — the film sits still and quiet
+   over the whole frame instead of following anything. */
+@media (prefers-reduced-motion: reduce) {
+	.hero-band__scan[data-ripple] { mask-image: none; -webkit-mask-image: none; opacity: 0.3; }
+}
+
+@media (max-width: 40rem) {
+	.hero { padding-block: var(--space-12) var(--space-10); }
+	.hero__title { font-size: var(--text-4xl); }
+	.hero-band { padding: var(--space-10) var(--space-5); }
+	/* A 100dvh hero on a phone is a full screen of nothing but a headline. */
+	.hero-band-full { min-height: 82dvh; }
+}
+
+/* ── Size modifier — for pages whose hero is an announcement, not a stage
+   (sign-in, 404, error). Keeps every other hero rule intact. ────────────── */
+
+.hero-sm .hero__title { font-size: var(--text-4xl); }
+.hero-sm .hero__lead { font-size: var(--text-base); }

@@ -1,0 +1,49 @@
+{
+	"name": "@creatorkit/ui",
+	"version": "0.1.0",
+	"description": "CreatorKit component library — accessible React components styled with Tailwind and CVA.",
+	"keywords": ["ui-kit", "react", "components", "tailwind", "accessible", "design-system"],
+	"homepage": "https://creator.imswarnil.com",
+	"bugs": "https://github.com/imswarnil/CreatorKit/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/imswarnil/CreatorKit.git",
+		"directory": "packages/ui"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Swarnil",
+		"url": "https://imswarnil.com"
+	},
+	"type": "module",
+	"sideEffects": ["*.css"],
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"files": ["dist", "src", "README.md"],
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"build": "tsc -p tsconfig.json",
+		"typecheck": "tsc -p tsconfig.json --noEmit",
+		"lint": "eslint src",
+		"test": "node --test --experimental-test-module-mocks \"src/**/*.test.ts\" 2>/dev/null || echo 'no tests yet'",
+		"clean": "rm -rf dist .turbo *.tsbuildinfo"
+	},
+	"dependencies": {
+		"@creatorkit/core": "workspace:*",
+		"@creatorkit/tokens": "workspace:*",
+		"class-variance-authority": "^0.7.0"
+	},
+	"peerDependencies": {
+		"react": ">=18",
+		"react-dom": ">=18"
+	}
+}

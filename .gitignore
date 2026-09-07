@@ -1,0 +1,33 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build output
+dist/
+build/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+
+# the local Ghost install — a full Ghost 6 tree plus a live SQLite database.
+# It is a preview harness, not part of the design system. The theme inside it
+# (ghost/content/themes/creator) is its own git repository with its own remote.
+ghost/
+
+# env + secrets
+.env
+.env.*
+!.env.example
+
+# os / editor
+.DS_Store
+*.log
+.vscode/
+.idea/
+
+# legacy migration source. Everything else under _legacy/ IS tracked on purpose:
+# it arrived here untracked and unbacked-up, and it is the source Phases 2-3 migrate
+# from. It is deleted once the migration is verified.
+_legacy/dist/
+_legacy/node_modules/

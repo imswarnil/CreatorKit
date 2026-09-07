@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Written for machines: the system in one read.
+# https://design.imswarnil.com/llms.txt
+# https://design.imswarnil.com/llms-full.txt
+
+Sitemap: https://design.imswarnil.com/sitemap.xml

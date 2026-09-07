@@ -1,0 +1,698 @@
+"""The shared page shell every collection builds on.
+
+A collection's own build.py brings its data and its sections; this brings the
+head, the navbar, the footer and the small helpers all of them need. Without
+it, each new collection starts by copying eighty lines of <head> from the last
+one, and they drift apart from the first edit.
+"""
+import html
+import pathlib
+
+REPO = pathlib.Path(__file__).resolve().parent.parent
+REL = '../..'          # from collection/<name>/*.html back to the repo root
+
+
+def icon(name, cls='icon', group='travel'):
+    """Inline an icon file so it inherits currentColor."""
+    for g in (group, 'ui', 'creator', 'media', 'social', 'resume'):
+        p = REPO / 'icons' / g / f'{name}.svg'
+        if p.exists():
+            return p.read_text().strip().replace(
+                '<svg ', f'<svg class="{cls}" aria-hidden="true" ', 1)
+    return ''
+
+
+def ph(seed='default', tall=False, blend=False):
+    """A placeholder that cannot 404.
+
+    Deliberately not a photograph: a demo that ships with stock photography
+    teaches that the design needs a good photograph to work. Each seed gets its
+    own hue off one ladder, so a grid still reads as a set.
+
+    `blend=True` layers a second, offset hue over the first via
+    `mix-blend-mode` (see `collection/guides/guides.css`) — a book cover
+    wants two colours meeting, not one flat tile.
+    """
+    hues = {'japan': 8, 'vietnam': 150, 'portugal': 205, 'georgia': 265,
+            'peru': 32, 'india': 340, 'css': 262, 'motion': 190, 'craft': 24,
+            'notes': 96, 'default': 220}
+    # An unnamed seed still gets a stable hue rather than falling back to the
+    # one default — otherwise a collection with a dozen slugs is a dozen
+    # identical rectangles, which reads as a loading state.
+    h = hues.get(seed) if seed in hues else sum(map(ord, seed)) * 37 % 360
+    return (f'<span class="col-ph" style="--h:{h}"'
+            f'{" data-tall" if tall else ""}{" data-blend" if blend else ""}'
+            f' aria-hidden="true"></span>')
+
+
+HEAD = '''<!doctype html>
+<html lang="en" data-theme="light"{transition_attr}>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content="{desc}" />
+<link rel="icon" href="{rel}/docs/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="{rel}/dist/creator.css" />
+<link rel="stylesheet" href="{rel}/collection/collection.css" />{own_css}
+<script src="{rel}/src/nav.js" defer></script>
+<!-- The system's own highlighter. Collections were the one place shipping code
+     blocks without it, so snippets rendered as plain text while the docs site
+     three folders away coloured the identical markup. -->
+<script src="{rel}/src/highlight.js" defer></script>
+<script src="{rel}/collection/collection.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="nav-shell">
+  <nav class="nav-bar" aria-label="Main">
+    <a class="logo logo-sm" href="{rel}/collection/_pages/home.html">Swarnil</a>
+    <div class="nav-links">
+      <a class="nav-link" href="{rel}/collection/course/index.html"{cur_course}>Courses</a>
+      <a class="nav-link" href="{rel}/collection/travel/index.html"{cur_travel}>Travel</a>
+      <a class="nav-link" href="{rel}/collection/blog/index.html"{cur_blog}>Blog</a>
+      <a class="nav-link" href="{rel}/collection/webseries/index.html"{cur_webseries}>Series</a>
+      <a class="nav-link" href="{rel}/collection/newsletter/index.html"{cur_newsletter}>Newsletter</a>
+      <a class="nav-link" href="{rel}/collection/projects/index.html"{cur_projects}>Projects</a>
+      <a class="nav-link" href="{rel}/collection/_pages/resume.html"{cur_resume}>Résumé</a>
+    </div>
+    <div class="nav-actions">
+      <a class="btn btn-primary btn-sm btn-pill" href="#i">Subscribe</a>
+    </div>
+  </nav>
+</header>
+
+<main id="main">
+'''
+
+# The real .footer component (05-sections/34-footer.css) — brand column, link
+# columns, then the sign-off row with the dot ending the page the way the nav
+# opened it. Every collection used to hand-roll a `.row-between` here instead,
+# which meant the one place a sitemap gets to be exhaustive was two lines long.
+FOOT = '''
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="logo logo-sm" href="{rel}/collection/_pages/home.html">Swarnil</a>
+        <p class="footer__tag">A creator's site, built from tokens — videos, courses,
+          a blog, a newsletter and the trips between them. One design system
+          underneath all of it.</p>
+      </div>
+
+      <div>
+        <p class="footer__head">Collections</p>
+        <div class="footer__links">
+          <a href="{rel}/collection/course/index.html">Courses</a>
+          <a href="{rel}/collection/travel/index.html">Travel</a>
+          <a href="{rel}/collection/blog/index.html">Blog</a>
+          <a href="{rel}/collection/videos/index.html">Videos</a>
+          <a href="{rel}/collection/guides/index.html">Guides</a>
+        </div>
+      </div>
+
+      <div>
+        <p class="footer__head">More</p>
+        <div class="footer__links">
+          <a href="{rel}/collection/newsletter/index.html">Newsletter</a>
+          <a href="{rel}/collection/projects/index.html">Projects</a>
+          <a href="{rel}/collection/snippets/index.html">Snippets</a>
+          <a href="{rel}/collection/prompts/index.html">Prompts</a>
+          <a href="{rel}/collection/products/index.html">Products I use</a>
+        </div>
+      </div>
+
+      <div>
+        <p class="footer__head">Site</p>
+        <div class="footer__links">
+          <a href="{rel}/collection/_pages/about.html">About</a>
+          <a href="{rel}/collection/_pages/contact.html">Contact</a>
+          <a href="{rel}/collection/_pages/archive.html">Archive</a>
+          <a href="{rel}/collection/_pages/now.html">Now</a>
+          <a href="{rel}/collection/_pages/resume.html">Résumé</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__signoff">
+      <span>© 2026 Swarnil Singhai · {name} — a collection ·
+        <a href="{rel}/collection/_pages/terms.html">Terms</a> ·
+        <a href="{rel}/collection/_pages/privacy.html">Privacy</a></span>
+      <span class="footer__rec"><span class="dot dot-sm dot-live"></span>Still rolling</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
+'''
+
+
+# Which page-transition flavour (src/1-foundation/05-motion.css) a collection
+# arrives with — set once here rather than per route, since every route of a
+# collection is the same destination "medium".
+TRANSITIONS = {
+    'travel': 'takeoff',
+    'course': 'pop',
+    'resume': 'unfold',
+    'blog': 'type',
+    'webseries': 'slate',
+    'newsletter': 'envelope',
+    'projects': 'terminal',
+    'videos': 'static',
+    'guides': 'turn',
+}
+
+
+def page(out_dir, name, title, desc, body, collection='', own_css=None, current=''):
+    """Write one route. `own_css` is the collection's own stylesheet, if it has
+    one — most do not need any."""
+    css = f'\n<link rel="stylesheet" href="./{own_css}" />' if own_css else ''
+    transition = TRANSITIONS.get(current, '')
+    doc = (HEAD.format(title=html.escape(title), desc=html.escape(desc), rel=REL,
+                       own_css=css,
+                       transition_attr=f' data-transition="{transition}"' if transition else '',
+                       cur_travel=' aria-current="page"' if current == 'travel' else '',
+                       cur_blog=' aria-current="page"' if current == 'blog' else '',
+                       cur_course=' aria-current="page"' if current == 'course' else '',
+                       cur_resume=' aria-current="page"' if current == 'resume' else '',
+                       cur_webseries=' aria-current="page"' if current == 'webseries' else '',
+                       cur_newsletter=' aria-current="page"' if current == 'newsletter' else '',
+                       cur_projects=' aria-current="page"' if current == 'projects' else '')
+           + body + FOOT.format(rel=REL, name=collection))
+    (pathlib.Path(out_dir) / name).write_text(doc)
+    return name
+
+
+def sec(title, note='', extra=''):
+    n = (f'<p class="t-subtle u-mt-2" style="max-width:var(--measure-lead)">{note}</p>'
+         if note else '')
+    return (f'<div class="row-between u-mb-5"><div><h2 class="t-h3">{title}</h2>{n}</div>'
+            f'{extra}</div>')
+
+
+def meta_strip(pairs, paper=False, border=True, inline=False):
+    cls = 'col-meta'
+    if paper:
+        cls += ' col-meta-paper'
+    if inline:
+        cls += ' col-meta-inline'
+    style = ' style="border-top:0;padding-top:0"' if not border else ''
+    return f'<div class="{cls}"{style}>' + ''.join(
+        f'<div><span class="col-meta__n">{n}</span>'
+        f'<span class="col-meta__l">{l}</span></div>' for n, l in pairs) + '</div>'
+
+
+def pagination(page, total, href='./index.html', label='Pages'):
+    """.pagination + .page-dot, unchanged — every collection index that lists
+    more than it shows on one page reaches for this, not its own version.
+    `page` is 1-indexed. Collapses to first/last/neighbours + an ellipsis
+    once there are more than 5 pages, so a 40-page archive doesn't print 40
+    links into the DOM."""
+    def dot(n):
+        cur = ' aria-current="page"' if n == page else ''
+        return f'<a class="page-dot" href="{href}"{cur}>{n}</a>'
+
+    nums = list(range(1, total + 1))
+    if total > 5:
+        keep = {1, total, page, page - 1, page + 1}
+        shown, prev_n = [], 0
+        for n in nums:
+            if n in keep and 1 <= n <= total:
+                if prev_n and n - prev_n > 1:
+                    shown.append('…')
+                shown.append(n)
+                prev_n = n
+        nums = shown
+    pages = ''.join(dot(n) if n != '…' else '<span class="page-dot" aria-hidden="true">…</span>'
+                    for n in nums)
+    prev_dis = ' aria-disabled="true" tabindex="-1"' if page <= 1 else ''
+    next_dis = ' aria-disabled="true" tabindex="-1"' if page >= total else ''
+    return f'''<nav class="pagination" aria-label="{label}">
+      <a class="btn btn-quiet btn-sm" href="{href}"{prev_dis}>← Newer</a>
+      <span class="pagination__pages">{pages}</span>
+      <a class="btn btn-quiet btn-sm" href="{href}"{next_dis}>Older →</a>
+    </nav>'''
+
+
+def hero(title, lead, eyebrow, meta, art='', search=None, eyebrow_icon='pin',
+         full=False, narrow=False, pattern=''):
+    """The collection hero. `art` is an optional SVG the collection supplies —
+    without one the hero is still a hero, just a quieter one.
+
+    `full=True` pulls it out from under the island nav rather than starting
+    below it: edge to edge, no radius (a rounded corner on a bleed is a card
+    pretending to be a banner), and pulled up by the nav's own height so the
+    floating island reads as sitting ON the hero, not above it.
+
+    `narrow=True` sits the boxed hero in `.container-narrow` instead of the
+    full site width — a quieter, smaller card rather than a banner.
+
+    `pattern` adds one or more of the foundation's own background-pattern
+    classes (e.g. `'pattern-glow pattern-hairline'`) straight onto `.col-hero`
+    — it already has the `position:relative; isolation:isolate` a pattern
+    needs, so nothing new is required to carry one. A hairline border in the
+    same translucent white `.c-series` already uses for a permanently-dark
+    card rides along with it."""
+    s = ''
+    if search:
+        s = f'''
+      <form class="col-search" onsubmit="return false">
+        <label class="col-search__field">
+          <span class="u-sr-only">Search</span>
+          {icon('compass')}
+          <input type="search" placeholder="{search}" />
+        </label>
+        <button class="btn btn-primary btn-pill" type="submit">Search</button>
+      </form>'''
+    if full:
+        return f'''
+  <section class="col-hero" style="border-radius:0;margin-top:calc(-1 * var(--nav-bleed))">
+    {art}
+    <div class="col-hero__in" style="max-width:var(--w-site);margin-inline:auto;
+         padding-top:calc(var(--nav-h) + var(--space-24))">
+      <span class="col-hero__eyebrow">{icon(eyebrow_icon)}{eyebrow}</span>
+      <h1 class="col-hero__title">{title}</h1>
+      <p class="col-hero__lead">{lead}</p>
+      {s}
+      {meta_strip(meta)}
+    </div>
+  </section>
+'''
+    container_cls = 'container-narrow' if narrow else 'container'
+    pattern_cls = f' pattern {pattern}' if pattern else ''
+    pattern_style = (' style="border:var(--border-hair) solid rgb(255 255 255 / 0.10)"'
+                     if pattern else '')
+    return f'''
+  <section class="{container_cls} u-mt-6">
+   <div class="col-hero{pattern_cls}"{pattern_style}>
+    {art}
+    <div class="col-hero__in">
+      <span class="col-hero__eyebrow">{icon(eyebrow_icon)}{eyebrow}</span>
+      <h1 class="col-hero__title">{title}</h1>
+      <p class="col-hero__lead">{lead}</p>
+      {s}
+      {meta_strip(meta)}
+    </div>
+   </div>
+  </section>
+'''
+
+
+def page_head(title, lead='', eyebrow='', actions='', small=False, aside=''):
+    """`.page-head` — the quiet heading band a page that is not making a case
+    opens with. A hero states; a page head just labels. Defined in
+    05-sections/30-header.css and, until now, used by nothing.
+
+    `aside` puts a block of standing facts in a second column on the right
+    (`.page-head-split`) rather than stacked under the lead. Use it for facts
+    that are *scanned* — a résumé's location and availability, a spec block —
+    since stacking those reads them as prose and pushes the content down."""
+    e = (f'<span class="hero__eyebrow">{eyebrow}</span>' if eyebrow else '')
+    l = (f'<p class="t-lead u-mt-3" style="max-width:var(--measure-lead)">{lead}</p>'
+         if lead else '')
+    a = f'<div class="hero__actions">{actions}</div>' if actions else ''
+    cls = 'page-head page-head-sm' if small else 'page-head'
+    if aside:
+        return f'''
+  <header class="{cls} page-head-split">
+    <div class="page-head__main">
+      {e}
+      <h1 class="t-display-2">{title}</h1>
+      {l}
+      {a}
+    </div>
+    <aside class="page-head__aside">{aside}</aside>
+  </header>'''
+    return f'''
+  <header class="{cls}">
+    {e}
+    <h1 class="t-display-2">{title}</h1>
+    {l}
+    {a}
+  </header>'''
+
+
+def stats(rows, bare=False, inverse=False):
+    """`.stats` — numbers as one surface, not four cards. Each row is
+    (value, label) or (value, label, note); a note starting with '+' gets the
+    up-trend colour. `bare=True` drops the chrome for use inside a hero."""
+    cls = 'stats'
+    if bare:
+        cls += ' stats-bare'
+    if inverse:
+        cls += ' stats-inverse'
+    cells = ''
+    for row in rows:
+        value, label = row[0], row[1]
+        note = row[2] if len(row) > 2 else ''
+        trend = ' data-trend="up"' if note.startswith('+') else ''
+        n = f'<span class="stat__note"{trend}>{note}</span>' if note else ''
+        cells += (f'<div class="stat"><span class="stat__label">{label}</span>'
+                  f'<span class="stat__value">{value}</span>{n}</div>')
+    return f'<div class="{cls}">{cells}</div>'
+
+
+def cta(title, body='', kicker='', actions='', fine='', left=False,
+        newsletter=False, pattern=''):
+    """`.cta` — the ask. One per page, near the end, and it earns its contrast
+    by being the only inverse band in view.
+
+    `newsletter=True` swaps the actions for the email form; `left=True` is the
+    column-layout variant. `pattern` takes a foundation background-pattern
+    class, which the band already has the `position:relative` to carry."""
+    cls = 'cta' + (' cta-left' if left else '')
+    if pattern:
+        cls += f' pattern {pattern}'
+    k = f'<span class="cta__kicker">{kicker}</span>' if kicker else ''
+    b = f'<p class="cta__body">{body}</p>' if body else ''
+    f = f'<p class="cta__fine">{fine}</p>' if fine else ''
+    if newsletter:
+        act = ('<form class="cta-newsletter__form" onsubmit="return false">'
+               '<label class="u-sr-only" for="cta-email">Email</label>'
+               '<input class="input" id="cta-email" type="email" '
+               'placeholder="you@example.com" autocomplete="email" />'
+               '<button class="btn btn-primary" type="submit">Subscribe</button></form>')
+    else:
+        act = f'<div class="cta__actions">{actions}</div>' if actions else ''
+    return f'''
+  <section class="{cls}">
+    {k}
+    <h2 class="cta__title">{title}</h2>
+    {b}
+    {act}
+    {f}
+  </section>'''
+
+
+def cta_sponsor(title, kicker='', actions=''):
+    """The quiet one — bordered, on the paper, not inverse. Money asks
+    politely, so this is the only CTA shape that does not take the contrast."""
+    k = f'<span class="cta__kicker">{kicker}</span>' if kicker else ''
+    return f'''
+  <section class="cta-sponsor">
+    <div>{k}<h2 class="cta__title">{title}</h2></div>
+    <div class="cta__actions">{actions}</div>
+  </section>'''
+
+
+def cine_hero(title, lead, eyebrow, video, actions='', meta=None,
+              eyebrow_icon='pin', scan='pattern-scanline', ripple=True,
+              filter_id='cine'):
+    """The cinematic hero: footage, a scrim, a scanline film over it, and an
+    optional pointer-tracked ripple through the film.
+
+    Every part of this used to be inline in travel/build.py. It is
+    `.hero-band.hero-band-media.hero-band-full` plus `.hero-band__scan` — no
+    new CSS, and nothing here is travel-specific any more. `filter_id` only
+    needs changing if two cinematic heroes ever share one page.
+    """
+    rip = ' data-ripple' if ripple else ''
+    m = f'\n      {meta_strip(meta)}' if meta else ''
+    a = f'\n      <div class="hero__actions">{actions}</div>' if actions else ''
+    # The displacement filter is what makes the film ripple rather than just
+    # brighten. It is decoration, so the whole <svg> is aria-hidden and its
+    # <animate> is frozen by nav.js under reduced motion.
+    return f'''
+  <section class="hero hero-band hero-band-media hero-band-full">
+    <div class="hero-band__media">
+      <video autoplay muted loop playsinline aria-hidden="true">
+        <source src="{video}" type="video/mp4" />
+      </video>
+    </div>
+
+    <div class="hero-band__scan"{rip} aria-hidden="true"
+         style="filter:url(#{filter_id}-ripple)">
+      <div class="pattern {scan} pattern-media pattern-lg"></div>
+    </div>
+
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+      <filter id="{filter_id}-ripple" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.05" numOctaves="2"
+                      seed="7" result="{filter_id}-noise">
+          <animate attributeName="baseFrequency" dur="7s"
+                   values="0.010 0.045;0.018 0.06;0.010 0.045" repeatCount="indefinite" />
+        </feTurbulence>
+        <feDisplacementMap in="SourceGraphic" in2="{filter_id}-noise" scale="22"
+                           xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </svg>
+
+    <div class="container">
+      <span class="hero__eyebrow">{icon(eyebrow_icon)}{eyebrow}</span>
+      <h1 class="hero__title">{title}</h1>
+      <p class="hero__lead">{lead}</p>{a}{m}
+    </div>
+  </section>
+'''
+
+
+# ── Window chrome (1-foundation/12-frame.css) ────────────────────────────────
+# "Containers that say what a thing IS before you read it." All three were
+# defined and used by nothing — a design system that ships a browser mockup and
+# never shows a page in one is leaving the obvious demo on the table.
+
+def win_browser(url, body, dots=True):
+    """A browser window. `body` is arbitrary markup — a screenshot, a
+    placeholder, a live fragment of the system itself."""
+    d = ('<span class="win__dots win__dots-color"><span></span><span></span>'
+         '<span></span></span>') if dots else ''
+    return f'''<div class="win win-browser">
+      <div class="win__bar">{d}
+        <span class="win-browser__url">{icon('search', 'icon-sm', group='ui')}{url}</span>
+      </div>
+      <div class="win__body">{body}</div>
+    </div>'''
+
+
+def win_code(filename, lines, tab=None):
+    """An editor window. `lines` is a list of already-escaped markup strings —
+    use the .tok-* classes for colour; the gutter is drawn from the count, so
+    nothing has to number itself."""
+    gutter = '<br />'.join(str(i + 1) for i in range(len(lines)))
+    t = (f'<div class="win-code__tabs"><span class="win-code__tab" '
+         f'data-active>{tab or filename}</span></div>') if tab or filename else ''
+    return f'''<div class="win win-code">
+      <div class="win__bar">
+        <span class="win__dots"><span></span><span></span><span></span></span>
+        <span class="win__title">{filename}</span>
+      </div>
+      {t}
+      <div class="win__body" style="display:flex">
+        <div class="win-code__gutter">{gutter}</div>
+        <div class="win-code__lines">{"<br />".join(lines)}</div>
+      </div>
+    </div>'''
+
+
+def win_term(lines, title='zsh'):
+    """A terminal. Each line is (prompt, text) — prompt=True gets the ❯ and the
+    blinking block cursor lands on the last prompted line."""
+    out = ''
+    for i, (is_prompt, text) in enumerate(lines):
+        last = i == len(lines) - 1
+        cur = '<span class="win-term__cursor"></span>' if last and is_prompt else ''
+        cls = ' class="win-term__prompt"' if is_prompt else ''
+        out += f'<div{cls}>{text}{cur}</div>'
+    return f'''<div class="win win-term">
+      <div class="win__bar">
+        <span class="win__dots"><span></span><span></span><span></span></span>
+        <span class="win__title">{title}</span>
+      </div>
+      <div class="win__body win-term__body">{out}</div>
+    </div>'''
+
+
+def marquee(items, speed='', reverse=False):
+    """`.marquee` — one run, duplicated and aria-hidden so the loop is seamless
+    without the screen reader hearing it twice. Pauses on hover, and the
+    foundation stops it under reduced motion."""
+    run = ''.join(f'<span class="t-slate" style="white-space:nowrap">{i}</span>'
+                  for i in items)
+    cls = 'marquee' + (f' marquee-{speed}' if speed else '') + \
+          (' marquee-reverse' if reverse else '')
+    return (f'<div class="{cls}">'
+            f'<div class="marquee__run">{run}</div>'
+            f'<div class="marquee__run" aria-hidden="true">{run}</div></div>')
+
+
+def alert(body, tone='', title='', ico='check'):
+    """`.alert` — the callout. Tone carries an icon as well as a colour, because
+    colour is never alone in this system."""
+    cls = 'alert' + (f' alert-{tone}' if tone else '')
+    t = f'<span class="alert__title">{title}</span>' if title else ''
+    return (f'<div class="{cls}">{icon(ico, group="ui")}'
+            f'<div>{t}{body}</div></div>')
+
+
+def vf(body, tone='signal'):
+    """`.vf` — the four viewfinder corners. Note the foundation's own warning:
+    .vf and .pattern both draw with ::before, so they can never share an
+    element. The pattern goes on a child, which is what this does."""
+    return (f'<div class="vf vf-{tone}"><span class="vf__tr"></span>'
+            f'<span class="vf__bl"></span>{body}</div>')
+
+
+def timeline(items, axis='', density='', alt=False, ranged=False):
+    """`.tl` (35-timeline.css) — a sequence with a rail through it.
+
+    Each item is a dict: `time`, `title`, `note`, `href`, `meta` (a list of
+    badge strings), `node` (what sits in the circle), `kind` (start|ship|now),
+    `done`, `current`. Only `title` is required.
+
+    `axis='h'` is the horizontal variant, which folds back to vertical under
+    48rem; `density` is 'compact' or 'lg'; `alt` alternates sides of the rail
+    (vertical only); `ranged` turns the node into a capsule for durations.
+    """
+    cls = 'tl'
+    if axis == 'h':
+        cls += ' tl-h'
+    if density:
+        cls += f' tl-{density}'
+    if alt:
+        cls += ' tl-alt'
+    if ranged:
+        cls += ' tl-ranged'
+
+    out = ''
+    for it in items:
+        attrs = ''
+        if it.get('done'):
+            attrs += ' data-done'
+        if it.get('current'):
+            # aria-current="step" is the right token for a position in a
+            # process; "true" would be right for a page.
+            attrs += ' aria-current="step"'
+        if it.get('kind'):
+            attrs += f' data-kind="{it["kind"]}"'
+
+        title = it['title']
+        t = (f'<a class="tl__title" href="{it["href"]}">{title}</a>'
+             if it.get('href') else f'<span class="tl__title">{title}</span>')
+        time = f'<span class="tl__time">{it["time"]}</span>' if it.get('time') else ''
+        note = f'<p class="tl__note">{it["note"]}</p>' if it.get('note') else ''
+        meta = ('<div class="tl__meta">'
+                + ''.join(f'<span class="badge">{m}</span>' for m in it['meta'])
+                + '</div>') if it.get('meta') else ''
+
+        out += (f'<li class="tl__item"{attrs}>'
+                f'<span class="tl__node">{it.get("node", "")}</span>'
+                f'<div class="tl__body">{time}{t}{note}{meta}</div></li>')
+    return f'<ol class="{cls}">{out}</ol>'
+
+
+# Sample thread — deliberately shared, so every collection's comment section
+# demos the same shape and a difference between two pages is a real difference.
+_THREAD = [
+    ('MR', 'Maya Rodriguez', '2 days ago', False,
+     'The implicit grid explanation finally made this click for me. I had been '
+     'declaring rows for years without knowing why it sometimes worked anyway.',
+     12, [('SS', 'Swarnil Singhai', '2 days ago', True,
+           'That is exactly the trap — it works right up until the content count '
+           'changes. Glad it helped.', 4, [])]),
+    ('DK', 'Dan K.', '5 days ago', False,
+     'Would love a follow-up on subgrid. It is the one part I still avoid.',
+     8, []),
+]
+
+
+def comment(face, name, when, is_author, text, likes, replies, depth=0):
+    """One comment, and its replies. Recurses, but the CSS flattens past one
+    level on purpose — a thread that indents five times is unreadable on a
+    phone, and shrinking the indent to fit only makes the hierarchy invisible
+    instead."""
+    inner = ('<ol class="comment-list">'
+             + ''.join(comment(*r, depth=depth + 1) for r in replies)
+             + '</ol>') if replies else ''
+    return f'''<li class="comment{' comment-author' if is_author else ''}">
+      <span class="comment__face">{face}</span>
+      <div class="comment__body">
+        <div class="comment__head">
+          <span class="comment__author">{name}</span>
+          <span class="comment__time">{when}</span>
+        </div>
+        <div class="comment__text"><p>{text}</p></div>
+        <div class="comment__actions">
+          <button class="comment__action" type="button" data-like aria-pressed="false">
+            {icon('heart', group='social')}<span data-like-count>{likes}</span>
+          </button>
+          <button class="comment__action" type="button">Reply</button>
+        </div>
+        {inner}
+      </div>
+    </li>'''
+
+
+def comments(thread=None, count=None, locked=False, wrap=False):
+    """`.comments` (36-comment.css) — the thread and the box that adds to it.
+
+    Reused on every collection's single page, because "someone said something
+    about this thing" is not a blog-specific idea and the alternative is four
+    slightly different comment sections. `locked=True` swaps the box for the
+    sign-in ask rather than disabling it: a disabled form is a dead end with no
+    explanation attached.
+
+    `wrap=True` adds a `.container` around it, for pages that close their own
+    container before the comments. The component carries no container itself
+    because on a post with a rail it belongs INSIDE the content column, and a
+    nested container there would narrow it twice."""
+    thread = _THREAD if thread is None else thread
+
+    def total(rows):
+        return sum(1 + total(r[6]) for r in rows)
+    n = total(thread) if count is None else count
+
+    box = (f'''
+    <div class="comment-box comment-box-locked">
+      <p class="t-small u-fg-subtle u-m-0">Sign in to comment. It takes one click
+        and there is no newsletter attached to it.</p>
+      <a class="btn btn-primary btn-sm" href="{REL}/collection/_pages/login.html">
+        Sign in</a>
+    </div>''' if locked else '''
+    <form class="comment-box" onsubmit="return false">
+      <label class="u-sr-only" for="cmt">Your comment</label>
+      <textarea class="input" id="cmt" rows="3"
+                placeholder="Add to the thread — corrections especially welcome."></textarea>
+      <div class="comment-box__row">
+        <span class="comment-box__note">Markdown works. Be kind.</span>
+        <button class="btn btn-primary btn-sm" type="submit">Post comment</button>
+      </div>
+    </form>''')
+
+    out = f'''
+  <section class="comments" id="comments">
+    <div class="comments__head">
+      <h2 class="comments__count">{n}<span>{'comment' if n == 1 else 'comments'}</span></h2>
+      <label class="cluster" style="gap:var(--space-2)">
+        <span class="t-slate-sm" style="color:var(--fg-faint)">Sort</span>
+        <select class="select" style="width:auto">
+          <option>Newest</option><option>Oldest</option><option>Most liked</option>
+        </select>
+      </label>
+    </div>
+    {box}
+    <ol class="comment-list">{''.join(comment(*c) for c in thread)}</ol>
+  </section>'''
+    return f'<div class="container">{out}</div>' if wrap else out
+
+
+# Toggles the like state and count. Additive: with the script blocked the
+# buttons are inert but the counts still read correctly.
+LIKE_SCRIPT = '''
+  <script>
+  (function () {
+    document.querySelectorAll('[data-like]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var on = btn.getAttribute('aria-pressed') === 'true';
+        var n = btn.querySelector('[data-like-count]');
+        n.textContent = String(Number(n.textContent) + (on ? -1 : 1));
+        btn.setAttribute('aria-pressed', String(!on));
+      });
+    });
+  })();
+  </script>'''

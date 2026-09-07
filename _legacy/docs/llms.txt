@@ -1,0 +1,155 @@
+# Creator Design System
+
+> Frame & Signal — a token-first, dependency-free CSS design system for creators. Plain CSS custom properties and classes: no framework, no runtime, no build step required to use it. Almost monochrome, so that one colour can carry meaning.
+
+Install: link `https://cdn.jsdelivr.net/gh/imswarnil/Swarnil-Design-System@main/dist/creator.min.css`, or copy dist/creator.css out of the repository. The npm package (`creator-design-system`) is not published yet; the import paths below are the ones its exports map declares.
+
+Customise by overriding tokens AFTER the import — never by editing source. Dark mode rides `data-theme="light|dark"` on `<html>`. State lives in ARIA (`[aria-current]`, `[aria-expanded]`), not in `.active` classes.
+
+## Complete reference
+
+- [Full specification](https://design.imswarnil.com/llms-full.txt): every token, every class, and the rules that govern them. Read this before generating markup.
+
+## Docs
+
+- [Introduction](https://design.imswarnil.com/introduction.html): Start — A token-first design system made by a creator, for creators — practical, opinionated, and themed end-to-end from the sam
+- [Principles](https://design.imswarnil.com/principles.html): Start — The rules every layer obeys — each enforced by a token, an attribute or a class, so the system keeps its own promises. v
+- [Usage — CSS · SCSS · Tailwind](https://design.imswarnil.com/usage.html): Start — How to actually use this: a complete first page, the token contract, and how it composes with Tailwind, SCSS, your own C
+- [Why this system](https://design.imswarnil.com/why.html): Start — A creator site is not a blog with extras — it is a channel, a school, a portfolio and a travel journal wearing one ident
+- [Components explorer](https://design.imswarnil.com/components.html): Start — Every component in one place — open any of them and switch between the preview and its markup.
+- [All pages](https://design.imswarnil.com/all.html): Start — Every page in the Creator Design System, in one list. Landing index.html Docs home introduction.html Search Preview ⇄ Co
+- [Installation](https://design.imswarnil.com/install.html): Getting started — Five minutes from zero: get the files, link the layers, see the system render. later layers require earlier ones — take 
+- [Setup & theming](https://design.imswarnil.com/setup.html): Getting started — Make it yours: override tokens, pick your dark-mode strategy, swap the mark. never edit source — override tokens; every 
+- [Breakpoints](https://design.imswarnil.com/breakpoints.html): Foundation — Four widths, defined by content, not devices. Rems, so user zoom moves them. the only responsive display utilities — res
+- [Color](https://design.imswarnil.com/f-color.html): Foundation — Ink, paper and three greys — plus one hue: the record-red. Everything else is restraint. the three legal appearances of 
+- [Logo](https://design.imswarnil.com/f-logo.html): Foundation — The dot over a lowercase i is called a tittle . The whole identity is that the tittle is the record light — so the mark 
+- [Typography](https://design.imswarnil.com/f-type.html): Foundation — Space Grotesk (display) · Inter (body) · IBM Plex Mono (the slate). The scale is fluid, so no component ever needs a bre
+- [Spacing & radius](https://design.imswarnil.com/f-space.html): Foundation — 4px base unit, 8px rhythm, closed ladders. If the value you need isn't on the ladder, the ladder is wrong — fix the ladd
+- [Elevation](https://design.imswarnil.com/f-elevation.html): Foundation — Depth comes from lines first, shadow second. If it doesn't leave the page, it doesn't get a shadow. In dark mode the lad
+- [Patterns](https://design.imswarnil.com/f-pattern.html): Foundation — 16 textures, pure CSS, zero requests. Each paints on a ::before layer, so the element keeps its own background, border a
+- [Accessibility](https://design.imswarnil.com/f-a11y.html): Foundation — Not a checklist bolted on at the end — these are tokens and defaults, so a component gets them by existing. Everything b
+- [Reboot](https://design.imswarnil.com/reboot.html): Elements — The foundation reset: box-sizing everywhere, media that can't overflow, fonts that inherit, margins zeroed so ladders ow
+- [Type roles](https://design.imswarnil.com/typography.html): Elements — Three faces with jobs: Space Grotesk displays, Inter reads, IBM Plex Mono slates. Roles, not sizes — markup asks for a v
+- [Images & figures](https://design.imswarnil.com/images.html): Elements — Media is always framed, always ratio'd, never allowed to reflow the page. .figure · .figure__caption · .frame ratios fro
+- [Tables](https://design.imswarnil.com/tables.html): Elements — Hairlines and alignment do all the work. Numbers right-aligned and tabular; wrap wide tables, never the page. .table in 
+- [Quotes](https://design.imswarnil.com/quotes.html): Elements — Three grades of borrowed words: inline, block, and the pullquote that interrupts the page. <q> — inline .pullquote · .pu
+- [Code & syntax](https://design.imswarnil.com/code.html): Elements — Five token roles, line numbers, line highlights, and a copy button that says so. Dark slab by default; a light twin for 
+- [Long-form content](https://design.imswarnil.com/content.html): Elements — One wrapper for everything the editor emits — headings, quotes, tables, code and every Ghost card, styled from the same 
+- [Text elements](https://design.imswarnil.com/text-elements.html): Elements — Things made of type and a rule. They drop straight into Ghost's {{content}} without a wrapper, which is the real test of
+- [Icon set](https://design.imswarnil.com/icon-set.html): Icons — The system's own icons — grouped, stroke-consistent, currentColor, and including a creator group no stock set has. prefe
+- [Guidelines](https://design.imswarnil.com/f-icons.html): Icons — 24×24 grid, 1.5px stroke, round caps, 2px corners. Inline SVG from one sprite — no icon font, no requests, and every gly
+- [Cutouts](https://design.imswarnil.com/cutouts.html): Shape & Cutout — The neo-brutal register: sticker, ticket, stamp, tab, tape, punch, speech — named, sized, and rationed to the moments th
+- [Shapes](https://design.imswarnil.com/f-shape.html): Shape & Cutout — The geometry the system is allowed to draw, and the maths behind it. The rule that matters most: inner radius = outer ra
+- [Containers](https://design.imswarnil.com/containers.html): Grid & Layout — Five measures. Content picks the narrowest container that fits its job. relative widths, to scale .container .container-
+- [Grid](https://design.imswarnil.com/grid.html): Grid & Layout — Fixed grids for known counts, auto grids for card decks, rail grids for content + sidebar. .grid-2 / -3 / -4 / -6 / -12 
+- [Columns & gutters](https://design.imswarnil.com/columns.html): Grid & Layout — Gaps come off the same 4px ladder as everything else — never invent a gutter. .u-gap-1…8 — gutter ladder .grid-12 + grid
+- [Z-index](https://design.imswarnil.com/z-index.html): Grid & Layout — A five-step ladder. If two things fight, one of them is on the wrong step. --z-below · .u-z-below --z-raised · .u-z-rais
+- [Patterns](https://design.imswarnil.com/layout-patterns.html): Grid & Layout — Five page shapes — blog, three-column docs, a card grid, narrow, and video with a sidebar — each one composed from the g
+- [Composition](https://design.imswarnil.com/f-layout.html): Grid & Layout — A 12-column fluid grid, a golden-ratio split for hero and article pages, and real media canvases with the platform safe 
+- [Overview](https://design.imswarnil.com/forms.html): Forms — A field is the component: label + control + hint + error, one unit that knows about itself. Every control is exactly as 
+- [Form control](https://design.imswarnil.com/form-control.html): Forms — Text inputs and textareas, in every state. .input · .textarea — default, filled, disabled, readonly .input-search — the 
+- [Select](https://design.imswarnil.com/select.html): Forms — The native element, dressed. Never a div pretending to be one. .select — chevron drawn in CSS, color-scheme aware inside
+- [Checks & radios](https://design.imswarnil.com/checks-radios.html): Forms — Native inputs restyled — the accessibility tree never lies. The switch is a checkbox wearing motion. .check — checkbox +
+- [Range](https://design.imswarnil.com/range.html): Forms — One slider, the accent fills to the thumb. Set --value inline (or from JS) for the filled track. .range — accent-filled 
+- [Input group](https://design.imswarnil.com/input-group.html): Forms — A control with something welded to its edge: a prefix, a suffix, a button. .input-group — controls fuse, inner radii dro
+- [Floating labels](https://design.imswarnil.com/floating-labels.html): Forms — The label rests where the value will be, then retreats to a slate caption on focus or fill. The placeholder must be a si
+- [Layout](https://design.imswarnil.com/form-layout.html): Forms — Rows that pair, fieldsets that group, and the one-line subscribe. Forms compose from the same gap ladder as everything e
+- [Accordion](https://design.imswarnil.com/accordion.html): Components — Collapses welded into one surface, native <details> underneath. The signal dot marks the open panel. .acc > .collapse — 
+- [Alerts](https://design.imswarnil.com/alerts.html): Components — A message with a tone. Five tones, one shape; the title is optional, the border always speaks. .alert + .alert-info/-suc
+- [Badge](https://design.imswarnil.com/badge.html): Components — A word in a shape. Tones for status, live for the dot, chips when it's interactive. .badge + tones · .badge-live carries
+- [Breadcrumb](https://design.imswarnil.com/breadcrumb.html): Components — The trail back up. Slate voice, real nav element, current page unlinked. .breadcrumb — ol in a nav, aria-current on the 
+- [Buttons](https://design.imswarnil.com/buttons.html): Components — Six intents, three sizes, icons leading/trailing/alone, and every state. The intent picks itself: primary is the one thi
+- [Button group](https://design.imswarnil.com/button-group.html): Components — Segmented choices. One group, one pressed member, driven by aria-pressed. .btn-group — click to move the pressed state (
+- [Card](https://design.imswarnil.com/card.html): Components — The workhorse. Media, body, meta, footer — designed at thumbnail scale first so the title survives a 120px crop. .card (
+- [Carousel](https://design.imswarnil.com/carousel.html): Components — A scroll-snap rail — no JS engine, no stolen wheel. Vertical scrolling always keeps scrolling the page. .carousel > __tr
+- [Close button](https://design.imswarnil.com/close-button.html): Components — One dismiss affordance everywhere: two strokes, a hover wash, an accessible name. .btn-close · .btn-close-inverse — alwa
+- [Collapse](https://design.imswarnil.com/collapse.html): Components — One panel that opens. Native <details>: keyboard, AT and find-in-page work with zero JS. .collapse > summary + .collapse
+- [Dropdowns](https://design.imswarnil.com/dropdowns.html): Components — A <details> wearing a menu. Light-dismiss via the platform, items are real links. .dropdown > summary.btn + .dropdown__m
+- [List group](https://design.imswarnil.com/list-group.html): Components — Rows in one surface. Links, buttons or static; the current row gets the accent inset. .list-group > __item — aria-curren
+- [Marquee](https://design.imswarnil.com/marquee.html): Components — The looping strip, done honestly: duplicate the run, hide the twin from assistive tech, pause on hover, fall back to a s
+- [Modal](https://design.imswarnil.com/modal.html): Components — A real <dialog>. showModal() traps focus, ESC closes, ::backdrop scrims — the platform does the hard parts. dialog.modal
+- [Navbar](https://design.imswarnil.com/navbar.html): Components — The site chrome, end to end: anatomy, alignment, the active link, dropdowns, the submenu row, four positions, three ways
+- [Navs & tabs](https://design.imswarnil.com/navs-tabs.html): Components — Tabs for peer views, driven by aria-selected. The underline is the state; the panel is yours. .tabs > .tab[role=tab] — c
+- [Offcanvas](https://design.imswarnil.com/offcanvas.html): Components — A drawer that is also a <dialog> — same focus trap, same ESC, docked to an edge. dialog.offcanvas (+ -start) — slides fr
+- [Pagination](https://design.imswarnil.com/pagination.html): Components — Two shapes: numbered pages for archives, the prev/next pager for sequences (it also ends every docs page). .pagination ·
+- [Popovers](https://design.imswarnil.com/popovers.html): Components — The Popover API: light-dismiss, top layer and toggling come from the platform. CSS Anchor positioning places them when s
+- [Progress](https://design.imswarnil.com/progress.html): Components — Determinate fills, thin rails, labels, and the honest indeterminate scan. .progress (+ -thin / -labelled / -indeterminat
+- [Scrollspy](https://design.imswarnil.com/scrollspy.html): Components — The sidebar's “on this page” links highlight as sections pass — an IntersectionObserver in preview.js, not a scroll hand
+- [Spinners](https://design.imswarnil.com/spinners.html): Components — Waiting has grades: the spinner for a moment, the scan for a region, the skeleton for a layout. .spinner · [data-loading
+- [Toasts](https://design.imswarnil.com/toasts.html): Components — Transient confirmations in a fixed region. Polite by default; they never cover the thing you acted on. .toast — shown he
+- [Tooltips](https://design.imswarnil.com/tooltips.html): Components — One line on hover/focus, CSS only, from data-tip. Anything longer is a popover. .tip[data-tip] — keyboard focus shows it
+- [Ads](https://design.imswarnil.com/ads.html): Components — Placeholder ad units that behave like real ones: a skeleton until a slot is actually on screen, a lazy load that waits f
+- [Devices](https://design.imswarnil.com/f-devices.html): Components — Three, and only three. Everything else on the site is plain. .dot · .dot-live · one per surface .frame · .frame-4 · .fra
+- [Frames](https://design.imswarnil.com/f-frames.html): Components — Containers that say what a thing is before you read it: a Mac window says “app”, a terminal says “command”, a viewfinder
+- [Collection cards](https://design.imswarnil.com/collection-cards.html): Components — routes.yaml , turned into cards. Each collection extends the base and changes exactly one device — the thing that says w
+- [Page header](https://design.imswarnil.com/page-header.html): Sections — How a collection opens: kicker with icon, display title, one line, quiet meta. Compact for child pages; the band header 
+- [Hero](https://design.imswarnil.com/hero.html): Sections — A hero states, it does not list: one headline, one accent word, at most two actions. Four shapes — the fourth being the 
+- [Stats](https://design.imswarnil.com/stats.html): Sections — Display-face tabular numbers, slate labels, hairlines not boxes. One surface, not four cards. .stats > .stat (+ __value/
+- [CTA](https://design.imswarnil.com/cta.html): Sections — One ask per page, near the end — the only inverse band in view. The sponsor strip stays on the paper. .cta.cta-newslette
+- [Footer](https://design.imswarnil.com/footer.html): Sections — The end credits: brand + exhaustive sitemap over a hairline, then the sign-off where the dot ends the page. .footer — __
+- [The contract](https://design.imswarnil.com/collections.html): Collections — A collection is a kind of thing you publish. Five routes, one section vocabulary, and one rule: it is the same design sy
+- [Sections](https://design.imswarnil.com/col-sections.html): Collections — The vocabulary a collection route is assembled from — every block, running, with the markup the real routes ship. .col-h
+- [Travel](https://design.imswarnil.com/travel/index.html): Collections — The first collection: five routes, sixteen icons and a linked filter, over a demo dataset small enough to read. the scri
+- [Default](https://design.imswarnil.com/col-default.html): Collections — The starting point: five working routes with no subject in them, and the test of whether a section is genuinely shared. 
+- [Blog](https://design.imswarnil.com/blog/index.html): Collections — The second collection, with no CSS of its own — the proof that the section vocabulary is shared rather than travel-shape
+- [Course](https://design.imswarnil.com/course/index.html): Collections — The third collection: /course, the lesson player, and the five sections a video-bodied post needed that reading-shaped c
+- [Webseries](https://design.imswarnil.com/webseries/index.html): Collections — The fifth collection, and the second one to ship no CSS of its own — a season's spine and its cast are sections travel a
+- [Projects](https://design.imswarnil.com/projects/index.html): Collections — GitHub-style repo cards, a sidebar carrying the live URL and the ask, and the one atom the collection genuinely needed —
+- [Prompts](https://design.imswarnil.com/prompts/index.html): Collections — A prompt library on .c-prompt — a chat bubble, because that is what a prompt is. .c.c-prompt · .c__bubble · .c__model .c
+- [Snippets](https://design.imswarnil.com/snippets/index.html): Collections — CSS and JS worth a permalink, on .c-snippet — a language tag and a code preview that fades rather than truncates. .c.c-s
+- [Products](https://design.imswarnil.com/products/index.html): Collections — What is actually on the desk, on .c-product — a row with a price, because a list of forty things is a list. .c.c-product
+- [Docs template](https://design.imswarnil.com/docs/index.html): Collections — A reusable documentation template — index, section, post and component reference on the three-column shape, with no docs
+- [Course · curriculum](https://design.imswarnil.com/course/curriculum.html): Collections — The course curriculum: native <details> modules, lesson rows that tick off, the current lesson ringed, progress in the h
+- [Projects · build log](https://design.imswarnil.com/projects/build-log.html): Collections — The project timeline: ▸ start, numbered middles, ✓ ship. Walked steps fill; the current one gets the ring. .buildlog > _
+- [Travel · itinerary](https://design.imswarnil.com/travel/itinerary.html): Collections — The trip, day by day — same rail as the build log wearing travel clothes: day chips, notes, stop badges. .itinerary > __
+- [Timeline](https://design.imswarnil.com/timeline.html): Collections — An ordered sequence with a rail through it — vertical or horizontal, four modifiers, state in ARIA, and it prints. The g
+- [Résumé](https://design.imswarnil.com/resume/index.html): Pages — The fourth collection, and a single page rather than five routes: a full-width summary, then experience, education and p
+- [Pages](https://design.imswarnil.com/pages/index.html): Pages — Home, about, contact, the archive, now, the résumé, the legal pages and the subscriber welcome page — one document each,
+- [Homepage](https://design.imswarnil.com/pages/home.html): Pages — The cinematic hero, the collections grid, the stats band and the newsletter CTA — the page that puts the most previously
+- [About](https://design.imswarnil.com/pages/about.html): Pages — The split hero, a bare stats row, the summary card, a career timeline, a checklist, the pull-quote and the quiet sponsor
+- [Contact](https://design.imswarnil.com/pages/contact.html): Pages — A page head, a two-column form with expectations in the rail, the link cluster, and a native-details FAQ accordion. .fie
+- [Archive](https://design.imswarnil.com/pages/archive.html): Pages — A page head, a search field and collection chips, the totals, then everything published in one year-grouped .col-order. 
+- [Now](https://design.imswarnil.com/pages/now.html): Pages — A date, long-form .content, and the one place a progress bar is honest — real, in-flight work rather than a fake loading
+- [Terms & privacy](https://design.imswarnil.com/pages/legal.html): Pages — Two pages, one shell — a small page head, .content, and a sticky TOC rail with a last-updated date, all from _legal_page
+- [Welcome, subscriber](https://design.imswarnil.com/pages/welcome.html): Pages — The inverse billboard hero, a three-step "what happens next" spine, a start-here card grid and the quiet follow CTA. .he
+- [Page transitions](https://design.imswarnil.com/page-transitions.html): Animation & Motion — Scene changes between collections, live: one @view-transition rule, nine flavours, and real links below to go see them f
+- [Motion basics](https://design.imswarnil.com/m-basics.html): Animation & Motion — Four durations, four easings. No component may invent a duration. Entrances travel 16px, not 60 — long travel reads as "
+- [Text effects](https://design.imswarnil.com/m-text-effects.html): Animation & Motion — Twelve. Most need the text split into spans carrying --i ; the preview does that with five lines of JS. Without spans ev
+- [Annotations](https://design.imswarnil.com/m-annotations.html): Animation & Motion — Marks that look like someone reached in and drew on the page. One trick behind all of them: an SVG stroke with stroke-da
+- [Micro-interactions](https://design.imswarnil.com/m-micro.html): Animation & Motion — Eight hover behaviours. All pointer-gated, all one property, none longer than 200ms. A hover tells you something is inte
+- [Section presets](https://design.imswarnil.com/m-presets.html): Animation & Motion — Five ways for a whole block to arrive. Put one on a <section> ; its children carry --i for the stagger. Add .sec-on-scro
+- [Logo sting](https://design.imswarnil.com/m-stings.html): Animation & Motion — The three-second brand hit — the tudum problem. Five idents, one per context. Each ends on the wordmark, so the last fra
+- [Thumbnails](https://design.imswarnil.com/yt-thumbs.html): Broadcast · YouTube — Five styles, one grammar. The grammar is what makes a row of them read as one channel; the style tells you which video i
+- [Thumb layouts](https://design.imswarnil.com/yt-layouts.html): Broadcast · YouTube — Rather than drawing twenty thumbnails, there are three layouts and a set of category skins . Any layout takes any catego
+- [Categories](https://design.imswarnil.com/yt-categories.html): Broadcast · YouTube — Three of each, so you can see that the skin survives a change of layout. Still no duration, no category chip, no view co
+- [Series art](https://design.imswarnil.com/yt-series.html): Broadcast · YouTube — A series has to read as a set when five sit in a row on a playlist. So the wordmark, the numeral position, the title bas
+- [Live scenes](https://design.imswarnil.com/yt-livescenes.html): Broadcast · YouTube — The five arrangements a stream actually cycles through. Every dashed region is a capture source — put the OBS scene ther
+- [Screens](https://design.imswarnil.com/yt-screens.html): Broadcast · YouTube — .scene-title · .title-2…5 .scene-end · .end-2…5 · .end__slot · .end__target
+- [Scenes](https://design.imswarnil.com/yt-scenes.html): Broadcast · YouTube — Full 1920 × 1080 frames to screenshot or screen-record onto the timeline. Each is one self-contained element.
+- [Live](https://design.imswarnil.com/yt-live.html): Broadcast · YouTube — The holding frames for a stream: we're live, chat, and back-in-a-minute. The chat rail is a real 26cqw column, so the ca
+- [End screens](https://design.imswarnil.com/yt-end.html): Broadcast · YouTube — The last 20 seconds. YouTube overlays its own elements on top, so the dashed regions are holes — mark them, don't decora
+- [Subscribe](https://design.imswarnil.com/yt-subs.html): Broadcast · YouTube — One subscribe per video, placed where the point just landed — not at the start, where nobody has a reason yet.
+- [Engagement](https://design.imswarnil.com/yt-engage.html): Broadcast · YouTube — Four subscribe styles, an engagement row, a chat panel and a comment prompt. The honest rule: an on-screen SUBSCRIBE is 
+- [Branding](https://design.imswarnil.com/yt-brand.html): Broadcast · YouTube — The banner is cropped differently on every device — TV gets the whole 2560 × 1440, mobile gets only the centre 1546 × 42
+- [Backdrops](https://design.imswarnil.com/yt-backdrops.html): Broadcast · YouTube — Layer 1's patterns are tuned for a web page at 16px; on a 1280 × 720 canvas they vanish. These are the same ideas re-cut
+- [Posts](https://design.imswarnil.com/ig-posts.html): Broadcast · Social — Three skins, the same grammar as a thumbnail: kicker, title, one accent word, handle bar at the bottom in the same place
+- [Carousel](https://design.imswarnil.com/ig-carousel.html): Broadcast · Social — Five slides with fixed roles — hook → point → point → point → ask . Every slide carries the same handle bar and page cou
+- [Stories](https://design.imswarnil.com/ig-story.html): Broadcast · Social — The top 14% and the bottom 18% belong to the platform. The dashed regions mark them — put nothing there that has to be r
+- [Grid](https://design.imswarnil.com/ig-grid.html): Broadcast · Social — The real test of a set: nine posts, three across. If two adjacent tiles look the same, the set is wrong — alternate skin
+- [Follow](https://design.imswarnil.com/ig-follow.html): Broadcast · Social — 
+- [Share](https://design.imswarnil.com/ig-share.html): Broadcast · Social — Drawn as UI so it can sit inside a story or a scene. The copy-link row is the honest share action — it's the one people 
+- [Background](https://design.imswarnil.com/u-background.html): Helpers & Utilities — Semantic surfaces only — markup never names a ramp step. the surface family .u-bg-canvas / -surface / -sunken / -raised 
+- [Borders](https://design.imswarnil.com/u-borders.html): Helpers & Utilities — Hairlines and the radius ladder. radii, to scale .u-border / .u-border-0 .u-border-top / -bottom .u-border-subtle / -str
+- [Colors](https://design.imswarnil.com/u-colors.html): Helpers & Utilities — Foreground utilities — semantic, both themes, verified contrast. the text ladder — flip the theme to verify both .u-fg-d
+- [Display](https://design.imswarnil.com/u-display.html): Helpers & Utilities — Display modes plus the four responsive hiders. .u-block / .u-inline / .u-inline-block .u-flex / .u-inline-flex / .u-grid
+- [Flex](https://design.imswarnil.com/u-flex.html): Helpers & Utilities — Direction, wrap, alignment, growth — the flexbox vocabulary. a row with one growing member .u-row / .u-col .u-wrap / .u-
+- [Float](https://design.imswarnil.com/u-float.html): Helpers & Utilities — For prose intrusions only — layout belongs to flex and grid. .u-float-end inside .u-clearfix .u-float-start / .u-float-e
+- [Interactions](https://design.imswarnil.com/u-interactions.html): Helpers & Utilities — Cursor, pointer-events, selection, touch. try the cursors and the one-click select .u-pointer / .u-cursor-default / .u-n
+- [Overflow](https://design.imswarnil.com/u-overflow.html): Helpers & Utilities — Clip it, scroll it, or let it breathe — per axis. a row that scrolls inside its container — the page never scrolls sidew
+- [Position](https://design.imswarnil.com/u-position.html): Helpers & Utilities — Placement plus the sticky helper. a badge pinned to a relative parent .u-static / .u-relative / .u-absolute / .u-fixed .
+- [Shadows](https://design.imswarnil.com/u-shadows.html): Helpers & Utilities — The elevation ladder — in dark themes it swaps for a lit top edge. shadow-0 through shadow-5 — flip the theme to see the
+- [Sizing](https://design.imswarnil.com/u-sizing.html): Helpers & Utilities — Widths, heights, and the measure caps. the measure caps .u-w-full / -fit / -min / -max .u-h-full / .u-h-dvh .u-max-w-ful
+- [Spacing](https://design.imswarnil.com/u-spacing.html): Helpers & Utilities — Margin, padding and gap off the 4px ladder — never a raw px. the padding ladder, felt .u-m-0 / .u-m-auto / .u-mx-auto .u
+- [Text](https://design.imswarnil.com/u-text.html): Helpers & Utilities — Alignment, transform, wrapping, weight — the typographic switches. .u-truncate — the honest overflow .u-text-start / -ce
+- [Vertical align](https://design.imswarnil.com/u-valign.html): Helpers & Utilities — For inline boxes and table cells — flex alignment lives on the Flex page. badges riding one line at three alignments .u-
+- [Visibility](https://design.imswarnil.com/u-visibility.html): Helpers & Utilities — Three ways to disappear, each honest about what it keeps. invisible keeps the gap; sr-only speaks .u-invisible / .u-visi

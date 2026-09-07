@@ -1,0 +1,356 @@
+/* =============================================================================
+   13 · CARD
+   The workhorse. Every collection on the site is a deck of these — designed at
+   thumbnail scale first (P1), so the title survives a 120px crop.
+   ========================================================================== */
+
+.card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	background: var(--bg-surface);
+	border: var(--border-hair) solid var(--line-default);
+	border-radius: var(--radius-card);
+	overflow: hidden;
+	transition: var(--t-colors), var(--t-transform), var(--t-shadow);
+}
+
+@media (hover: hover) and (pointer: fine) {
+	.card:hover {
+		transform: translate3d(0, -3px, 0);
+		box-shadow: var(--shadow-2);
+		border-color: var(--line-strong);
+	}
+}
+
+/* Whole-card link. The <a> stays on the title (so the accessible name and the
+   tab stop are right) and its ::after covers the card. */
+.card__link { text-decoration: none; color: inherit; }
+
+/* When the card ITSELF is the anchor, nothing inside it should underline —
+   the card is the affordance, not the words. */
+a.card,
+a.card:hover { text-decoration: none; color: inherit; }
+
+.card__link::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: var(--z-raised);
+}
+
+/* Anything that must stay clickable above the cover (a tag, a play button). */
+.card__above { position: relative; z-index: calc(var(--z-raised) + 1); }
+
+/* ── Media ───────────────────────────────────────────────────────────────── */
+
+.card__media {
+	position: relative;
+	aspect-ratio: var(--ratio-video);
+	background: var(--bg-media);
+	overflow: hidden;
+	flex: none;
+}
+
+.card__media > img,
+.card__media > video {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform var(--dur-4) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+	.card:hover .card__media > img { transform: scale(1.03); }
+}
+
+.card__media-square { aspect-ratio: var(--ratio-square); }
+.card__media-photo  { aspect-ratio: var(--ratio-photo); }
+.card__media-poster { aspect-ratio: var(--ratio-poster); }
+
+/* Corner slots on the media — runtime bottom-right, status top-left. */
+.card__media-tr,
+.card__media-br,
+.card__media-tl {
+	position: absolute;
+	z-index: var(--z-raised);
+}
+
+.card__media-tl { top: var(--space-3); left: var(--space-3); }
+.card__media-tr { top: var(--space-3); right: var(--space-3); }
+.card__media-br { bottom: var(--space-3); right: var(--space-3); }
+
+/* ── Body ────────────────────────────────────────────────────────────────── */
+
+.card__body {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-2);
+	padding: var(--space-5);
+	flex: 1;
+}
+
+.card__meta {
+	font-family: var(--font-slate);
+	font-size: var(--text-2xs);
+	letter-spacing: var(--tracking-slate);
+	text-transform: uppercase;
+	color: var(--fg-subtle);
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
+	flex-wrap: wrap;
+}
+
+.card__title {
+	font-family: var(--font-heading-effective);
+	font-size: var(--text-lg);
+	font-weight: var(--weight-bold);
+	line-height: var(--leading-snug);
+	letter-spacing: var(--tracking-tight);
+	color: var(--fg-default);
+	text-wrap: balance;
+}
+
+.card__excerpt {
+	font-size: var(--text-sm);
+	line-height: var(--leading-normal);
+	color: var(--fg-muted);
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	overflow: hidden;
+}
+
+.card__footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--space-3);
+	padding: var(--space-3) var(--space-5);
+	border-top: var(--border-hair) solid var(--line-subtle);
+	margin-top: auto;
+	font-size: var(--text-xs);
+	color: var(--fg-subtle);
+}
+
+/* ── Variants ────────────────────────────────────────────────────────────── */
+
+/* Featured: an accent hairline and a soft tint. Used for exactly one card in
+   a deck — the editor's pick, the newest episode. */
+.card-featured {
+	border-color: var(--line-accent);
+	background: var(--bg-surface);
+}
+
+.card-featured .card__title { color: var(--fg-default); }
+
+/* Inverse: for the cinematic decks (webseries, videos). Always dark. */
+.card-inverse {
+	background: var(--ink-950);
+	border-color: rgb(255 255 255 / 0.10);
+	color: var(--ink-50);
+}
+
+.card-inverse .card__title { color: var(--ink-50); }
+.card-inverse .card__excerpt { color: var(--ink-400); }
+.card-inverse .card__footer { border-top-color: rgb(255 255 255 / 0.08); }
+
+/* Row: media left, body right. Search results, "up next", episode lists. */
+.card-row {
+	flex-direction: row;
+	align-items: stretch;
+}
+
+.card-row > .card__media {
+	width: 40%;
+	max-width: 14rem;
+	aspect-ratio: var(--ratio-video);
+}
+
+.card-row > .card__body { padding: var(--space-4); }
+
+@media (max-width: 34rem) {
+	.card-row { flex-direction: column; }
+	.card-row > .card__media { width: 100%; max-width: none; }
+}
+
+/* Compact: no media, tight padding. Changelog, snippets, guestbook. */
+.card-compact > .card__body { padding: var(--space-4); gap: var(--space-1); }
+.card-compact .card__title { font-size: var(--text-base); }
+
+/* Bare: no border or background — a card in a list that already has rules. */
+.card-bare {
+	background: transparent;
+	border-color: transparent;
+	border-radius: 0;
+}
+
+.card-bare:hover { transform: none; box-shadow: none; }
+
+/* Poster: the Netflix-style tile. Title lives on the image. */
+.card-poster {
+	border: 0;
+	background: var(--bg-media);
+	border-radius: var(--radius-media);
+}
+
+.card-poster > .card__media {
+	aspect-ratio: var(--ratio-poster);
+	border-radius: inherit;
+}
+
+.card-poster .card__body {
+	position: absolute;
+	inset: auto 0 0;
+	padding: var(--space-4);
+	gap: var(--space-1);
+	background: linear-gradient(to top, rgb(0 0 0 / 0.85), rgb(0 0 0 / 0.35) 55%, transparent);
+	color: var(--pure-white);
+}
+
+.card-poster .card__title { color: var(--pure-white); font-size: var(--text-base); }
+.card-poster .card__meta { color: rgb(255 255 255 / 0.72); }
+
+/* ── Deck ────────────────────────────────────────────────────────────────
+   The default grid a collection renders into. */
+
+.deck {
+	display: grid;
+	gap: var(--grid-gap);
+	grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr));
+}
+
+.deck-sm { grid-template-columns: repeat(auto-fill, minmax(min(13rem, 100%), 1fr)); }
+.deck-lg { grid-template-columns: repeat(auto-fill, minmax(min(24rem, 100%), 1fr)); }
+
+/* ── Plan · membership pricing ─────────────────────────────────────────────────
+   A card that has to answer four questions in a fixed order — what tier, what
+   price, what you get, how to start — because a pricing grid is read across
+   rather than down: people compare the same line on three cards at once. So
+   every part is a named slot and the order is not negotiable.
+
+   Exactly one card in a grid may be .plan-featured. Two featured plans is the
+   same as none, and the accent is rationed in this system precisely so that
+   "this one" can mean something.
+
+     <div class="plan-grid">
+       <article class="plan plan-featured">
+         <span class="plan__flag">Most popular</span>
+         <span class="plan__name">Member</span>
+         <p class="plan__price">$9<span class="plan__period">/month</span></p>
+         <p class="plan__note">Everything, and the archive.</p>
+         <ul class="plan__features"> <li> … </ul>
+         <a class="btn btn-primary plan__cta"> … </a>
+       </article>
+     </div>
+   -------------------------------------------------------------------------- */
+
+.plan-grid {
+	display: grid;
+	gap: var(--space-5);
+	grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
+	align-items: start;
+}
+
+.plan {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-3);
+	padding: var(--space-6);
+	border: var(--border-hair) solid var(--line-default);
+	border-radius: var(--radius-card);
+	background: var(--bg-surface);
+	height: 100%;
+}
+
+/* The one that is recommended. A 2px accent rule, never a colour fill — the
+   same house rule the navbar's active state follows. */
+.plan-featured {
+	border-color: var(--accent);
+	box-shadow: var(--shadow-2);
+}
+
+.plan__flag {
+	position: absolute;
+	top: 0;
+	right: var(--space-5);
+	transform: translateY(-50%);
+	padding: 2px var(--space-3);
+	border-radius: var(--radius-pill);
+	background: var(--accent);
+	color: var(--fg-on-accent);
+	font-family: var(--font-slate);
+	font-size: var(--text-2xs);
+	letter-spacing: var(--tracking-slate);
+	text-transform: uppercase;
+}
+
+.plan__name {
+	font-family: var(--font-slate);
+	font-size: var(--text-2xs);
+	letter-spacing: var(--tracking-slate);
+	text-transform: uppercase;
+	color: var(--fg-subtle);
+}
+
+.plan__price {
+	font-family: var(--font-display);
+	font-size: var(--text-4xl);
+	font-weight: var(--weight-bold);
+	letter-spacing: var(--tracking-tighter);
+	line-height: var(--leading-flat);
+	font-variant-numeric: tabular-nums;
+}
+
+.plan__period {
+	font-family: var(--font-body);
+	font-size: var(--text-sm);
+	font-weight: var(--weight-medium);
+	letter-spacing: var(--tracking-normal);
+	color: var(--fg-faint);
+}
+
+.plan__note {
+	font-size: var(--text-sm);
+	color: var(--fg-subtle);
+	line-height: var(--leading-normal);
+}
+
+.plan__features {
+	list-style: none;
+	margin: var(--space-2) 0 0;
+	padding: 0;
+	display: grid;
+	gap: var(--space-2);
+	font-size: var(--text-sm);
+	border-top: var(--border-hair) solid var(--line-subtle);
+	padding-top: var(--space-4);
+}
+
+.plan__features > li {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--space-2);
+	color: var(--fg-subtle);
+}
+
+/* The tick is drawn, so a feature list needs no icon markup per row. */
+.plan__features > li::before {
+	content: '✓';
+	color: var(--fg-accent);
+	font-size: var(--text-xs);
+	line-height: 1.5;
+	flex: none;
+}
+
+/* A feature the tier does NOT include still earns a row — an absence you can
+   see beats a list you have to diff against the next card. */
+.plan__features > li[data-off] { color: var(--fg-faint); }
+.plan__features > li[data-off]::before { content: '−'; color: var(--fg-faint); }
+
+/* Pushed to the bottom so every CTA in the grid lines up regardless of how
+   many features each tier lists. */
+.plan__cta { margin-top: auto; width: 100%; justify-content: center; }

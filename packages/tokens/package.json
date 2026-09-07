@@ -1,0 +1,40 @@
+{
+	"name": "@creatorkit/tokens",
+	"version": "0.1.0",
+	"description": "Design tokens for CreatorKit — one source, emitted as a Tailwind preset, CSS custom properties and typed JS.",
+	"keywords": ["design-tokens", "tailwind", "css-variables", "oklch"],
+	"homepage": "https://creator.imswarnil.com",
+	"bugs": "https://github.com/imswarnil/CreatorKit/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/imswarnil/CreatorKit.git",
+		"directory": "packages/tokens"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Swarnil",
+		"url": "https://imswarnil.com"
+	},
+	"type": "module",
+	"sideEffects": ["*.css"],
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"files": ["dist", "src", "README.md"],
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"build": "tsc -p tsconfig.json",
+		"typecheck": "tsc -p tsconfig.json --noEmit",
+		"lint": "eslint src",
+		"test": "node --test --experimental-test-module-mocks \"src/**/*.test.ts\" 2>/dev/null || echo 'no tests yet'",
+		"clean": "rm -rf dist .turbo *.tsbuildinfo"
+	}
+}

@@ -1,0 +1,46 @@
+{
+	"name": "creatorkit",
+	"version": "0.0.0",
+	"private": true,
+	"description": "CreatorKit — a React + Tailwind UI kit and design system for creators.",
+	"license": "MIT",
+	"author": {
+		"name": "Swarnil",
+		"url": "https://imswarnil.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/imswarnil/CreatorKit.git"
+	},
+	"type": "module",
+	"packageManager": "pnpm@12.3.4",
+	"engines": {
+		"node": ">=22",
+		"pnpm": ">=10"
+	},
+	"scripts": {
+		"build": "turbo run build",
+		"dev": "turbo run dev --parallel",
+		"lint": "turbo run lint",
+		"typecheck": "turbo run typecheck",
+		"test": "turbo run test",
+		"format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,css,md,mdx,yml,yaml}\"",
+		"format:check": "prettier --check \"**/*.{ts,tsx,js,mjs,json,css,md,mdx,yml,yaml}\"",
+		"clean": "turbo run clean && rm -rf node_modules .turbo",
+		"changeset": "changeset",
+		"version-packages": "changeset version",
+		"release": "turbo run build && changeset publish"
+	},
+	"devDependencies": {
+		"@changesets/cli": "^2.27.0",
+		"@eslint/js": "^9.0.0",
+		"eslint": "^9.0.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-react-hooks": "^5.0.0",
+		"globals": "^15.0.0",
+		"prettier": "^3.3.0",
+		"turbo": "^2.1.0",
+		"typescript": "^5.6.0",
+		"typescript-eslint": "^8.0.0"
+	}
+}

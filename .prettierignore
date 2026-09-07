@@ -1,0 +1,8 @@
+node_modules
+dist
+.next
+.turbo
+ghost
+_legacy
+pnpm-lock.yaml
+CHANGELOG.md

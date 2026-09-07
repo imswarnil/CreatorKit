@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Button — Docs — Swarnil</title>
+<meta name="description" content="The button component: demo, markup, and every class." />
+<link rel="icon" href="../../docs/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../dist/creator.css" />
+<link rel="stylesheet" href="../../collection/collection.css" />
+<script src="../../src/nav.js" defer></script>
+<!-- The system's own highlighter. Collections were the one place shipping code
+     blocks without it, so snippets rendered as plain text while the docs site
+     three folders away coloured the identical markup. -->
+<script src="../../src/highlight.js" defer></script>
+<script src="../../collection/collection.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="nav-shell">
+  <nav class="nav-bar" aria-label="Main">
+    <a class="logo logo-sm" href="../../collection/_pages/home.html">Swarnil</a>
+    <div class="nav-links">
+      <a class="nav-link" href="../../collection/course/index.html">Courses</a>
+      <a class="nav-link" href="../../collection/travel/index.html">Travel</a>
+      <a class="nav-link" href="../../collection/blog/index.html">Blog</a>
+      <a class="nav-link" href="../../collection/webseries/index.html">Series</a>
+      <a class="nav-link" href="../../collection/newsletter/index.html">Newsletter</a>
+      <a class="nav-link" href="../../collection/projects/index.html">Projects</a>
+      <a class="nav-link" href="../../collection/_pages/resume.html">Résumé</a>
+    </div>
+    <div class="nav-actions">
+      <a class="btn btn-primary btn-sm btn-pill" href="#i">Subscribe</a>
+    </div>
+  </nav>
+</header>
+
+<main id="main">
+
+  <div class="container-wide section-sm">
+    <nav class="col-post__crumbs u-mb-6" aria-label="Breadcrumb">
+      <a href="./index.html">Docs</a> <span>/</span>
+      <a href="./section.html">Components</a> <span>/</span> <span>Button</span>
+    </nav>
+
+    <div class="grid-rail-left">
+      <nav class="stack-xs"><p class="row-between t-slate-sm u-mt-5 u-mb-2" style="color:var(--fg-faint)"><span>Getting started</span><span>5</span></p><div class="list-group list-group-flush"><a class="list-group__item" href="./post.html">Installation</a><a class="list-group__item" href="./post.html">Quickstart</a><a class="list-group__item" href="./post.html">Theming</a><a class="list-group__item" href="./post.html">Folder structure</a><a class="list-group__item" href="./post.html">Upgrading</a></div><p class="row-between t-slate-sm u-mt-5 u-mb-2" style="color:var(--fg-faint)"><span>Components</span><span>6</span></p><div class="list-group list-group-flush"><a class="list-group__item" href="./post.html">Button</a><a class="list-group__item" href="./post.html">Card</a><a class="list-group__item" href="./post.html">Modal</a><a class="list-group__item" href="./post.html">Form controls</a><a class="list-group__item" href="./post.html">Timeline</a><a class="list-group__item" href="./post.html">Navbar</a></div><p class="row-between t-slate-sm u-mt-5 u-mb-2" style="color:var(--fg-faint)"><span>Patterns</span><span>3</span></p><div class="list-group list-group-flush"><a class="list-group__item" href="./post.html">Page layouts</a><a class="list-group__item" href="./post.html">Dark mode</a><a class="list-group__item" href="./post.html">Printing</a></div><p class="row-between t-slate-sm u-mt-5 u-mb-2" style="color:var(--fg-faint)"><span>API reference</span><span>2</span></p><div class="list-group list-group-flush"><a class="list-group__item" href="./post.html">Token reference</a><a class="list-group__item" href="./post.html">JavaScript hooks</a></div></nav>
+
+      <div>
+        <h1 class="t-display-2">Button</h1>
+        <p class="t-lead u-mt-3" style="max-width:var(--measure-lead)">The reference
+          shape every component page in this collection uses: a live demo, the
+          markup that made it, and the class table underneath.</p>
+
+        <div class="surface u-mt-8" style="padding:var(--space-8);display:grid;place-items:center">
+          <button class="btn btn-primary">Primary</button>
+        </div>
+        <div class="u-mt-4"><figure class="codebox codebox-light u-m-0"><figcaption class="codebox__head"><span class="codebox__lang">html</span><button class="codebox__copy" type="button" data-copy>Copy</button></figcaption><pre class="codebox__pre"><code>&lt;button class="btn btn-primary"&gt;Primary&lt;/button&gt;</code></pre></figure></div>
+
+        <div class="u-mt-8">
+          <div class="row-between u-mb-5"><div><h2 class="t-h3">Classes</h2></div></div>
+          <div class="table-wrap"><table class="table">
+            <thead><tr><th>Class</th><th>Does</th></tr></thead><tbody>
+            <tr><td><code class="t-code">btn-primary / -secondary / -ghost / -quiet</code></td><td>the six intents</td></tr><tr><td><code class="t-code">btn-sm / (default) / btn-lg</code></td><td>the three sizes</td></tr><tr><td><code class="t-code">:disabled</code></td><td>the only disabled state — no .btn-disabled class</td></tr>
+            </tbody></table></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="logo logo-sm" href="../../collection/_pages/home.html">Swarnil</a>
+        <p class="footer__tag">A creator's site, built from tokens — videos, courses,
+          a blog, a newsletter and the trips between them. One design system
+          underneath all of it.</p>
+      </div>
+
+      <div>
+        <p class="footer__head">Collections</p>
+        <div class="footer__links">
+          <a href="../../collection/course/index.html">Courses</a>
+          <a href="../../collection/travel/index.html">Travel</a>
+          <a href="../../collection/blog/index.html">Blog</a>
+          <a href="../../collection/videos/index.html">Videos</a>
+          <a href="../../collection/guides/index.html">Guides</a>
+        </div>
+      </div>
+
+      <div>
+        <p class="footer__head">More</p>
+        <div class="footer__links">
+          <a href="../../collection/newsletter/index.html">Newsletter</a>
+          <a href="../../collection/projects/index.html">Projects</a>
+          <a href="../../collection/snippets/index.html">Snippets</a>
+          <a href="../../collection/prompts/index.html">Prompts</a>
+          <a href="../../collection/products/index.html">Products I use</a>
+        </div>
+      </div>
+
+      <div>
+        <p class="footer__head">Site</p>
+        <div class="footer__links">
+          <a href="../../collection/_pages/about.html">About</a>
+          <a href="../../collection/_pages/contact.html">Contact</a>
+          <a href="../../collection/_pages/archive.html">Archive</a>
+          <a href="../../collection/_pages/now.html">Now</a>
+          <a href="../../collection/_pages/resume.html">Résumé</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__signoff">
+      <span>© 2026 Swarnil Singhai · Docs — a collection ·
+        <a href="../../collection/_pages/terms.html">Terms</a> ·
+        <a href="../../collection/_pages/privacy.html">Privacy</a></span>
+      <span class="footer__rec"><span class="dot dot-sm dot-live"></span>Still rolling</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

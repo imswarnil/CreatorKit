@@ -1,0 +1,15 @@
+{
+	"name": "@creatorkit/docs",
+	"version": "0.1.0",
+	"private": true,
+	"description": "creator.imswarnil.com — the CreatorKit documentation site. Built in Phase 4.",
+	"type": "module",
+	"scripts": {
+		"build": "echo 'apps/docs: scaffold only — built in Phase 4'",
+		"dev": "echo 'apps/docs: scaffold only — built in Phase 4'",
+		"lint": "echo 'apps/docs: nothing to lint yet'",
+		"typecheck": "echo 'apps/docs: nothing to typecheck yet'",
+		"test": "echo 'apps/docs: no tests yet'",
+		"clean": "rm -rf .next dist .turbo"
+	}
+}

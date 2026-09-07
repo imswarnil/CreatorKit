@@ -1,0 +1,1574 @@
+/* =============================================================================
+   33 · NAVBAR
+   The site's chrome, in every shape it takes. 24-nav.css holds the primitives
+   (the island, links, tabs, crumbs, pager, toc); this file is the navigation
+   SYSTEM built on them: alignment, active styles, dropdowns, the mega panel,
+   the mobile sheet, and the submenu row a collection adds beneath it.
+
+   HOUSE RULES
+   · Active is a dot or a 2px rule — never a filled pill.
+   · One level of dropdown. A second level is a mega panel, not a fly-out.
+   · Every panel is a <details> or a <dialog>: keyboard and ESC come free.
+   · The site bar stays; context becomes a submenu row beneath it.
+   ========================================================================== */
+
+/* ── Alignment ───────────────────────────────────────────────────────────────
+   Two honest choices, because "same width as the content" means two different
+   things and picking silently is how navs end up looking 16px wrong.
+
+   .nav-shell        the island's BORDER aligns with the content column edge
+                     (default — the island reads as a floating object)
+   .nav-shell-flush  the island's CONTENT aligns with the page's text, so the
+                     wordmark sits directly above the page title
+   .nav-shell-full   no island: a full-bleed bar with a hairline underneath
+   ------------------------------------------------------------------------- */
+
+.nav-shell-flush .nav-bar { padding-inline: 0; border-inline: 0; border-radius: 0; background: none; backdrop-filter: none; box-shadow: none; }
+.nav-shell-flush .nav-bar { border-top: 0; border-bottom: var(--border-hair) solid var(--line-default); }
+
+.nav-shell-full {
+	max-width: none;
+	padding-inline: 0;
+	top: 0;
+}
+
+/* The SURFACE goes edge to edge — a full-width bar whose hairline stops short
+   of the window is just an island with square corners. Only the contents are
+   pulled in, to the same column the page's text uses.
+
+   No border either: the island earns its outline by floating, a bar that fills
+   the width does not, and a full-bleed hairline is a seam across the page. The
+   background alone separates it. */
+.nav-shell-full .nav-bar {
+	padding-inline: max(var(--gutter), calc((100% - var(--w-site)) / 2));
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+}
+
+/* Scrolled state — the island tightens. Toggle `data-scrolled` from JS. */
+.nav-shell[data-scrolled] .nav-bar {
+	background: color-mix(in srgb, var(--bg-canvas) 94%, transparent);
+	box-shadow: var(--shadow-2);
+}
+
+/* ── Active styles ───────────────────────────────────────────────────────────
+   The dot is the default. Two alternates for contexts where a dot reads as
+   decoration — a docs bar, a player bar.
+   ------------------------------------------------------------------------- */
+
+/* Rule: a 2px accent underline instead of the dot. */
+.nav-links-rule .nav-link[aria-current]::before { display: none; }
+
+.nav-links-rule .nav-link {
+	border-radius: 0;
+	border-bottom: var(--border-2) solid transparent;
+	padding-inline: var(--space-2);
+}
+
+.nav-links-rule .nav-link[aria-current] { border-bottom-color: var(--accent); }
+
+/* Soft: a sunken wash. For dense bars where neither dot nor rule survives. */
+.nav-links-soft .nav-link[aria-current]::before { display: none; }
+.nav-links-soft .nav-link[aria-current] { background: var(--bg-sunken); }
+
+/* ── Dropdown ────────────────────────────────────────────────────────────────
+   <details class="nav-menu">
+     <summary class="nav-link">Learn</summary>
+     <div class="nav-menu__panel"> … .dropdown__item … </div>
+   </details>
+   ------------------------------------------------------------------------- */
+
+.nav-menu { position: relative; }
+
+.nav-menu > summary {
+	list-style: none;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+}
+
+.nav-menu > summary::-webkit-details-marker { display: none; }
+
+.nav-menu > summary::after {
+	content: '';
+	width: 0.35rem;
+	height: 0.35rem;
+	border-right: 1.5px solid currentColor;
+	border-bottom: 1.5px solid currentColor;
+	transform: rotate(45deg) translateY(-1px);
+	transition: var(--t-transform);
+	opacity: 0.6;
+}
+
+.nav-menu[open] > summary::after { transform: rotate(-135deg) translateY(-1px); }
+
+.nav-menu__panel {
+	position: absolute;
+	top: calc(100% + var(--space-3));
+	left: 50%;
+	transform: translateX(-50%);
+	min-width: 14rem;
+	z-index: var(--z-popover, 40);
+	background: var(--bg-surface);
+	border: var(--border-hair) solid var(--line-default);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-3);
+	padding: var(--space-2);
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	animation: nav-drop var(--dur-2) var(--ease-out);
+}
+
+@keyframes nav-drop {
+	from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+}
+
+/* ── Mega panel ──────────────────────────────────────────────────────────────
+   A full-width sheet under the island. Columns of links plus one featured
+   card, because a mega menu that is only links is a dropdown wearing a costume.
+   ------------------------------------------------------------------------- */
+
+.nav-mega { position: static; }        /* so the panel can span the island */
+
+.nav-mega__panel {
+	position: absolute;
+	top: calc(100% + var(--space-3));
+	left: 0;
+	right: 0;
+	z-index: var(--z-popover, 40);
+	background: var(--bg-surface);
+	border: var(--border-hair) solid var(--line-default);
+	border-radius: var(--radius-sheet);
+	box-shadow: var(--shadow-4);
+	padding: var(--space-6);
+	display: grid;
+	gap: var(--space-6);
+	grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+	animation: nav-mega-in var(--dur-2) var(--ease-out);
+	transform-origin: top center;
+}
+
+@keyframes nav-mega-in {
+	from { opacity: 0; transform: translateY(-8px) scaleY(0.98); }
+}
+
+.nav-mega__col { display: flex; flex-direction: column; gap: var(--space-1); }
+
+.nav-mega__title {
+	font-family: var(--font-slate);
+	font-size: var(--text-2xs);
+	letter-spacing: var(--tracking-slate);
+	text-transform: uppercase;
+	color: var(--fg-faint);
+	margin-bottom: var(--space-2);
+}
+
+.nav-mega__link {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--space-3);
+	padding: var(--space-2);
+	border-radius: var(--radius-md);
+	text-decoration: none;
+	color: var(--fg-default);
+	transition: var(--t-colors);
+}
+
+.nav-mega__link:hover { background: var(--bg-sunken); }
+.nav-mega__link .icon { margin-top: 2px; opacity: 0.7; flex: none; }
+.nav-mega__link b { display: block; font-size: var(--text-sm); font-weight: var(--weight-semibold); }
+.nav-mega__link span { display: block; font-size: var(--text-xs); color: var(--fg-subtle); }
+
+/* The featured cell — one promoted thing, on the sunken surface. */
+.nav-mega__feature {
+	grid-column: span 1;
+	background: var(--bg-sunken);
+	border-radius: var(--radius-lg);
+	padding: var(--space-4);
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-3);
+	text-decoration: none;
+	color: inherit;
+}
+
+.nav-mega__feature img,
+.nav-mega__feature .pattern {
+	border-radius: var(--radius-md);
+	aspect-ratio: 16 / 9;
+	object-fit: cover;
+	width: 100%;
+}
+
+/* ── Mobile sheet ────────────────────────────────────────────────────────────
+   <dialog class="nav-sheet"> — opens like a lens: the panel irises out from
+   the button, a scanline sweeps down, and the items rack into focus one after
+   another. All CSS; <dialog> gives focus trapping and ESC.
+   ------------------------------------------------------------------------- */
+
+.nav-sheet {
+	margin: 0;
+	inset: 0;
+	width: 100%;
+	max-width: none;
+	height: 100dvh;
+	max-height: none;
+	border: 0;
+	padding: 0;
+	background: var(--bg-canvas);
+	color: var(--fg-default);
+	overflow: hidden;
+}
+
+.nav-sheet::backdrop { background: var(--bg-scrim); }
+
+.nav-sheet[open] { animation: nav-iris var(--dur-4) var(--ease-out); }
+
+/* The iris: a circular reveal from the top-right, where the button lives. */
+@keyframes nav-iris {
+	from { clip-path: circle(0% at calc(100% - 2.5rem) 2.5rem); }
+	to   { clip-path: circle(150% at calc(100% - 2.5rem) 2.5rem); }
+}
+
+.nav-sheet__in {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	padding: var(--space-5);
+	position: relative;
+}
+
+/* The scanline that sweeps the panel once on open — the "recording started"
+   beat. Purely decorative, and gone under reduced motion. */
+.nav-sheet__scan {
+	position: absolute;
+	inset-inline: 0;
+	top: 0;
+	height: 2px;
+	background: linear-gradient(90deg, transparent, var(--accent), transparent);
+	opacity: 0.9;
+	animation: nav-scan 900ms var(--ease-out) 120ms both;
+	pointer-events: none;
+}
+
+@keyframes nav-scan {
+	0% { transform: translateY(0); opacity: 0; }
+	20%  { opacity: 0.9; }
+	100%   { transform: translateY(100dvh); opacity: 0; }
+}
+
+.nav-sheet__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--space-3);
+	flex: none;
+	padding-block: var(--space-2);
+}
+
+.nav-sheet__links {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-1);
+	margin-top: var(--space-8);
+	flex: 1;
+	overflow-y: auto;
+}
+
+/* Each row racks into focus, staggered — like a lens finding its subject. */
+.nav-sheet__links > * {
+	animation: nav-rack var(--dur-3) var(--ease-out) both;
+	animation-delay: calc(120ms + var(--i, 0) * 45ms);
+}
+
+@keyframes nav-rack {
+	from { opacity: 0; transform: translateY(10px); filter: blur(6px); }
+	to   { opacity: 1; transform: none; filter: blur(0); }
+}
+
+.nav-sheet__link {
+	display: flex;
+	align-items: center;
+	gap: var(--space-4);
+	padding: var(--space-4) var(--space-2);
+	border-bottom: var(--border-hair) solid var(--line-subtle);
+	font-family: var(--font-display);
+	font-size: var(--text-2xl);
+	font-weight: var(--weight-semibold);
+	letter-spacing: var(--tracking-tight);
+	color: var(--fg-default);
+	text-decoration: none;
+}
+
+.nav-sheet__link .icon { width: 1.25rem; height: 1.25rem; opacity: 0.5; flex: none; }
+
+.nav-sheet__link[aria-current] { color: var(--accent); }
+.nav-sheet__link[aria-current] .icon { opacity: 1; }
+
+.nav-sheet__foot {
+	flex: none;
+	padding-top: var(--space-5);
+	border-top: var(--border-hair) solid var(--line-default);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--space-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nav-sheet[open] { animation: none; }
+	.nav-sheet__scan { display: none; }
+	.nav-sheet__links > * { animation: none; }
+	.nav-menu__panel,
+	.nav-mega__panel { animation: none; }
+}
+
+/* ── Hamburger ───────────────────────────────────────────────────────────────
+   The button that opens the sheet. Three bars that become an X — one element,
+   two pseudo-elements, no icon font and no swapped SVG.
+
+     <button class="nav-burger" aria-expanded="false" aria-controls="menu">
+       <span class="nav-burger__box"><span class="nav-burger__bars"></span></span>
+       <span class="u-sr-only">Menu</span>
+     </button>
+
+   Drive it with aria-expanded — the same attribute a screen reader reads.
+   ------------------------------------------------------------------------- */
+
+.nav-burger {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--control-sm);
+	height: var(--control-sm);
+	padding: 0;
+	border: var(--border-hair) solid var(--line-default);
+	border-radius: var(--radius-full);
+	background: var(--bg-surface);
+	color: var(--fg-default);
+	cursor: pointer;
+	transition: var(--t-colors);
+}
+
+.nav-burger:hover { border-color: var(--line-strong); background: var(--bg-sunken); }
+
+.nav-burger__box { position: relative; width: 1rem; height: 0.75rem; }
+
+.nav-burger__bars,
+.nav-burger__bars::before,
+.nav-burger__bars::after {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	height: 1.5px;
+	background: currentColor;
+	border-radius: var(--radius-pill);
+	transition: transform var(--dur-2) var(--ease-out), opacity var(--dur-1) linear;
+}
+
+.nav-burger__bars { top: calc(50% - 0.75px); }
+.nav-burger__bars::before { content: ''; top: -5px; }
+.nav-burger__bars::after { content: ''; top: 5px; }
+
+/* Open: the middle bar vanishes, the outer two cross. */
+.nav-burger[aria-expanded='true'] .nav-burger__bars { background: transparent; }
+.nav-burger[aria-expanded='true'] .nav-burger__bars::before { transform: translateY(5px) rotate(45deg); }
+.nav-burger[aria-expanded='true'] .nav-burger__bars::after { transform: translateY(-5px) rotate(-45deg); }
+
+/* Squeeze — the bars pull to the centre before crossing. */
+.nav-burger-squeeze .nav-burger__bars::before,
+.nav-burger-squeeze .nav-burger__bars::after { transition-duration: var(--dur-3); }
+.nav-burger-squeeze[aria-expanded='true'] .nav-burger__bars::before,
+.nav-burger-squeeze[aria-expanded='true'] .nav-burger__bars::after { width: 90%; left: 5%; }
+
+/* Aperture — the bars rotate as one, like a lens closing. Pairs with the
+   sheet's iris. */
+.nav-burger-aperture .nav-burger__box { transition: transform var(--dur-3) var(--ease-spring); }
+.nav-burger-aperture[aria-expanded='true'] .nav-burger__box { transform: rotate(90deg); }
+
+/* Bare — no ring, for bars that already have a border. */
+.nav-burger-bare { border: 0; background: none; }
+
+/* Labelled — the word beside the bars, on roomy bars. */
+.nav-burger-labelled {
+	width: auto;
+	border-radius: var(--radius-pill);
+	padding-inline: var(--space-3);
+	gap: var(--space-2);
+	font-family: var(--font-slate);
+	font-size: var(--text-2xs);
+	letter-spacing: var(--tracking-slate);
+	text-transform: uppercase;
+}
+
+/* ── Responsive collapse ─────────────────────────────────────────────────────
+   Put `.nav-collapse` on the island: the link row hides and the burger
+   appears below the breakpoint. Above it, the burger is gone and the links
+   are back — no duplicate markup, no JS.
+   ------------------------------------------------------------------------- */
+
+.nav-collapse .nav-burger { display: none; }
+
+@media (max-width: 48rem) {
+	.nav-collapse .nav-links { display: none; }
+	.nav-collapse .nav-burger { display: inline-flex; }
+}
+
+/* ── GitHub chip ─────────────────────────────────────────────────────────────
+   A quiet link out to the repo, with room for a star count that JS fills in.
+   Sits at the end of the actions cluster, after the theme toggle.
+   ------------------------------------------------------------------------- */
+
+.nav-gh {
+	display: inline-grid;
+	place-items: center;
+	height: var(--control-sm);
+	width: var(--control-sm);
+	border: var(--border-hair) solid var(--line-default);
+	border-radius: var(--radius-pill);
+	background: var(--bg-surface);
+	color: var(--fg-default);
+	text-decoration: none;
+	transition: var(--t-colors);
+}
+
+.nav-gh:hover { border-color: var(--line-strong); background: var(--bg-sunken); }
+.nav-gh .icon { width: 1.05rem; height: 1.05rem; flex: none; }
+
+.nav-gh__stars {
+	font-family: var(--font-slate);
+	font-size: var(--text-2xs);
+	font-variant-numeric: tabular-nums;
+	color: var(--fg-subtle);
+}
+
+
+/* =============================================================================
+   NAVBAR VARIANTS
+   Not ten skins — four positions. A bar's shape is a decision you make once in
+   the design; where it goes when the reader scrolls is a decision about
+   behaviour, and that is the one worth a variant.
+
+     .nav-shell         island   — the floating pill, sticky from the start
+     .nav-shell-fixed   fixed    — pinned to the top, always
+     .nav-shell-morph   island on scroll — full-bleed at rest, drawing itself
+                        into the island once the page has moved
+     .nav-shell-auto    fixed on scroll  — in flow at the top, pinned once you
+                        scroll, and out of the way while you are reading down
+
+   All four are defined above with the shell behaviours. Skins that used to be
+   variants are now the things they always were: .nav-bar-center,
+   .nav-bar-inverse and .nav-bar-compact for the shape, .nav-shell-flush and
+   .nav-shell-full for the alignment. Nothing was lost; the list stopped
+   pretending that "bordered" and "island" are the same kind of choice.
+   ========================================================================== */
+
+/* The ghost: transparent over a hero, materialising once you scroll. It is a
+   behaviour, not a skin, so it survives the cull. */
+.nav-ghost {
+	background: transparent;
+	border-color: transparent;
+	box-shadow: none;
+	backdrop-filter: none;
+	transition: var(--t-colors), var(--t-shadow), backdrop-filter var(--dur-2);
+}
+
+.nav-shell[data-scrolled] .nav-ghost,
+.nav-shell-morph[data-scrolled] .nav-ghost {
+	background: color-mix(in srgb, var(--bg-canvas) 88%, transparent);
+	border-color: var(--line-default);
+	backdrop-filter: saturate(180%) blur(14px);
+	box-shadow: var(--shadow-1);
+}
+
+/* The shell's own position modifiers, usable with any of the four. */
+.nav-s-static { position: static; }
+.nav-s-top { top: 0; }
+
+
+/* =============================================================================
+   COLLECTION STYLES
+   A creator does not publish one kind of thing, and the bar above a web series
+   should not look like the bar above a shop. Each collection gets a class that
+   sets its defaults — and only defaults: every one of them is written in the
+   same tokens the rest of the system uses, so overriding any part of it is a
+   variable, not a fork.
+
+     <nav class="nav-bar nav-video">   … the series, over its own footage
+     <nav class="nav-bar nav-course">  … the course, with progress
+     <nav class="nav-bar nav-blog">    … the writing, out of the way
+     <nav class="nav-bar nav-shop">    … the shop, cart-led
+     <nav class="nav-bar nav-trip">    … the journal, warm
+     <nav class="nav-bar nav-docs">    … the reference, dense
+
+   The knobs each one sets:
+     --bar-bg · --bar-fg · --bar-line · --bar-radius · --bar-h · --bar-blur
+   Set any of them yourself and the collection style yields.
+   ========================================================================== */
+
+.nav-bar {
+	background: var(--bar-bg, color-mix(in srgb, var(--bg-canvas) 82%, transparent));
+	color: var(--bar-fg, inherit);
+	border-color: var(--bar-line, var(--line-default));
+	border-radius: var(--bar-radius, var(--radius-pill));
+	height: var(--bar-h, var(--nav-h));
+	backdrop-filter: var(--bar-blur, saturate(180%) blur(14px));
+}
+
+/* ── Video · the series ──────────────────────────────────────────────────────
+   A series opens on its own footage, so the bar does not sit ON the page — it
+   sits OVER the film, and owns nothing until you scroll. No island, no border,
+   no plate: just the mark and the links on top of the picture, with a gradient
+   doing the legibility work a background would otherwise have to do.
+
+     <header class="nav-shell nav-shell-full nav-over">
+       <nav class="nav-bar nav-video"> … </nav>
+     </header>
+     <div class="nav-over__media"> … your <video> or poster … </div>
+   ------------------------------------------------------------------------- */
+
+.nav-video {
+	--bar-bg: transparent;
+	--bar-fg: var(--pure-white, #fff);
+	--bar-line: transparent;
+	--bar-radius: 0;
+	--bar-blur: none;
+
+	box-shadow: none;
+	color-scheme: dark;
+}
+
+.nav-video .nav-link { color: rgb(255 255 255 / 0.72); }
+.nav-video .nav-link:hover,
+.nav-video .nav-link[aria-current] { color: var(--pure-white, #fff); }
+.nav-video .logo,
+.nav-video .cds-mark { color: var(--pure-white, #fff); }
+.nav-video .nav-burger,
+.nav-video .nav-gh {
+	border-color: rgb(255 255 255 / 0.24);
+	background: rgb(255 255 255 / 0.08);
+	color: var(--pure-white, #fff);
+}
+
+/* The shell that holds a bar over media. The gradient is the only thing making
+   white type legible on an unknown frame, so it is part of the shell rather
+   than something the author remembers to add. */
+.nav-over {
+	position: absolute;
+	inset-inline: 0;
+	top: 0;
+	z-index: var(--z-nav);
+	background: linear-gradient(to bottom,
+		rgb(0 0 0 / 0.55), rgb(0 0 0 / 0.28) 55%, transparent);
+}
+
+/* Once you have scrolled past the film, the bar has to become furniture again
+   or it will float over the text with nothing behind it. */
+.nav-over[data-scrolled] {
+	position: fixed;
+	background: var(--ink-950);
+	box-shadow: var(--shadow-2);
+}
+
+.nav-over__media {
+	position: relative;
+	overflow: hidden;
+	background: var(--bg-media, var(--ink-900));
+	aspect-ratio: 16 / 9;
+	max-height: 82dvh;
+}
+
+.nav-over__media > img,
+.nav-over__media > video {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+/* ── Course · the syllabus ───────────────────────────────────────────────── */
+
+.nav-course-bar {
+	--bar-bg: color-mix(in srgb, var(--bg-canvas) 94%, transparent);
+	--bar-radius: var(--radius-lg);
+}
+
+/* ── Blog · the writing ──────────────────────────────────────────────────────
+   Reading wants the chrome to leave. Flat, hairline, no plate, no shadow. */
+
+.nav-blog {
+	--bar-bg: transparent;
+	--bar-radius: 0;
+	--bar-blur: none;
+	--bar-line: transparent;
+
+	border-bottom-color: var(--line-default);
+	box-shadow: none;
+}
+
+/* ── Shop · the cart leads ───────────────────────────────────────────────── */
+
+.nav-shop {
+	--bar-bg: var(--bg-surface);
+	--bar-radius: var(--radius-md);
+}
+
+.nav-shop .nav-actions { gap: var(--space-3); }
+
+/* ── Trip · the journal ──────────────────────────────────────────────────── */
+
+.nav-trip {
+	--bar-bg: color-mix(in srgb, var(--accent) 8%, var(--bg-canvas));
+	--bar-line: color-mix(in srgb, var(--accent) 24%, transparent);
+	--bar-radius: var(--radius-xl, 1.25rem);
+}
+
+/* ── Docs · the reference ────────────────────────────────────────────────── */
+
+.nav-docs-bar {
+	--bar-h: 2.75rem;
+	--bar-radius: 0;
+	--bar-bg: var(--bg-surface);
+	--bar-blur: none;
+}
+
+.nav-docs-bar .nav-link { height: 1.75rem; font-size: var(--text-sm); }
+
+/* ── Where the dot sits ──────────────────────────────────────────────────────
+   The leading slot is never shared. A plain link keeps the dot in front, where
+   it reads as a marker beside the word; a link that already carries an icon
+   sends the dot to the end rather than stacking two marks at the head, which
+   reads as one four-part smudge and tells you nothing.
+
+   :has() asks the link what it holds, so nobody has to remember a modifier.
+   ------------------------------------------------------------------------- */
+
+.nav-link:has(> svg, > .icon, > .nav-link__icon)[aria-current]::before { display: none; }
+
+.nav-link:has(> svg, > .icon, > .nav-link__icon)[aria-current]::after {
+	content: '';
+	width: var(--dot-sm);
+	height: var(--dot-sm);
+	border-radius: var(--radius-full);
+	background: var(--accent);
+	flex: none;
+}
+
+/* ── Slot order ──────────────────────────────────────────────────────────────
+   The links follow the mark when there is one, and lead when there is not, so
+   a bar without a logo never opens with a hole where the logo would have been.
+   :has() asks the bar what it contains instead of making the author remember
+   a modifier class.
+   ------------------------------------------------------------------------- */
+
+.nav-bar:has(> .logo, > .cds-mark, > .nav-bar__mark) .nav-links { margin-inline: auto; }
+.nav-bar:not(:has(> .logo, > .cds-mark, > .nav-bar__mark)) .nav-links { margin-right: auto; }
+
+/* ── The line is the progress ────────────────────────────────────────────────
+   The island's hairline doubles as the read-through bar: the filled part is
+   the accent, the rest is the accent at a whisper. One line does both jobs, so
+   a reader never has to learn a second piece of chrome.
+
+     <div class="nav-shell nav-progress" style="--progress:38%">
+
+   It stays a hairline — the line is doing two jobs, not becoming a component.
+   The unread part is the page's own rule by default; data-track="accent" tints
+   it instead, for bars where the read-through is the point rather than a note.
+
+   The ring is painted on a pseudo-element and masked to the border, which is
+   the only way to gradient a border without giving up the radius.
+   ------------------------------------------------------------------------- */
+
+/* No `position` on the shell here. .nav-shell is already positioned — sticky,
+   or fixed in the -auto/-fixed variants — and re-declaring it `relative`
+   silently un-sticks the bar, which looks like the navbar scrolling away.
+   The bar itself is reached through :is() because a second row puts it inside
+   .nav-stack. */
+.nav-progress[data-track='accent'] { --track: color-mix(in srgb, var(--accent) 18%, transparent); }
+
+:is(.nav-progress > .nav-bar, .nav-progress > .nav-stack > .nav-bar) {
+	position: relative;
+	border-color: transparent;
+}
+
+:is(.nav-progress > .nav-bar, .nav-progress > .nav-stack > .nav-bar)::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	padding: var(--border-hair);
+	background: linear-gradient(90deg,
+		var(--accent) 0 var(--progress, 0%),
+		var(--track, var(--line-default)) var(--progress, 0%) 100%);
+	mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	mask-composite: exclude;
+	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	pointer-events: none;
+	transition: background var(--dur-4) var(--ease-out);
+}
+
+/* ── Shell behaviours ────────────────────────────────────────────────────────
+   Four ways a bar can behave, none of which change its markup:
+
+   .nav-shell-fixed   pinned to the top, always
+   .nav-shell-auto    pinned, but hides on the way down and returns on the way
+                      up — reading gets the screen, navigating gets the bar
+   .nav-shell-reveal  the same, but sticky: it keeps its place in the flow
+   .nav-shell-morph   full-bleed at rest, contracting into the island once the
+                      page has moved
+   (default)          sticky island
+
+   nav.js sets data-scrolled and data-dir; everything else is CSS.
+   ------------------------------------------------------------------------- */
+
+.nav-shell-fixed { position: fixed; top: 0; left: 0; right: 0; }
+
+.nav-shell-auto {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	transition: transform var(--dur-3) var(--ease-out);
+}
+
+.nav-shell-auto[data-dir='down'] { transform: translateY(-115%); }
+.nav-shell-auto[data-dir='up'] { transform: none; }
+
+/* The same disappearing act, but sticky rather than fixed — so the bar keeps
+   its place in the flow and the first screenful is never hidden underneath it.
+   Pair with .nav-shell-full for a plain bar that leaves on the way down. */
+.nav-shell-reveal {
+	position: sticky;
+	top: 0;
+	transition: transform var(--dur-3) var(--ease-out);
+}
+
+.nav-shell-reveal[data-dir='down'] { transform: translateY(-115%); }
+.nav-shell-reveal[data-dir='up'] { transform: none; }
+
+/* Full-bleed until the page moves, then it draws itself in.
+
+   The trick is where the horizontal padding lives. The SHELL carries the
+   alignment padding and gives up exactly one gutter on scroll; the BAR takes
+   that same gutter back. The sum never changes, so the wordmark and the
+   controls sit still at one x while the island's own edges move around them —
+   the shape animates, the contents do not.
+
+   Both are addressed through :is() because a second row puts the bar inside
+   .nav-stack, and a bare `>` would silently stop matching.
+   ------------------------------------------------------------------------- */
+
+/* At rest there is no bar — only what it holds. No surface, no blur, no line
+   under it: the page starts at the top of the page. Everything the island is
+   made of fades in together as it draws itself. */
+.nav-shell-morph {
+	max-width: none;
+	top: 0;
+	padding-inline: max(var(--gutter), calc((100% - var(--w-site)) / 2));
+	background: none;
+	transition: padding var(--dur-4) var(--ease-out),
+		top var(--dur-4) var(--ease-out);
+}
+
+/* At rest the bar is not a surface at all: the shell is. */
+:is(.nav-shell-morph > .nav-bar, .nav-shell-morph > .nav-stack > .nav-bar) {
+	padding-inline: 0;
+	border-color: transparent;
+	border-radius: 0;
+	background: none;
+	backdrop-filter: none;
+	box-shadow: none;
+	transition: padding var(--dur-4) var(--ease-out),
+		border-radius var(--dur-4) var(--ease-out),
+		box-shadow var(--dur-4) var(--ease-out),
+		border-color var(--dur-3) var(--ease-out),
+		background var(--dur-3) var(--ease-out);
+}
+
+.nav-shell-morph[data-scrolled] {
+	padding-inline: max(var(--gutter), calc((100% - var(--w-site)) / 2 - var(--gutter)));
+	top: var(--space-3);
+}
+
+:is(.nav-shell-morph[data-scrolled] > .nav-bar,
+	.nav-shell-morph[data-scrolled] > .nav-stack > .nav-bar) {
+	padding-inline: var(--gutter);
+	border-radius: var(--radius-pill);
+	border-color: var(--line-default);
+	background: color-mix(in srgb, var(--bg-canvas) 94%, transparent);
+	backdrop-filter: saturate(180%) blur(14px);
+	box-shadow: var(--shadow-2);
+}
+
+/* ── The progress border when the bar is flat ────────────────────────────────
+   A ring makes sense around an island. Across a full-width bar it would draw a
+   rectangle over the whole window — a border where the design asked for none.
+   Flat, the same gradient becomes one line along the bottom edge: still the
+   border, still the progress, no box.
+   ------------------------------------------------------------------------- */
+
+:is(.nav-progress.nav-shell-full > .nav-bar,
+	.nav-progress.nav-shell-full > .nav-stack > .nav-bar)::after {
+	inset: auto 0 0;
+	height: var(--border-2);
+	padding: 0;
+	border-radius: 0;
+	mask: none;
+	-webkit-mask: none;
+}
+
+/* …and nothing at all while a morph bar is still at the top: a progress ring
+   around an invisible bar is a rectangle drawn on the page. It fades in with
+   the rest of the island. */
+:is(.nav-progress.nav-shell-morph > .nav-bar,
+	.nav-progress.nav-shell-morph > .nav-stack > .nav-bar)::after {
+	opacity: 0;
+	transition: opacity var(--dur-3) var(--ease-out),
+		background var(--dur-4) var(--ease-out);
+}
+
+:is(.nav-progress.nav-shell-morph[data-scrolled] > .nav-bar,
+	.nav-progress.nav-shell-morph[data-scrolled] > .nav-stack > .nav-bar)::after {
+	opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nav-shell-auto,
+	.nav-shell-reveal,
+	.nav-shell-morph,
+	.nav-shell-morph > .nav-bar,
+	.nav-shell-morph > .nav-stack > .nav-bar { transition: none; }
+}
+
+/* ── Centred mark, inverse bar, compact ──────────────────────────────────────
+   Three shapes that are token swaps rather than layouts of their own.
+   ------------------------------------------------------------------------- */
+
+.nav-bar-center {
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	justify-items: center;
+}
+
+.nav-bar-center > :first-child { justify-self: start; }
+.nav-bar-center > :last-child { justify-self: end; }
+.nav-bar-center .nav-links { margin: 0; }
+
+/* Inverse — ink regardless of theme. Pair with the light mark: the logo reads
+   currentColor, so it inverts with the bar and needs no second asset. */
+.nav-bar-inverse {
+	background: var(--ink-950);
+	border-color: rgb(255 255 255 / 0.14);
+	color: var(--ink-50);
+	color-scheme: dark;
+}
+
+.nav-bar-inverse .logo,
+.nav-bar-inverse .cds-mark { color: var(--pure-white, #fff); }
+.nav-bar-inverse .nav-link { color: rgb(255 255 255 / 0.66); }
+.nav-bar-inverse .nav-link:hover,
+.nav-bar-inverse .nav-link[aria-current] { color: var(--pure-white, #fff); }
+.nav-bar-inverse .nav-burger { border-color: rgb(255 255 255 / 0.2); background: rgb(255 255 255 / 0.06); }
+
+.nav-bar-compact { --nav-h: 2.75rem; height: var(--nav-h); font-size: var(--text-sm); }
+.nav-bar-compact .nav-link { height: 1.75rem; padding-inline: var(--space-2); }
+
+/* ── Dropdown: hover and click, and room to grow ─────────────────────────────
+   Pointer users get it on hover, everyone else on click, and both land on the
+   same <details open> state — so there is one open state, not two. nav.js does
+   the hover with an intent delay; the keyboard path is untouched.
+
+   The panel grows to its content instead of jumping: 0fr → 1fr on a grid row
+   animates to auto height, which `height: auto` still cannot.
+   ------------------------------------------------------------------------- */
+
+.nav-menu__panel { display: grid; grid-template-rows: 1fr; }
+
+.nav-menu-grow > .nav-menu__panel {
+	grid-template-rows: 0fr;
+	transition: grid-template-rows var(--dur-3) var(--ease-out);
+	animation: none;
+	padding-block: 0;
+	overflow: hidden;
+}
+
+.nav-menu-grow[open] > .nav-menu__panel {
+	grid-template-rows: 1fr;
+	padding-block: var(--space-2);
+}
+
+.nav-menu-grow > .nav-menu__panel > * { min-height: 0; }
+
+/* Second level. It discloses in place rather than flying out, because a
+   fly-out is unusable on touch and this is the same menu on every device. */
+.nav-sub-menu { border-top: var(--border-hair) solid var(--line-subtle); margin-top: var(--space-1); }
+
+.nav-sub-menu > summary {
+	list-style: none;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--space-2);
+	padding: var(--space-2) var(--space-3);
+	border-radius: var(--radius-md);
+	font-size: var(--text-sm);
+	color: var(--fg-default);
+	transition: var(--t-colors);
+}
+
+.nav-sub-menu > summary::-webkit-details-marker { display: none; }
+.nav-sub-menu > summary:hover { background: var(--bg-sunken); }
+
+.nav-sub-menu > summary::after {
+	content: '';
+	width: 0.35rem;
+	height: 0.35rem;
+	border-right: 1.5px solid currentColor;
+	border-bottom: 1.5px solid currentColor;
+	transform: rotate(-45deg);
+	transition: var(--t-transform);
+	opacity: 0.5;
+}
+
+.nav-sub-menu[open] > summary::after { transform: rotate(45deg); }
+
+.nav-sub-menu__items {
+	display: grid;
+	grid-template-rows: 0fr;
+	transition: grid-template-rows var(--dur-2) var(--ease-out);
+	overflow: hidden;
+	padding-left: var(--space-3);
+	margin-left: var(--space-2);
+	border-left: var(--border-hair) solid var(--line-subtle);
+}
+
+.nav-sub-menu[open] .nav-sub-menu__items { grid-template-rows: 1fr; }
+.nav-sub-menu__items > * { min-height: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+	.nav-menu-grow > .nav-menu__panel,
+	.nav-sub-menu__items { transition: none; }
+}
+
+/* ── The record burger ───────────────────────────────────────────────────────
+   Not three bars becoming an X. The bars collapse into the record light the
+   whole system is built around, and the light unfolds into a play triangle —
+   closed is "ready", open is "rolling". Same markup as every other burger, so
+   it is a class swap.
+   ------------------------------------------------------------------------- */
+
+.nav-burger-rec .nav-burger__box { position: relative; }
+
+.nav-burger-rec .nav-burger__bars,
+.nav-burger-rec .nav-burger__bars::before,
+.nav-burger-rec .nav-burger__bars::after {
+	transition: transform var(--dur-2) var(--ease-out), opacity var(--dur-1) linear;
+}
+
+/* Open: the outer bars fold into the middle and go, the middle one goes last. */
+.nav-burger-rec[aria-expanded='true'] .nav-burger__bars { opacity: 0; transition-delay: 60ms; }
+.nav-burger-rec[aria-expanded='true'] .nav-burger__bars::before { transform: translateY(5px) scaleX(0.2); opacity: 0; }
+.nav-burger-rec[aria-expanded='true'] .nav-burger__bars::after { transform: translateY(-5px) scaleX(0.2); opacity: 0; }
+
+/* The record light, on its way to becoming the play head. */
+.nav-burger-rec .nav-burger__box::before {
+	content: '';
+	position: absolute;
+	inset: 50% auto auto 50%;
+	width: 0.5rem;
+	height: 0.5rem;
+	margin: -0.25rem 0 0 -0.25rem;
+	border-radius: var(--radius-full);
+	background: var(--accent);
+	transform: scale(0);
+	transition: transform var(--dur-2) var(--ease-spring, var(--ease-out));
+}
+
+.nav-burger-rec[aria-expanded='true'] .nav-burger__box::before {
+	transform: scale(1);
+	transition-delay: 110ms;
+}
+
+/* The play triangle. Borders, so it inherits the accent and costs no asset. */
+.nav-burger-rec .nav-burger__box::after {
+	content: '';
+	position: absolute;
+	inset: 50% auto auto 50%;
+	width: 0;
+	height: 0;
+	margin: -0.3rem 0 0 -0.2rem;
+	border-top: 0.3rem solid transparent;
+	border-bottom: 0.3rem solid transparent;
+	border-left: 0.48rem solid var(--accent);
+	transform: scale(0) rotate(-90deg);
+	transition: transform var(--dur-3) var(--ease-spring, var(--ease-out));
+}
+
+.nav-burger-rec[aria-expanded='true'] .nav-burger__box::after {
+	transform: scale(1) rotate(0deg);
+	transition-delay: 220ms;
+}
+
+/* The dot ducks out as the triangle arrives, so one shape becomes the other. */
+.nav-burger-rec[aria-expanded='true'] .nav-burger__box::before {
+	animation: nav-rec-hand var(--dur-4) var(--ease-out) 110ms forwards;
+}
+
+@keyframes nav-rec-hand {
+	0% { transform: scale(0); }
+	45% { transform: scale(1); }
+	100% { transform: scale(0); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nav-burger-rec .nav-burger__box::before,
+	.nav-burger-rec .nav-burger__box::after,
+	.nav-burger-rec .nav-burger__bars,
+	.nav-burger-rec .nav-burger__bars::before,
+	.nav-burger-rec .nav-burger__bars::after { transition: none; animation: none; }
+
+	.nav-burger-rec[aria-expanded='true'] .nav-burger__box::before { display: none; }
+}
+
+/* ── Three ways to open on small screens ─────────────────────────────────────
+   The full-screen sheet is one answer, not the only one. All three take the
+   same markup for the links, so choosing is a class, not a rewrite.
+
+   .nav-sheet        full-screen dialog, irises open        (already above)
+   .nav-sheet-drop   full-width panel dropping from the top edge
+   .nav-panel        the island itself grows into the panel — nothing covers
+                     the page, and the bar you pressed is still the bar
+   ------------------------------------------------------------------------- */
+
+/* 1 · The drop. Full width, hinged at the top, no iris. */
+.nav-sheet-drop {
+	height: auto;
+	max-height: 100dvh;
+	bottom: auto;
+	border-radius: 0 0 var(--radius-sheet) var(--radius-sheet);
+	border-bottom: var(--border-hair) solid var(--line-default);
+	box-shadow: var(--shadow-4);
+	overflow: hidden auto;
+}
+
+.nav-sheet-drop[open] { animation: nav-drop-in var(--dur-4) var(--ease-out); }
+
+@keyframes nav-drop-in {
+	from { transform: translateY(-100%); opacity: 0.4; }
+	to { transform: none; opacity: 1; }
+}
+
+.nav-sheet-drop .nav-sheet__in { height: auto; padding-bottom: var(--space-8); }
+.nav-sheet-drop .nav-sheet__links { margin-top: var(--space-5); overflow: visible; }
+.nav-sheet-drop .nav-sheet__link { font-size: var(--text-xl); padding-block: var(--space-3); }
+
+/* 2 · The island becomes the panel. No dialog, no backdrop, no page hidden
+   behind a sheet — the thing you pressed simply has more in it now. */
+.nav-panel {
+	display: grid;
+	/* minmax(0, …) matters: a bare `0fr` leaves the track's MINIMUM at auto,
+	   so the panel's own padding (min-height:0 only zeroes the content box)
+	   keeps ~40px of it on screen while closed. */
+	grid-template-rows: minmax(0, 0fr);
+	transition: grid-template-rows var(--dur-4) var(--ease-out);
+	overflow: hidden;
+	border-top: var(--border-hair) solid transparent;
+}
+
+.nav-panel > * { min-height: 0; overflow: hidden; }
+
+/* The open state lands on whichever box the panel is a row of: the shell when
+   the bar is the only row, the stack once there are more. Both are spelled out
+   — a descendant selector would let an outer island open an inner one's panel. */
+.nav-shell[data-open] > .nav-panel,
+.nav-stack[data-open] > .nav-panel {
+	grid-template-rows: minmax(0, 1fr);
+	border-top-color: var(--line-subtle);
+}
+
+/* ── The open panel is a surface, not a hole ─────────────────────────────────
+   The island's surface — background, blur, shadow — lives on .nav-bar, and the
+   bar is only row 1. Left plain, the panel is a window onto the page: at rest
+   there is nothing behind it yet so it looks right, but once the bar has drawn
+   itself into an island the page scrolls straight through the open menu.
+
+   So row 2 takes the same surface. Only while open: a closed panel is a
+   0-height box, and a shadow on a 0-height box is a smudge across the page.
+   ------------------------------------------------------------------------- */
+.nav-shell[data-open] > .nav-panel,
+.nav-stack[data-open] > .nav-panel {
+	background: color-mix(in srgb, var(--bg-canvas) 94%, transparent);
+	backdrop-filter: saturate(180%) blur(14px);
+}
+
+/* Island forms only — a full-bleed bar has no corners to continue. Here the
+   two rows stop reading as two boxes: the bar gives up its bottom corners and
+   the panel picks them up, so what opens is one island, taller. */
+.nav-shell:not(.nav-shell-full, .nav-shell-morph)[data-open] > .nav-panel,
+.nav-shell:not(.nav-shell-full, .nav-shell-morph) > .nav-stack[data-open] > .nav-panel,
+.nav-shell-morph[data-scrolled][data-open] > .nav-panel,
+.nav-shell-morph[data-scrolled] > .nav-stack[data-open] > .nav-panel {
+	border: var(--border-hair) solid var(--line-default);
+	border-top-color: var(--line-subtle);
+	border-radius: 0 0 var(--radius-sheet) var(--radius-sheet);
+	box-shadow: var(--shadow-2);
+}
+
+.nav-shell:not(.nav-shell-full, .nav-shell-morph)[data-open] > .nav-bar,
+.nav-shell:not(.nav-shell-full, .nav-shell-morph) > .nav-stack[data-open] > .nav-bar,
+.nav-shell-morph[data-scrolled][data-open] > .nav-bar,
+.nav-shell-morph[data-scrolled] > .nav-stack[data-open] > .nav-bar {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+	border-bottom-color: transparent;
+}
+
+.nav-panel__in {
+	padding: var(--space-5);
+	display: grid;
+	gap: var(--space-5);
+}
+
+@media (min-width: 48rem) {
+	.nav-panel__in { grid-template-columns: 1.4fr 1fr; }
+}
+
+.nav-panel__links { display: flex; flex-direction: column; gap: 2px; }
+
+/* A dozen links in one column is a scroll; in two it is a menu you can read
+   at a glance. The group labels keep their own full-width row. */
+@media (min-width: 48rem) {
+	.nav-panel__links-split {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		column-gap: var(--space-2);
+		align-content: start;
+	}
+
+	.nav-panel__links-split .nav-panel__label { grid-column: 1 / -1; }
+}
+
+.nav-panel__link {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--space-3);
+	padding: var(--space-3);
+	border-radius: var(--radius-md);
+	font-family: var(--font-display);
+	font-size: var(--text-lg);
+	font-weight: var(--weight-semibold);
+	letter-spacing: var(--tracking-tight);
+	color: var(--fg-default);
+	text-decoration: none;
+	transition: var(--t-colors);
+}
+
+.nav-panel__link:hover { background: var(--bg-sunken); }
+.nav-panel__link[aria-current] { color: var(--accent); }
+
+/* The other half: whatever the reader might want that is not a link — the
+   latest thing, a form, the numbers. A menu is a chance to say something. */
+.nav-panel__aside {
+	background: var(--bg-sunken);
+	border-radius: var(--radius-lg);
+	padding: var(--space-4);
+	display: grid;
+	gap: var(--space-3);
+	align-content: start;
+}
+
+.nav-panel__label {
+	font-family: var(--font-slate);
+	font-size: var(--text-2xs);
+	letter-spacing: var(--tracking-slate);
+	text-transform: uppercase;
+	color: var(--fg-faint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nav-panel { transition: none; }
+	.nav-sheet-drop[open] { animation: none; }
+}
+
+/* ── Actions: the chips, the call, the form ──────────────────────────────────
+   A creator's bar carries more than links: where else to find them, the one
+   thing they want you to do, and the list. All three sit in the actions slot.
+   ------------------------------------------------------------------------- */
+
+.nav-actions { display: flex; align-items: center; gap: var(--space-2); }
+
+.nav-icons { display: flex; align-items: center; gap: 2px; }
+
+.nav-icon {
+	display: inline-grid;
+	place-items: center;
+	width: var(--control-sm);
+	height: var(--control-sm);
+	border-radius: var(--radius-full);
+	color: var(--fg-subtle);
+	text-decoration: none;
+	transition: var(--t-colors);
+}
+
+.nav-icon:hover { color: var(--fg-default); background: var(--hover-wash); }
+.nav-icon .icon { width: 1.05rem; height: 1.05rem; }
+
+/* The newsletter, folded into its own icon. Closed it is one more chip; open
+   it is a field that grew out of that chip — the form was always there, it
+   just had nothing to say yet. <details> so Escape and focus come free. */
+.nav-form { position: relative; }
+
+.nav-form > summary {
+	list-style: none;
+	cursor: pointer;
+	display: inline-grid;
+	place-items: center;
+	width: var(--control-sm);
+	height: var(--control-sm);
+	border-radius: var(--radius-full);
+	color: var(--fg-subtle);
+	transition: var(--t-colors);
+}
+
+.nav-form > summary::-webkit-details-marker { display: none; }
+.nav-form > summary:hover { color: var(--fg-default); background: var(--hover-wash); }
+.nav-form[open] > summary { color: var(--accent); background: var(--accent-soft); }
+
+.nav-form__field {
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
+	overflow: hidden;
+}
+
+/* Inline on a roomy bar: the field unrolls beside the chip. */
+@media (min-width: 48rem) {
+	.nav-form__field {
+		position: absolute;
+		right: calc(100% + var(--space-2));
+		top: 50%;
+		transform: translateY(-50%);
+		width: 15rem;
+		padding: var(--space-1);
+		border: var(--border-hair) solid var(--line-default);
+		border-radius: var(--radius-pill);
+		background: var(--bg-surface);
+		box-shadow: var(--shadow-2);
+		animation: nav-unroll var(--dur-3) var(--ease-out);
+		transform-origin: right center;
+	}
+
+	@keyframes nav-unroll {
+		from { width: 0; opacity: 0; padding-inline: 0; }
+	}
+}
+
+/* On a narrow bar it drops underneath instead, where there is room to type. */
+@media (max-width: 47.999rem) {
+	.nav-form__field {
+		position: absolute;
+		right: 0;
+		top: calc(100% + var(--space-2));
+		width: min(18rem, 78vw);
+		padding: var(--space-2);
+		border: var(--border-hair) solid var(--line-default);
+		border-radius: var(--radius-lg);
+		background: var(--bg-surface);
+		box-shadow: var(--shadow-3);
+		z-index: var(--z-popover, 40);
+		animation: nav-drop-form var(--dur-2) var(--ease-out);
+	}
+
+	@keyframes nav-drop-form {
+		from { opacity: 0; transform: translateY(-6px); }
+	}
+}
+
+.nav-form__field input {
+	flex: 1;
+	min-width: 0;
+	border: 0;
+	background: none;
+	font: inherit;
+	font-size: var(--text-sm);
+	color: inherit;
+	padding-inline: var(--space-3);
+}
+
+.nav-form__field input:focus { outline: none; }
+
+@media (prefers-reduced-motion: reduce) {
+	.nav-form__field { animation: none; }
+}
+
+/* ── The publication logo, when the owner sets one ───────────────────────── */
+
+.logo__img {
+	display: block;
+	height: 1.75rem;
+	width: auto;
+	max-width: 12rem;
+	object-fit: contain;
+}
+
+/* ── The sheet's secondary section ───────────────────────────────────────── */
+
+.nav-sheet__more {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-1) var(--space-3);
+}
+
+.nav-sheet__more .dropdown__item {
+	padding: var(--space-1) 0;
+	font-size: var(--text-sm);
+	color: var(--fg-subtle);
+}
+
+.nav-sheet__more .dropdown__item:hover { background: none; color: var(--fg-default); }
+
+/* ── Active state when the link carries an icon ──────────────────────────────
+   The dot and an icon side by side are two marks competing for the same job.
+   When there is an icon, IT becomes the active marker — accent, full opacity —
+   and the dot stands down. Icon-less bars keep the dot.
+   ------------------------------------------------------------------------- */
+
+.nav-link:has(.icon)[aria-current]::before { display: none; }
+
+.nav-link:has(.icon)[aria-current] .icon {
+	color: var(--accent);
+	opacity: 1;
+}
+
+/* Same idea in the sheet. */
+.nav-sheet__link:has(.icon)[aria-current] .icon { color: var(--accent); opacity: 1; }
+
+/* =============================================================================
+   THE SITE BAR, ARRANGED
+   Mark left · links CENTRED · actions right. The links are the page's subject,
+   so they take the middle; the mark and the controls are furniture and hold
+   the edges.
+   ========================================================================== */
+
+.nav-bar-center {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(0, 1fr);
+	gap: var(--space-3);
+}
+
+/* The centre column must be allowed to shrink, or a long menu pushes the
+   actions off the end instead of overflowing into "More". */
+.nav-bar-center .nav-links { min-width: 0; flex-wrap: nowrap; }
+.nav-bar-center > :first-child,
+.nav-bar-center > :last-child { min-width: 0; }
+.nav-bar-center .cluster-sm { flex-wrap: nowrap; }
+.nav-bar-center > :first-child { justify-self: start; }
+.nav-bar-center > :last-child { justify-self: end; }
+.nav-bar-center .nav-links { justify-self: center; }
+
+/* Below the collapse breakpoint the grid collapses to mark | burger. */
+@media (max-width: 62rem) {
+	.nav-bar-center { display: flex; justify-content: space-between; }
+}
+
+/* ── Overflow: the 7th item onward lives behind "More" ────────────────────
+   main.js moves the items; this only hides the trigger until it has any. */
+.nav-more[hidden] { display: none; }
+
+/* ── Per-item submenu ─────────────────────────────────────────────────────
+   A nav item that owns a collection can list it. The trigger stays a link —
+   the caret is a separate button so the label is still clickable. */
+
+.nav-item { position: relative; display: inline-flex; align-items: center; }
+
+/* The disclosure holds only the caret and the panel — never the link. */
+.nav-sub { position: static; display: inline-flex; }
+.nav-sub > summary { list-style: none; }
+.nav-sub > summary::-webkit-details-marker { display: none; }
+
+.nav-item__caret {
+	display: inline-grid;
+	place-items: center;
+	width: 1.5rem;
+	height: 1.5rem;
+	margin-left: -0.25rem;
+	border: 0;
+	background: none;
+	color: var(--fg-faint);
+	cursor: pointer;
+	border-radius: var(--radius-full);
+	transition: var(--t-colors), var(--t-transform);
+}
+
+.nav-item__caret::after {
+	content: '';
+	width: 0.3rem;
+	height: 0.3rem;
+	border-right: 1.5px solid currentColor;
+	border-bottom: 1.5px solid currentColor;
+	transform: rotate(45deg) translate(-1px, -1px);
+	transition: var(--t-transform);
+}
+
+.nav-item__caret:hover { color: var(--fg-default); background: var(--hover-wash); }
+.nav-sub[open] > .nav-item__caret::after { transform: rotate(-135deg) translate(-1px, -1px); }
+
+.nav-item__panel {
+	position: absolute;
+	top: calc(100% + var(--space-3));
+	left: 50%;
+	transform: translateX(-50%);
+	min-width: 15rem;
+	z-index: var(--z-popover, 40);
+	background: var(--bg-surface);
+	border: var(--border-hair) solid var(--line-default);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-3);
+	padding: var(--space-2);
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	animation: nav-drop var(--dur-2) var(--ease-out);
+}
+
+.nav-item__panel .dropdown__item { white-space: nowrap; }
+
+/* ── The mega launcher — an app-grid button ──────────────────────────────── */
+
+.nav-apps { position: static; }
+
+.nav-apps-btn,
+.nav-apps > summary {
+	list-style: none;
+	cursor: pointer;
+	display: inline-grid;
+	place-items: center;
+	width: var(--control-sm);
+	height: var(--control-sm);
+	border: var(--border-hair) solid var(--line-default);
+	border-radius: var(--radius-full);
+	background: var(--bg-surface);
+	transition: var(--t-colors);
+}
+
+.nav-apps > summary::-webkit-details-marker { display: none; }
+.nav-apps-btn { color: var(--fg-default); }
+.nav-apps-btn:hover,
+.nav-apps > summary:hover { border-color: var(--line-strong); background: var(--bg-sunken); }
+.nav-apps[open] > summary { background: var(--bg-sunken); border-color: var(--line-strong); }
+
+/* The nine dots, drawn — no icon file for something this geometric. */
+.nav-apps__grid {
+	display: grid;
+	grid-template-columns: repeat(3, 3px);
+	gap: 2px;
+}
+
+.nav-apps__grid i {
+	width: 3px;
+	height: 3px;
+	border-radius: var(--radius-full);
+	background: currentColor;
+}
+
+/* The middle dot is the record light — the mark hiding in the furniture. */
+.nav-apps__grid i:nth-child(5) { background: var(--accent); }
+
+/* The bar is the positioning context for its own dropdowns. Reading progress
+   is NOT an element here — `.nav-progress` on the shell paints the island's
+   hairline from --progress, so there is never a second bar under the bar.
+   See "The line is the progress" in the docs. */
+.nav-bar { position: relative; }
+
+/* ── Closed panels must not paint ────────────────────────────────────────────
+   A closed <details> hides its children with content-visibility, but an
+   absolutely positioned child sits outside that flow and Chrome can still
+   paint it — which shows up as a pale ghost box floating beside the caret.
+   Say it explicitly instead of trusting the default.
+   ------------------------------------------------------------------------- */
+
+.nav-sub:not([open]) .nav-item__panel,
+.nav-menu:not([open]) .nav-menu__panel,
+.nav-menu:not([open]) .nav-mega__panel,
+.dropdown:not([open]) .dropdown__menu { display: none; }
+
+/* ── Making the submenu findable ─────────────────────────────────────────────
+   A caret is a 24px target that nobody thinks to click. On a pointer device
+   the whole item opens its panel on hover (JS adds a short intent delay);
+   the caret stays the explicit control for touch and keyboard.
+   ------------------------------------------------------------------------- */
+
+/* The caret announces itself as interactive rather than hiding as decoration. */
+.nav-item:hover .nav-item__caret { color: var(--fg-default); }
+
+/* Bridge the gap between the item and its panel, so the pointer can travel
+   down without crossing dead space and closing it. */
+.nav-sub[open]::after {
+	content: '';
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	height: var(--space-3);
+}
+
+/* The open item keeps its own highlight while the panel is down. */
+.nav-item:has(.nav-sub[open]) .nav-link { background: var(--hover-wash); }
+
+/* ── The burger that is not a fallback ───────────────────────────────────────
+   `.nav-collapse` hides the burger while the links are visible, because there
+   it IS the links. When the burger opens the full panel instead — every
+   collection, the latest post, the newsletter — it is a destination of its
+   own and belongs on screen at every width.
+   ------------------------------------------------------------------------- */
+
+.nav-collapse .nav-burger-pinned { display: inline-flex; }
+
+/* ── The panel stays inside the viewport ─────────────────────────────────────
+   A menu taller than the screen is a scroll inside a scroll: the page moves
+   under you while you are still reading the menu. Cap it at what is visible
+   and let the panel itself scroll.
+   ------------------------------------------------------------------------- */
+
+.nav-panel__in {
+	max-height: calc(100dvh - var(--nav-h, 3.5rem) - var(--space-10));
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	scrollbar-width: thin;
+}
+
+/* The newsletter is the one ask in the panel, so it reads as a block rather
+   than another link in a list. */
+.nav-panel__aside {
+	background: var(--bg-sunken);
+	border-radius: var(--radius-lg);
+	padding: var(--space-4);
+	align-content: start;
+}
+
+.nav-panel__cta {
+	display: grid;
+	gap: var(--space-2);
+	margin-top: var(--space-3);
+}
+
+.nav-panel__cta .input { width: 100%; }
+
+/* The label group. `.nav-panel__link` is space-between so a count can sit on
+   the right; without one, the icon and its label must still travel together
+   or the label drifts to the far edge. */
+.nav-panel__name {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-3);
+	min-width: 0;
+}
+
+.nav-panel__name .icon { flex: none; opacity: 0.55; }
+.nav-panel__link[aria-current] .nav-panel__name .icon { color: var(--accent); opacity: 1; }
