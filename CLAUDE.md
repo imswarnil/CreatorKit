@@ -1,7 +1,8 @@
 # CreatorKit — instructions for AI assistants
 
-Read `ARCHITECTURE.md` first, and `docs.md` for how the pieces are worked on. It is one page and it contains the only rule that matters:
-**one recipe, two renderers.** This file covers the rest.
+Read `ARCHITECTURE.md` first. It is one page and it contains the only rule that matters:
+**one recipe, two renderers.** Then `docs.md`, for how each piece is actually worked on.
+This file covers the rest.
 
 ## What this is
 
@@ -69,16 +70,11 @@ pnpm test
 pnpm format
 ```
 
-Docs site on 3400, Ghost preview on 2370:
-
-```bash
-pnpm --filter @creatorkit/docs dev
-pnpm ghost:start
-```
-
-The Ghost preview is separate and needs Node 22:
+The docs site and the Ghost preview run separately, and both need Node 22:
 
 ```bash
 nvm use 22.21.1
-cd ghost && ghost start        # http://localhost:2370
+pnpm --filter @creatorkit/docs dev   # http://localhost:3400
+pnpm ghost:start                     # http://localhost:2370
+pnpm theme:dev                       # CSS watch + browser-sync for the theme
 ```
