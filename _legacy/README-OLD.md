@@ -1,9 +1,16 @@
 # old-design — the previous system, frozen
 
 **This folder is a reference archive. Nothing here is built on, imported, or
-shipped. It is gitignored and never committed.**
+shipped.**
 
-It is the complete tree as of commit `f84ccf7` on `main` — the last state of the
+> **Two statements below are now out of date.** This folder is *committed*, not
+> gitignored, and it is no longer the complete tree — `src/`, `collection/` and
+> `icons/` were lifted into `packages/` during the migration. The complete
+> original is the tag `v0-frame-and-signal` in
+> `github.com/imswarnil/Swarnil-Design-System`. See
+> [`../old-design.md`](../old-design.md) and [`README.md`](README.md).
+
+It was the complete tree as of commit `f84ccf7` on `main` — the last state of the
 system before the v2 rebuild. It is kept for one reason: so you can look at a
 component that used to exist, decide whether it is worth having, and rebuild it
 properly in the new `src/`.

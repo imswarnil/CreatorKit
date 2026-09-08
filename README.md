@@ -87,6 +87,7 @@ Requires Node 22 and pnpm 10 or newer.
 | [`docs.md`](./docs.md) | How to keep building this — components, tokens, docs, theme |
 | [`ARCHITECTURE.md`](./ARCHITECTURE.md) | Why one recipe serves two renderers |
 | [`docs/MIGRATION.md`](./docs/MIGRATION.md) | What happens to every legacy component |
+| [`old-design.md`](./old-design.md) | Where the complete previous system lives, and how to run it |
 | [`CONTRIBUTING.md`](./CONTRIBUTING.md) | Setup and pull requests |
 | [`SECURITY.md`](./SECURITY.md) | Reporting a vulnerability |
 | Each package's `INVENTORY.md` | Every class it ships. Generated, so never stale |

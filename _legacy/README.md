@@ -28,4 +28,7 @@ lose the ability to re-extract.
 **`templates/`, `showcase/`, `scripts/`, `dist/`** — page templates, showcase metadata,
 the class-audit scripts, and the old build output. Nothing imports them.
 
-Everything here is committed, so deleting this folder is reversible.
+Everything here is committed, so deleting this folder is reversible — and even
+if it were not, the complete original survives as the tag `v0-frame-and-signal`
+in `github.com/imswarnil/Swarnil-Design-System`. See
+[`../old-design.md`](../old-design.md) for how to clone and run it.
