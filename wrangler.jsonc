@@ -4,21 +4,25 @@
   "compatibility_date": "2026-09-08",
 
   // ── Static assets, no Worker script ────────────────────────────────────
-  // Every route in apps/docs prerenders, so this deploys as plain files.
-  // There is no "main" here on purpose: without one, Cloudflare serves the
-  // asset directory directly and no Worker code runs per request.
+  // This serves the design system's own site exactly as it was published at
+  // Swarnil-Design-System f84ccf7: `_legacy` builds its CSS and runs
+  // docs/_build/build.py, and scripts/stage-site.mjs copies docs/ into _site
+  // the same way that commit's pages.yml staged it for GitHub Pages.
   //
-  // The other Cloudflare sites in this workspace (links, nac) DO run a Worker,
-  // through @opennextjs/cloudflare, because they fetch per request. Copying
-  // that here would add a runtime to a site that has nothing to run.
+  // There is no "main" here on purpose: without one, Cloudflare serves the
+  // asset directory directly and no Worker code runs per request. The other
+  // Cloudflare sites in this workspace (links, nac) DO run a Worker, through
+  // @opennextjs/cloudflare, because they fetch per request. This one is 378
+  // static files and has nothing to run.
   "assets": {
-    "directory": "apps/docs/out",
+    "directory": "_site",
 
-    // Next's static export writes /docs/tokens/index.html and links to
-    // /docs/tokens/ — so a request for a directory must resolve to its
-    // index, and a miss must render the exported 404 rather than Cloudflare's.
-    "html_handling": "auto-trailing-slash",
-    "not_found_handling": "404-page"
+    // The site is hand-authored .html files linked as /button.html, so a URL
+    // maps to a file — not to a directory index. "auto-trailing-slash" would
+    // redirect /button.html to /button/, which does not exist. The site ships no
+    // 404.html, exactly as it did on Pages, so misses return a plain 404.
+    "html_handling": "none",
+    "not_found_handling": "none"
   },
 
   "observability": { "enabled": true },

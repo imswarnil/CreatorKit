@@ -1,8 +1,9 @@
 packages:
   - 'packages/*'
-  - 'apps/*'
   - 'templates/*'
   - 'tools/*'
+# Both are wrangler's: esbuild and workerd ship prebuilt binaries their install
+# scripts unpack. Without this, `pnpm run` refuses with ERR_PNPM_IGNORED_BUILDS.
 allowBuilds:
-  esbuild: set this to true or false
-  workerd: set this to true or false
+  esbuild: true
+  workerd: true

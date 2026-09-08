@@ -70,11 +70,11 @@ pnpm test
 pnpm format
 ```
 
-The docs site and the Ghost preview run separately, and both need Node 22:
+The site and the Ghost preview run separately, and both need Node 22:
 
 ```bash
 nvm use 22.21.1
-pnpm --filter @creatorkit/docs dev   # http://localhost:3400
+pnpm site:dev                        # http://localhost:8080
 pnpm ghost:start                     # http://localhost:2370
 pnpm theme:dev                       # CSS watch + browser-sync for the theme
 ```

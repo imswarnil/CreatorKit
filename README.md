@@ -49,7 +49,7 @@ export default {
 | Path | What it holds |
 | --- | --- |
 | `packages/` | The published `@creatorkit/*` packages |
-| `apps/docs/` | `creator.imswarnil.com` — documentation and component showcase |
+| `_legacy/` | The complete previous design system — and the site served at `creator.imswarnil.com` |
 | `templates/` | Ready-to-clone starters — `youtuber-portfolio` is ready |
 | `tools/` | The recipe→CSS compiler, the inventory generator, the component generator |
 | `ghost/` | A local Ghost 6 install for previewing the theme. Gitignored |
@@ -94,22 +94,27 @@ Requires Node 22 and pnpm 10 or newer.
 
 ## Deployment
 
-The docs site is **static**. Every route in `apps/docs` prerenders — `next build`
-reports nothing but `○ Static` and `● SSG` — so it ships as plain files on
-Cloudflare with no Worker script and no server runtime.
+`creator.imswarnil.com` serves **the previous design system's own site**, built
+the way it was published from `Swarnil-Design-System` at `f84ccf7`: `_legacy`
+compiles its CSS with PostCSS, `docs/_build/build.py` generates the pages, and
+`scripts/stage-site.mjs` stages `docs/` into `_site` exactly as that commit's
+`pages.yml` staged it for GitHub Pages. 378 files, 212 pages, nothing rewritten
+on the way through.
 
 ```bash
-pnpm cf:build      # next build → apps/docs/out
-pnpm cf:preview    # serve that build locally on workerd
+pnpm site:build    # _legacy CSS + docs → _site
+pnpm site:dev      # that build on http://localhost:8080
+pnpm cf:preview    # serve it locally on workerd
 pnpm cf:deploy     # build and ship
 ```
 
-That is a deliberate departure from the other Cloudflare sites in this
-workspace, which run Next on workerd through `@opennextjs/cloudflare`. They need
-to — they fetch per request. This one does not, and a server runtime under a
-static site buys a cold start and a bill for nothing. If a route here ever needs
-the server (a search API, an OG image generator), that is the moment to add the
-adapter, not before.
+It ships as plain files: no Worker script, no server runtime. That is a
+deliberate departure from the other Cloudflare sites in this workspace, which
+run Next on workerd through `@opennextjs/cloudflare`. They need to — they fetch
+per request. This one is static HTML, and a server runtime under it buys a cold
+start and a bill for nothing.
+
+`_site` is derived and gitignored; `_legacy` is the source and is tracked.
 
 `wrangler.jsonc` attaches a Worker Route on `creator.imswarnil.com/*`, matching
 `links` and `nac`: the route binds to whatever DNS record exists for the

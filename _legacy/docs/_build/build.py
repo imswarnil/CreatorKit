@@ -18,7 +18,7 @@ OUT = HERE.parent
 REPO = HERE.parent.parent
 FRAG = HERE / 'fragments'
 V = '?v=cds25'
-SITE = 'https://design.imswarnil.com'
+SITE = 'https://creator.imswarnil.com'
 
 import content_start, content_usage, content_collection, content_layout, content_forms, content_components, content_misc, content_extra, content_navbar, content_site, content_explorer, content_all
 

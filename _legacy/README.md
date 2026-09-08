@@ -1,16 +1,12 @@
-# _legacy — the previous system, in full
+# _legacy — the previous system, in full, and the site this repo serves
 
-This folder is the **complete** original tree again — `src/`, `collection/`
-and `icons/` were restored from the tag `v0-frame-and-signal` after living
-only in `packages/` for a few days. Two things were true independently and
-both needed fixing:
+This folder is the **complete** original tree — `src/`, `collection/` and
+`icons/` were restored from the tag `v0-frame-and-signal`
+(`f84ccf751c6d4be782b9a7f0b7a2a1cb211c1386`) after living only in `packages/`
+for a few days. Every file has since been verified against that tag by
+SHA-256: **471 files, byte-identical**.
 
-1. The CSS kit's *ideas* did migrate, with history, into the packages below —
-   that migration stands and nothing here supersedes it.
-2. But having only the migrated result made the original **unrenderable**:
-   `tools/kit-docs` reads HTML out of `docs/` here, and with `src/` gone there
-   was no way to regenerate that extraction from scratch if it ever needed
-   fixing. It did — see below.
+Since 8 September 2026 it is also what `creator.imswarnil.com` publishes.
 
 | Was | Migrated to |
 | --- | --- |
@@ -24,53 +20,69 @@ both needed fixing:
 | `icons/` | `packages/icons/` |
 | `src/{nav,highlight,ad}.js` | `packages/ui/js/` |
 
-**This is a frozen reference, not a source dependency.** Nothing in
-`apps/` or `packages/` imports from `_legacy/`. If an idea in here is worth
-having, it gets rebuilt on `packages/`'s own terms — copying the CSS wholesale
-defeats the point of the migration.
+That migration stands, and nothing here supersedes it. **This is still not a
+source dependency**: nothing in `packages/` imports from `_legacy/`. The old
+system is *published* from here; it is not built into CreatorKit. If an idea in
+here is worth having, it gets rebuilt on `packages/`'s own terms — copying the
+CSS wholesale defeats the point of the migration.
 
-## docs/ — and the bug that was silently dropping a fifth of it
+## Building it
 
-`tools/kit-docs` lifts the hand-written demo markup out of the 134 pages in
-`docs/` into `apps/docs/lib/kit.generated.json`, which the docs site renders
-live against the migrated stylesheets. As of this pass it recovers
-**103 pages, 275 demos** — up from 83 pages when this was last measured.
-
-The gap was a bug, not missing content. The extractor matched the literal
-string `class="demo"` and nothing else, so any page whose demo wrapper carried
-a modifier class — `class="demo stack-sm"`, `class="demo stack"` — produced
-zero demos and vanished with no error. That silently dropped every Foundation
-page about frames, icons, patterns and shapes, and every Motion page about
-micro-interactions, presets and text effects: real components, invisible in
-the new docs for no reason connected to whether they were worth keeping.
-Fixed in `tools/kit-docs/index.mjs` — see the comment there.
-
-The remaining 27 pages (`col-*`, most `yt-*` and `ig-*`, `introduction`,
-`principles`, `showcase`, `templates`, `syllabus`, `build-log`, `itinerary`,
-`css`, `scss`, `tailwind`, `z-index`, `u-display`) have no `<div class="demo">`
-wrapper at all — they are prose, page-layout templates and reference pages
-rather than component demos, and `kit-docs` correctly has nothing to extract
-from them. They exist in `docs/` for reading, not for regeneration.
-
-Regenerate any time the source in `docs/` changes:
+The original build, unchanged — npm and Python 3, no other dependencies:
 
 ```bash
-node tools/kit-docs/index.mjs _legacy/docs apps/docs/lib/kit.generated.json
+pnpm site:build      # from the repo root: this build, then staged into _site
 ```
 
-The docs site prefers this folder when present and falls back to the
-committed JSON when it is not — so `_legacy/` can be deleted without breaking
-the docs site, only the ability to re-extract or fix an extraction bug like
-this one.
+which is:
+
+```bash
+npm --prefix _legacy install
+npm --prefix _legacy run build   # PostCSS → dist/, then docs/_build/build.py
+node scripts/stage-site.mjs      # docs/ → _site, minus _build, plus .nojekyll
+```
+
+`stage-site.mjs` is the four lines of shell that commit's
+`.github/workflows/pages.yml` ran to stage the site for GitHub Pages. Nothing
+is rewritten on the way through: the pages link with root-absolute paths and
+the site is the root, so they resolve as authored. 378 files, 212 pages.
+
+**One line differs from the tag, deliberately.** `docs/_build/build.py:21` now
+reads `SITE = 'https://creator.imswarnil.com'`, because that is where this is
+hosted. `CNAME`, `sitemap.xml`, `robots.txt` and every canonical URL are
+generated from that constant, so it is the only place the domain is written.
+
+`dist/` and `node_modules/` here are build output and are gitignored.
+
+## Why the whole site, rather than an extraction
+
+There was an intermediate arrangement — a React documentation app that lifted
+the demo markup out of `docs/` and re-rendered it against the migrated
+stylesheets. It reached 103 of the 134 pages, and only after a bug fix: the
+extractor matched the literal string `class="demo"` and nothing else, so any
+page whose wrapper carried a modifier class (`class="demo stack-sm"`) produced
+zero demos and vanished with no error. That had silently dropped every
+Foundation page about frames, icons, patterns and shapes, and every Motion page
+about micro-interactions, presets and text effects.
+
+The fix recovered twenty pages. It could not recover the remaining 27 — `col-*`,
+most `yt-*` and `ig-*`, `introduction`, `principles`, `showcase`, `templates`,
+`syllabus`, `build-log`, `itinerary`, `css`, `scss`, `tailwind`, `z-index`,
+`u-display` — because they carry no `<div class="demo">` wrapper at all. They
+are prose, page-layout templates and reference pages. An extractor can only see
+what someone wrapped for it; that is structural, and no regex repair changes it.
+
+So the app was deleted and the original is served directly. It needs no
+extraction, cannot drift from what it documents, and renders in the markup it
+was written in.
 
 ## The rest
 
-**`media/`, `video/`** — the images and the clip the demos reference. Copied
-to `apps/docs/public/kit/`.
+**`media/`, `video/`** — the images and the clip the demos reference, served
+from their original paths.
 
-**`templates/`, `showcase/`, `scripts/`, `dist/`** — page templates, showcase
-metadata, the class-audit scripts, and the old build output. Nothing imports
-them.
+**`templates/`, `showcase/`, `scripts/`** — page templates, showcase metadata
+and the class-audit scripts. Part of the published tree.
 
 Everything here is committed, so deleting this folder is reversible — and even
 if it were not, the complete original survives as the tag `v0-frame-and-signal`

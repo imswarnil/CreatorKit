@@ -8,7 +8,7 @@ CreatorKit has to dress three kinds of consumer that do not share a runtime:
 
 | Consumer | Runtime | Can it run React? |
 | --- | --- | --- |
-| `apps/docs`, `templates/*` | Next.js / static | yes |
+| `templates/*` | Next.js / static | yes |
 | `ghost/content/themes/creator` | Ghost 6, Handlebars, server-rendered | **no** |
 | `packages/broadcast` output | OBS browser source, static HTML | no (and does not need it) |
 

@@ -11,7 +11,9 @@ tokens. Nothing in CreatorKit should read from it, and it does not read from
 CreatorKit.
 
 This file answers one question: *where is the complete old project, and how do
-I get at it?*
+I get at it?* Since 8 September 2026 the shortest answer is: **it is the site
+this repo serves.** `creator.imswarnil.com` publishes it, whole, built the way
+it always was.
 
 ---
 
@@ -48,13 +50,26 @@ The package it published was `creator-design-system`, and its bundle was
 
 ---
 
-## `_legacy/` here is now the complete tree too
+## `_legacy/` here is the complete tree — and it is what gets served
 
 `src/`, `collection/` and `icons/` were restored into `_legacy/` from the tag,
-so the folder is a full copy of the original again rather than only the parts
-the migration left behind. **They are a frozen reference, not a source
-dependency** — nothing in `packages/` or `apps/` reads from `_legacy/`, and
-the migrated CSS in `packages/` remains what actually ships.
+so the folder is a full copy of the original rather than only the parts the
+migration left behind. Every one of those files was then verified against the
+tag by SHA-256: **byte-identical**, all 471 of them.
+
+It is no longer only a reference. `pnpm site:build` runs the original build
+inside `_legacy` — PostCSS for `dist/`, `docs/_build/build.py` for the pages —
+and `scripts/stage-site.mjs` stages `docs/` into `_site` exactly as that
+commit's `pages.yml` staged it for GitHub Pages. That is what Cloudflare
+serves: 212 pages, unrewritten.
+
+**It is still not a source dependency.** Nothing in `packages/` reads from
+`_legacy/`, and the migrated CSS in `packages/` remains what those packages
+ship. The old system is published from here; it is not built into CreatorKit.
+
+One line differs from the tag on purpose: `docs/_build/build.py:21` now reads
+`SITE = 'https://creator.imswarnil.com'`, because that is where it is hosted.
+`CNAME`, `sitemap.xml`, `robots.txt` and every canonical URL follow from it.
 
 | Migrated CSS lives in | | Restored for reference in `_legacy/` |
 | --- | --- | --- |
@@ -65,35 +80,33 @@ the migrated CSS in `packages/` remains what actually ships.
 [`_legacy/README.md`](_legacy/README.md) has the full layer-by-layer table and
 is the file to read for *where a particular thing went*.
 
-Restoring `src/` mattered for a concrete reason, not just completeness:
-`tools/kit-docs` regenerates the rendered component docs by reading HTML out
-of `_legacy/docs/`, and with `src/` gone there was no way to fix that
-extraction if it turned out to be wrong. It was — see the next section.
+Restoring `src/` turned out to matter more than completeness: the docs pages
+link `/src/*.css` directly, so without it the served site would have had no
+styles at all.
 
-Everything here is committed, so deleting the folder is reversible; and if it
-is ever deleted anyway, the tag above still has all of it.
+Everything here is committed, so the folder is restorable; and if it is ever
+deleted anyway, the tag above still has all of it.
 
 ---
 
-## A fifth of the component docs were missing, silently
+## Why it is served whole, rather than re-extracted
 
-`tools/kit-docs` lifts the hand-written demo markup out of the 134 pages in
-`_legacy/docs/` into `apps/docs/lib/kit.generated.json`, which the CreatorKit
-docs site renders live. It was extracting demos from only 83 of those pages.
+There was an intermediate arrangement — a React documentation app that lifted
+the demo markup out of these pages and re-rendered it. It reached 103 of the
+134 pages, and only after fixing a string-match bug in the extractor: it looked
+for the literal `class="demo"`, so any page whose wrapper carried a modifier
+class (`class="demo stack-sm"`) produced zero demos and vanished with no error.
+That had silently taken out every Foundation page about frames, icons, patterns
+and shapes, and every Motion page about micro-interactions and text effects.
 
-The cause was a string-match bug, not missing content: the extractor looked
-for the literal `class="demo"` and nothing else, so any page whose demo
-wrapper carried a modifier class — `class="demo stack-sm"` — produced zero
-demos and disappeared with no error. That took out every Foundation page
-about frames, icons, patterns and shapes, and every Motion page about
-micro-interactions, presets and text effects — real, documented components,
-just invisible in the new docs for a reason that had nothing to do with
-whether they were worth keeping.
+Fixing it recovered twenty pages. It could never recover the rest, and the
+reason is structural: an extractor can only see examples someone wrapped for it.
+Prose, page templates and any demo written without the wrapper are invisible to
+it by construction, and no amount of regex repair changes that.
 
-Fixed in `tools/kit-docs/index.mjs`. Re-extracting now recovers
-**103 pages, 275 demos** — see [`_legacy/README.md`](_legacy/README.md) for
-the exact list of what came back and what genuinely has no demo to extract
-(page templates and prose, correctly not component docs).
+So the React app was deleted and the original is served directly instead. It
+needs no extraction, it cannot drift from what it documents, and it renders the
+system in the markup it was actually written in — 212 pages instead of 103.
 
 ## The rule
 

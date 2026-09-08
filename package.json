@@ -2,7 +2,7 @@
   "name": "creatorkit",
   "version": "0.0.0",
   "private": true,
-  "description": "CreatorKit — a React + Tailwind UI kit and design system for creators.",
+  "description": "CreatorKit \u2014 a React + Tailwind UI kit and design system for creators.",
   "license": "MIT",
   "author": {
     "name": "Swarnil",
@@ -37,7 +37,10 @@
     "ghost:stop": "cd ghost && ghost stop",
     "ghost:restart": "cd ghost && ghost restart",
     "ghost:log": "cd ghost && ghost log",
-    "cf:build": "pnpm --filter @creatorkit/docs build",
+    "site:install": "npm --prefix _legacy install --no-audit --no-fund",
+    "site:build": "pnpm run site:install && npm --prefix _legacy run build && node scripts/stage-site.mjs",
+    "site:dev": "pnpm run site:build && python3 -m http.server 8080 --directory _site",
+    "cf:build": "pnpm run site:build",
     "cf:preview": "pnpm run cf:build && wrangler dev",
     "cf:deploy": "pnpm run cf:build && wrangler deploy"
   },
