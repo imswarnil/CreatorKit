@@ -87,9 +87,24 @@ for (const file of readdirSync(dir).sort()) {
 	const demos = [];
 	let cursor = 0;
 
+	// A demo wrapper is `class="demo"` or `class="demo <modifiers>"` — e.g.
+	// `demo stack-sm` on a page whose examples are laid out in a column. The
+	// lookahead requires a quote or whitespace right after "demo", which is
+	// what tells it apart from an unrelated class like `demo-tile` or
+	// `demo-label` that merely starts with the same four letters.
+	//
+	// The first version of this matched the literal string `<div class="demo"`
+	// and nothing else, so any page whose demo divs carried a modifier class
+	// produced zero demos and was silently dropped — 16 pages' worth across
+	// Foundation (frames, icons, patterns, shapes) and Motion, gone from the
+	// generated docs with no error to say so.
+	const DEMO_OPEN = /<div class="demo(?=["\s])/g;
+
 	while (true) {
-		const open = html.indexOf('<div class="demo"', cursor);
-		if (open === -1) break;
+		DEMO_OPEN.lastIndex = cursor;
+		const match = DEMO_OPEN.exec(html);
+		if (!match) break;
+		const open = match.index;
 		const el = sliceElement(html, open);
 		if (!el) break;
 

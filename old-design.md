@@ -48,32 +48,52 @@ The package it published was `creator-design-system`, and its bundle was
 
 ---
 
-## What is in `_legacy/` here, and what is not
+## `_legacy/` here is now the complete tree too
 
-`_legacy/` in this repo is **not** the complete old system, and it is important
-not to mistake it for one. The CSS kit was lifted out of it during the
-migration and now lives in `packages/`.
+`src/`, `collection/` and `icons/` were restored into `_legacy/` from the tag,
+so the folder is a full copy of the original again rather than only the parts
+the migration left behind. **They are a frozen reference, not a source
+dependency** — nothing in `packages/` or `apps/` reads from `_legacy/`, and
+the migrated CSS in `packages/` remains what actually ships.
 
-| Not in `_legacy/` | Where it went |
-| --- | --- |
-| `src/` | `packages/core/`, `packages/ui/`, `packages/broadcast/` |
-| `collection/` | `packages/collections/styles/` |
-| `icons/` | `packages/icons/` |
+| Migrated CSS lives in | | Restored for reference in `_legacy/` |
+| --- | --- | --- |
+| `packages/core/`, `packages/ui/`, `packages/broadcast/` | ← | `src/` |
+| `packages/collections/styles/` | ← | `collection/` |
+| `packages/icons/` | ← | `icons/` |
 
 [`_legacy/README.md`](_legacy/README.md) has the full layer-by-layer table and
 is the file to read for *where a particular thing went*.
 
-What remains in `_legacy/` is the material the migration did not consume — the
-old generated docs, the media the demos reference, the page templates, the
-showcase metadata and the audit scripts. It is committed, so deleting it is
-reversible; and if it is ever deleted, everything in it is still in the tag
-above.
+Restoring `src/` mattered for a concrete reason, not just completeness:
+`tools/kit-docs` regenerates the rendered component docs by reading HTML out
+of `_legacy/docs/`, and with `src/` gone there was no way to fix that
+extraction if it turned out to be wrong. It was — see the next section.
 
-Two lines in `_legacy/README-OLD.md` are stale and worth knowing about before
-you trust them: that folder is **not** gitignored (it is committed here), and
-it is **not** the complete tree any more (see the table above). The tag is.
+Everything here is committed, so deleting the folder is reversible; and if it
+is ever deleted anyway, the tag above still has all of it.
 
 ---
+
+## A fifth of the component docs were missing, silently
+
+`tools/kit-docs` lifts the hand-written demo markup out of the 134 pages in
+`_legacy/docs/` into `apps/docs/lib/kit.generated.json`, which the CreatorKit
+docs site renders live. It was extracting demos from only 83 of those pages.
+
+The cause was a string-match bug, not missing content: the extractor looked
+for the literal `class="demo"` and nothing else, so any page whose demo
+wrapper carried a modifier class — `class="demo stack-sm"` — produced zero
+demos and disappeared with no error. That took out every Foundation page
+about frames, icons, patterns and shapes, and every Motion page about
+micro-interactions, presets and text effects — real, documented components,
+just invisible in the new docs for a reason that had nothing to do with
+whether they were worth keeping.
+
+Fixed in `tools/kit-docs/index.mjs`. Re-extracting now recovers
+**103 pages, 275 demos** — see [`_legacy/README.md`](_legacy/README.md) for
+the exact list of what came back and what genuinely has no demo to extract
+(page templates and prose, correctly not component docs).
 
 ## The rule
 
@@ -100,6 +120,6 @@ and which were dropped outright, with the reasoning for each.
 | Repository | `github.com/imswarnil/Swarnil-Design-System` |
 | Complete tree | tag **`v0-frame-and-signal`** (commit `f84ccf7`, 630 files) |
 | Restorable branch | `main-before-rebuild` |
-| Partial copy here | `_legacy/` (274 files — no `src/`, `collection/` or `icons/`) |
+| Full copy here | `_legacy/` — restored from the tag, frozen reference only |
 | Migration record | [`docs/MIGRATION.md`](docs/MIGRATION.md), [`_legacy/README.md`](_legacy/README.md) |
 | Successor to the domain | [Swarnil Design System](https://design.imswarnil.com) — unrelated, do not depend on it |

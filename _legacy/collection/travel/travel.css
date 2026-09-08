@@ -1,0 +1,44 @@
+/* =============================================================================
+   COLLECTION · TRAVEL
+   What only travel needs: the globe, the flight line and the palm. Everything
+   else this collection uses is in ../collection.css.
+
+   Requires collection.css.
+   ========================================================================== */
+
+/* ── The globe scene ─────────────────────────────────────────────────────────
+   Travel's own art. The globe turns, a flight arcs, the palm leans. All of it
+   is decoration — it is aria-hidden and it stops dead under reduced motion.
+   ------------------------------------------------------------------------- */
+
+@keyframes trv-spin { to { transform: rotate(360deg); } }
+
+@keyframes trv-fly { to { stroke-dashoffset: 0; } }
+
+@keyframes trv-drift { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+@keyframes trv-twinkle { 0%, 100% { opacity: 0.25; } 50% { opacity: 0.9; } }
+
+@keyframes trv-sway { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
+
+.trv-globe__grid { transform-origin: center; animation: trv-spin 46s linear infinite; }
+.trv-plane { animation: trv-drift 5s var(--ease-inout) infinite; }
+
+.trv-route {
+	stroke-dasharray: 260;
+	stroke-dashoffset: 260;
+	animation: trv-fly 4.5s var(--ease-inout) infinite;
+}
+
+.trv-star { animation: trv-twinkle 4s var(--ease-inout) infinite; }
+.trv-palm { transform-origin: bottom center; animation: trv-sway 7s var(--ease-inout) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+	.trv-globe__grid,
+	.trv-plane,
+	.trv-route,
+	.trv-star,
+	.trv-palm { animation: none; }
+
+	.trv-route { stroke-dashoffset: 0; }
+}

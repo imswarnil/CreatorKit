@@ -1,0 +1,48 @@
+/* =============================================================================
+   GUIDES — collection-only CSS
+   ONE thing nothing else in the system needed: the stepper, a row of filled
+   segments showing progress through a guide's steps, with the pager riding
+   under it.
+
+   It used to be two. The other was a book-cover treatment — until
+   `.book` / `.book__cover` / `.book-shelf` turned up in 12-frame.css, already
+   carrying a spine, a page edge and a shelf that tilts every second cover,
+   and with a doc comment naming the guides as what it was built for. The
+   cover here is now that component; what is left is the blend that gives each
+   cover its own two-hue wash, which is a placeholder concern rather than a
+   book one, and the row-card layout for the scanning list.
+   ========================================================================== */
+
+.c-guide { flex-direction: row; align-items: stretch; }
+.c-guide .c__media { aspect-ratio: 3 / 4; width: 6.5rem; flex: none; }
+.c-guide .c__body { flex: 1; }
+
+.col-ph[data-blend] {
+	position: relative;
+	isolation: isolate;
+}
+
+.col-ph[data-blend]::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(155deg, hsl(var(--h) 80% 60%) 0%, transparent 55%),
+		linear-gradient(-25deg, hsl(calc(var(--h) + 40) 70% 50%) 0%, transparent 60%);
+	mix-blend-mode: color;
+	opacity: 0.9;
+}
+
+.stepper {
+	display: flex;
+	gap: var(--space-2);
+}
+
+.stepper__step {
+	flex: 1;
+	height: 4px;
+	border-radius: var(--radius-pill);
+	background: var(--bg-muted);
+}
+
+.stepper__step[data-done] { background: var(--accent); }
+.stepper__step[data-current] { background: var(--fg-default); }

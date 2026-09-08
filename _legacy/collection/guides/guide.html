@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-transition="turn">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Grid, from scratch — Guides — Swarnil</title>
+<meta name="description" content="Six steps, in the order you actually reach for them." />
+<link rel="icon" href="../../docs/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../dist/creator.css" />
+<link rel="stylesheet" href="../../collection/collection.css" />
+<link rel="stylesheet" href="./guides.css" />
+<script src="../../src/nav.js" defer></script>
+<!-- The system's own highlighter. Collections were the one place shipping code
+     blocks without it, so snippets rendered as plain text while the docs site
+     three folders away coloured the identical markup. -->
+<script src="../../src/highlight.js" defer></script>
+<script src="../../collection/collection.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="nav-shell">
+  <nav class="nav-bar" aria-label="Main">
+    <a class="logo logo-sm" href="../../collection/_pages/home.html">Swarnil</a>
+    <div class="nav-links">
+      <a class="nav-link" href="../../collection/course/index.html">Courses</a>
+      <a class="nav-link" href="../../collection/travel/index.html">Travel</a>
+      <a class="nav-link" href="../../collection/blog/index.html">Blog</a>
+      <a class="nav-link" href="../../collection/webseries/index.html">Series</a>
+      <a class="nav-link" href="../../collection/newsletter/index.html">Newsletter</a>
+      <a class="nav-link" href="../../collection/projects/index.html">Projects</a>
+      <a class="nav-link" href="../../collection/_pages/resume.html">Résumé</a>
+    </div>
+    <div class="nav-actions">
+      <a class="btn btn-primary btn-sm btn-pill" href="#i">Subscribe</a>
+    </div>
+  </nav>
+</header>
+
+<main id="main">
+
+  <div class="container section-sm">
+    <nav class="col-post__crumbs u-mb-6" aria-label="Breadcrumb">
+      <a href="./index.html">Guides</a> <span>/</span> <span>Grid, from scratch</span>
+    </nav>
+
+    <h1 class="t-display-2">Grid, from scratch</h1>
+    <p class="t-lead u-mt-3" style="max-width:var(--measure-lead)">Six steps, in the
+      order you actually reach for them — no step skippable, none of them long.</p>
+
+    <div class="u-mt-6"><div class="stepper" role="progressbar" aria-valuenow="2" aria-valuemax="6"><span class="stepper__step" data-done></span><span class="stepper__step" data-current></span><span class="stepper__step"></span><span class="stepper__step"></span><span class="stepper__step"></span><span class="stepper__step"></span></div></div>
+
+    <div class="col-stagebar">
+      <a class="btn btn-secondary btn-sm" href="./guide.html" data-step="prev">← Previous</a>
+      <div class="col-stagebar__where">
+        <span class="col-stagebar__pos">
+          <span>Step 2 of 6</span>
+        </span>
+        <h2 class="t-h3" style="margin:0">The implicit grid</h2>
+      </div>
+      <a class="btn btn-primary btn-sm" href="./guide.html" data-step="next">Next →</a>
+    </div>
+
+    <article class="content u-mt-8">
+      <p>Rows you never declared, and where they come from.</p>
+      <p>Everything after this step assumes the grid is already on the container —
+        this step is the one line that makes every other rule in the guide make sense.</p>
+    </article>
+
+    <div class="u-mt-10">
+      <div class="row-between u-mb-5"><div><h2 class="t-h3">All steps in this guide</h2></div></div>
+      <div class="list-group">
+        <a class="list-group__item" href="./guide.html">The four properties</a><a class="list-group__item" href="./guide.html" aria-current="page">The implicit grid</a><a class="list-group__item" href="./guide.html">gap versus margin</a><a class="list-group__item" href="./guide.html">Alignment, two axes</a><a class="list-group__item" href="./guide.html">Naming areas</a><a class="list-group__item" href="./guide.html">Shipping it</a>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+  <section class="comments" id="comments">
+    <div class="comments__head">
+      <h2 class="comments__count">3<span>comments</span></h2>
+      <label class="cluster" style="gap:var(--space-2)">
+        <span class="t-slate-sm" style="color:var(--fg-faint)">Sort</span>
+        <select class="select" style="width:auto">
+          <option>Newest</option><option>Oldest</option><option>Most liked</option>
+        </select>
+      </label>
+    </div>
+    
+    <form class="comment-box" onsubmit="return false">
+      <label class="u-sr-only" for="cmt">Your comment</label>
+      <textarea class="input" id="cmt" rows="3"
+                placeholder="Add to the thread — corrections especially welcome."></textarea>
+      <div class="comment-box__row">
+        <span class="comment-box__note">Markdown works. Be kind.</span>
+        <button class="btn btn-primary btn-sm" type="submit">Post comment</button>
+      </div>
+    </form>
+    <ol class="comment-list"><li class="comment">
+      <span class="comment__face">MR</span>
+      <div class="comment__body">
+        <div class="comment__head">
+          <span class="comment__author">Maya Rodriguez</span>
+          <span class="comment__time">2 days ago</span>
+        </div>
+        <div class="comment__text"><p>The implicit grid explanation finally made this click for me. I had been declaring rows for years without knowing why it sometimes worked anyway.</p></div>
+        <div class="comment__actions">
+          <button class="comment__action" type="button" data-like aria-pressed="false">
+            <svg class="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.5s-7-4.4-7-9a3.9 3.9 0 0 1 7-2.4A3.9 3.9 0 0 1 19 10.5c0 4.6-7 9-7 9Z"/></svg><span data-like-count>12</span>
+          </button>
+          <button class="comment__action" type="button">Reply</button>
+        </div>
+        <ol class="comment-list"><li class="comment comment-author">
+      <span class="comment__face">SS</span>
+      <div class="comment__body">
+        <div class="comment__head">
+          <span class="comment__author">Swarnil Singhai</span>
+          <span class="comment__time">2 days ago</span>
+        </div>
+        <div class="comment__text"><p>That is exactly the trap — it works right up until the content count changes. Glad it helped.</p></div>
+        <div class="comment__actions">
+          <button class="comment__action" type="button" data-like aria-pressed="false">
+            <svg class="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.5s-7-4.4-7-9a3.9 3.9 0 0 1 7-2.4A3.9 3.9 0 0 1 19 10.5c0 4.6-7 9-7 9Z"/></svg><span data-like-count>4</span>
+          </button>
+          <button class="comment__action" type="button">Reply</button>
+        </div>
+        
+      </div>
+    </li></ol>
+      </div>
+    </li><li class="comment">
+      <span class="comment__face">DK</span>
+      <div class="comment__body">
+        <div class="comment__head">
+          <span class="comment__author">Dan K.</span>
+          <span class="comment__time">5 days ago</span>
+        </div>
+        <div class="comment__text"><p>Would love a follow-up on subgrid. It is the one part I still avoid.</p></div>
+        <div class="comment__actions">
+          <button class="comment__action" type="button" data-like aria-pressed="false">
+            <svg class="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.5s-7-4.4-7-9a3.9 3.9 0 0 1 7-2.4A3.9 3.9 0 0 1 19 10.5c0 4.6-7 9-7 9Z"/></svg><span data-like-count>8</span>
+          </button>
+          <button class="comment__action" type="button">Reply</button>
+        </div>
+        
+      </div>
+    </li></ol>
+  </section></div>
+  <script>
+  (function () {
+    document.querySelectorAll('[data-like]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var on = btn.getAttribute('aria-pressed') === 'true';
+        var n = btn.querySelector('[data-like-count]');
+        n.textContent = String(Number(n.textContent) + (on ? -1 : 1));
+        btn.setAttribute('aria-pressed', String(!on));
+      });
+    });
+  })();
+  </script>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="logo logo-sm" href="../../collection/_pages/home.html">Swarnil</a>
+        <p class="footer__tag">A creator's site, built from tokens — videos, courses,
+          a blog, a newsletter and the trips between them. One design system
+          underneath all of it.</p>
+      </div>
+
+      <div>
+        <p class="footer__head">Collections</p>
+        <div class="footer__links">
+          <a href="../../collection/course/index.html">Courses</a>
+          <a href="../../collection/travel/index.html">Travel</a>
+          <a href="../../collection/blog/index.html">Blog</a>
+          <a href="../../collection/videos/index.html">Videos</a>
+          <a href="../../collection/guides/index.html">Guides</a>
+        </div>
+      </div>
+
+      <div>
+        <p class="footer__head">More</p>
+        <div class="footer__links">
+          <a href="../../collection/newsletter/index.html">Newsletter</a>
+          <a href="../../collection/projects/index.html">Projects</a>
+          <a href="../../collection/snippets/index.html">Snippets</a>
+          <a href="../../collection/prompts/index.html">Prompts</a>
+          <a href="../../collection/products/index.html">Products I use</a>
+        </div>
+      </div>
+
+      <div>
+        <p class="footer__head">Site</p>
+        <div class="footer__links">
+          <a href="../../collection/_pages/about.html">About</a>
+          <a href="../../collection/_pages/contact.html">Contact</a>
+          <a href="../../collection/_pages/archive.html">Archive</a>
+          <a href="../../collection/_pages/now.html">Now</a>
+          <a href="../../collection/_pages/resume.html">Résumé</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__signoff">
+      <span>© 2026 Swarnil Singhai · Guides — a collection ·
+        <a href="../../collection/_pages/terms.html">Terms</a> ·
+        <a href="../../collection/_pages/privacy.html">Privacy</a></span>
+      <span class="footer__rec"><span class="dot dot-sm dot-live"></span>Still rolling</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
