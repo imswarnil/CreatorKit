@@ -5,14 +5,15 @@
 	"description": "creator.imswarnil.com \u2014 the CreatorKit documentation site.",
 	"type": "module",
 	"scripts": {
-		"dev": "npm run props && npm run kit && next dev --port 3400",
-		"build": "npm run props && npm run kit && next build",
+		"dev": "npm run props && npm run kit && npm run archive && next dev --port 3400",
+		"build": "npm run props && npm run kit && npm run archive && next build",
 		"start": "next start --port 3400",
 		"lint": "eslint app components lib",
 		"typecheck": "tsc --noEmit",
-		"clean": "rm -rf .next dist .turbo",
+		"clean": "rm -rf .next dist .turbo public/archive",
 		"props": "node ../../tools/props-gen/index.mjs ../../packages/ui/src lib/props.generated.json",
-		"kit": "test -d ../../_legacy/docs && node ../../tools/kit-docs/index.mjs ../../_legacy/docs lib/kit.generated.json || echo \"kit-docs: _legacy/docs is gone \u2014 using the committed lib/kit.generated.json\""
+		"kit": "test -d ../../_legacy/docs && node ../../tools/kit-docs/index.mjs ../../_legacy/docs lib/kit.generated.json || echo \"kit-docs: _legacy/docs is gone \u2014 using the committed lib/kit.generated.json\"",
+		"archive": "node ../../tools/kit-archive/index.mjs ../../_legacy public/archive"
 	},
 	"dependencies": {
 		"@creatorkit/core": "workspace:*",

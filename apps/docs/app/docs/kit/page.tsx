@@ -27,6 +27,16 @@ export default function KitIndex() {
 					Every example on these pages renders against the real stylesheets. Copy the markup and
 					it works anywhere the kit is loaded — a Ghost theme, a static page, anything.
 				</Text>
+				<Text variant="small">
+					These are the examples the old docs wrapped as demos. Anything it rendered straight
+					into a page — the window chromes, the viewfinder, whole page layouts — was never
+					tagged as an example and cannot be lifted out, so the original site is kept intact
+					at{' '}
+					<a className="underline underline-offset-4" href="/archive/introduction.html">
+						the archive
+					</a>
+					: 134 pages, exactly as they were, against their own stylesheets.
+				</Text>
 			</header>
 
 			{kitByCategory.map(({ category, pages }) => (
