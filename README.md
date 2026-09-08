@@ -120,9 +120,15 @@ start and a bill for nothing.
 `links` and `nac`: the route binds to whatever DNS record exists for the
 hostname, so this repo never owns the DNS entry.
 
-> **creator.imswarnil.com needs a proxied CNAME** in the `imswarnil.com` zone
-> before the route resolves. Until then the site is live at
-> [creatorkit-docs.imswarnil.workers.dev](https://creatorkit-docs.imswarnil.workers.dev).
+Live at **[creator.imswarnil.com](https://creator.imswarnil.com)**, and also on
+[creatorkit-docs.imswarnil.workers.dev](https://creatorkit-docs.imswarnil.workers.dev)
+as a way in that does not depend on the zone.
+
+> Do **not** change the route to `custom_domain: true`. That form insists on
+> creating and owning the DNS record itself, and refuses to attach to a record
+> it did not make — `Hostname 'creator.imswarnil.com' already has externally
+> managed DNS records` (code 100117) — which leaves the deploy half-applied.
+> The route form attaches to the existing proxied record and is what works.
 
 ## Contributing
 

@@ -27,8 +27,8 @@
 
   "observability": { "enabled": true },
 
-  // A workers.dev URL as well as the route, so the site is reachable while
-  // creator.imswarnil.com still has no DNS record. Harmless to leave on.
+  // A workers.dev URL as well as the custom domain, as a way in that does not
+  // depend on the zone. Harmless to leave on.
   "workers_dev": true,
 
   // A Worker Route rather than a Custom Domain, matching links.imswarnil.com
@@ -36,9 +36,12 @@
   // hostname, as long as that record is proxied through Cloudflare, so this
   // config never has to own the DNS entry.
   //
-  // ⚠️ creator.imswarnil.com has no DNS record yet. Add a PROXIED CNAME for
-  // `creator` in the imswarnil.com zone and this route starts serving; until
-  // then the site is reachable on its workers.dev URL only.
+  // creator.imswarnil.com already has a proxied record in the imswarnil.com
+  // zone, so this route serves the site today. Do NOT switch this to
+  // `custom_domain: true`: that form insists on creating and owning the DNS
+  // record itself and fails outright against a record it did not make —
+  // "Hostname already has externally managed DNS records" (code 100117) —
+  // leaving the deploy half-applied.
   "routes": [
     { "pattern": "creator.imswarnil.com/*", "zone_name": "imswarnil.com" }
   ]

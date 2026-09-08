@@ -271,8 +271,9 @@ Static assets, no Worker script — `wrangler.jsonc` has no `main`. `html_handli
 `"none"` because these are hand-authored `.html` files linked as `/button.html`, so a URL
 maps to a file, not to a directory index.
 
-`creator.imswarnil.com` still needs a **proxied CNAME** in the `imswarnil.com` zone before
-the route resolves; until then the site answers on its `workers.dev` URL.
+The route attaches to the proxied record the `imswarnil.com` zone already had for
+`creator`, so the domain serves the site. Leave it a route: `custom_domain: true` refuses
+to attach to a DNS record it did not create (code 100117) and half-applies the deploy.
 
 ---
 
