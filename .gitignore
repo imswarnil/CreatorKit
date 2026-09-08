@@ -35,3 +35,6 @@ ghost/
 # from. It is deleted once the migration is verified.
 _legacy/dist/
 _legacy/node_modules/
+
+# Wrangler local state
+.wrangler/

@@ -1,0 +1,41 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "creatorkit-docs",
+  "compatibility_date": "2026-09-08",
+
+  // ── Static assets, no Worker script ────────────────────────────────────
+  // Every route in apps/docs prerenders, so this deploys as plain files.
+  // There is no "main" here on purpose: without one, Cloudflare serves the
+  // asset directory directly and no Worker code runs per request.
+  //
+  // The other Cloudflare sites in this workspace (links, nac) DO run a Worker,
+  // through @opennextjs/cloudflare, because they fetch per request. Copying
+  // that here would add a runtime to a site that has nothing to run.
+  "assets": {
+    "directory": "apps/docs/out",
+
+    // Next's static export writes /docs/tokens/index.html and links to
+    // /docs/tokens/ — so a request for a directory must resolve to its
+    // index, and a miss must render the exported 404 rather than Cloudflare's.
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+
+  "observability": { "enabled": true },
+
+  // A workers.dev URL as well as the route, so the site is reachable while
+  // creator.imswarnil.com still has no DNS record. Harmless to leave on.
+  "workers_dev": true,
+
+  // A Worker Route rather than a Custom Domain, matching links.imswarnil.com
+  // and nac.imswarnil.com: it attaches to whatever DNS record exists for the
+  // hostname, as long as that record is proxied through Cloudflare, so this
+  // config never has to own the DNS entry.
+  //
+  // ⚠️ creator.imswarnil.com has no DNS record yet. Add a PROXIED CNAME for
+  // `creator` in the imswarnil.com zone and this route starts serving; until
+  // then the site is reachable on its workers.dev URL only.
+  "routes": [
+    { "pattern": "creator.imswarnil.com/*", "zone_name": "imswarnil.com" }
+  ]
+}

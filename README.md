@@ -92,6 +92,33 @@ Requires Node 22 and pnpm 10 or newer.
 | [`SECURITY.md`](./SECURITY.md) | Reporting a vulnerability |
 | Each package's `INVENTORY.md` | Every class it ships. Generated, so never stale |
 
+## Deployment
+
+The docs site is **static**. Every route in `apps/docs` prerenders — `next build`
+reports nothing but `○ Static` and `● SSG` — so it ships as plain files on
+Cloudflare with no Worker script and no server runtime.
+
+```bash
+pnpm cf:build      # next build → apps/docs/out
+pnpm cf:preview    # serve that build locally on workerd
+pnpm cf:deploy     # build and ship
+```
+
+That is a deliberate departure from the other Cloudflare sites in this
+workspace, which run Next on workerd through `@opennextjs/cloudflare`. They need
+to — they fetch per request. This one does not, and a server runtime under a
+static site buys a cold start and a bill for nothing. If a route here ever needs
+the server (a search API, an OG image generator), that is the moment to add the
+adapter, not before.
+
+`wrangler.jsonc` attaches a Worker Route on `creator.imswarnil.com/*`, matching
+`links` and `nac`: the route binds to whatever DNS record exists for the
+hostname, so this repo never owns the DNS entry.
+
+> **creator.imswarnil.com needs a proxied CNAME** in the `imswarnil.com` zone
+> before the route resolves. Until then the site is live at
+> [creatorkit-docs.imswarnil.workers.dev](https://creatorkit-docs.imswarnil.workers.dev).
+
 ## Contributing
 
 Read [`ARCHITECTURE.md`](./ARCHITECTURE.md), then [`CONTRIBUTING.md`](./CONTRIBUTING.md).
